@@ -1,0 +1,13 @@
+Let's commit this to the GitHub repo as a firecrawl.md add this firecrawl API key fc-27d64952cba94bb8869138f46a157e03 so that we can use the following npx command to use deep research 
+
+{
+  "mcpServers": {
+    "firecrawl-mcp": {
+      "command": "npx",
+      "args": ["-y", "firecrawl-mcp"],
+      "env": {
+        "FIRECRAWL_API_KEY": "fc-27d64952cba94bb8869138f46a157e03"
+      }
+    }
+  }
+}
