@@ -1,0 +1,218 @@
+{
+  "metadata": {
+    "product": "Rocket",
+    "category": "Men's Health",
+    "tagline": "Enhance your inner energy and well-being",
+    "type": "complete_sales_roadmap",
+    "purpose": "Visual dashboard of entire sales process from contact to close"
+  },
+  "roadmap_sections": {
+    "1_opening_approaches": {
+      "title": "OPENING APPROACHES",
+      "description": "5 ways to start the conversation",
+      "branches": [
+        {
+          "id": "cold",
+          "label": "COLD APPROACH",
+          "script_hint": "Hi! I noticed... How's your day?"
+        },
+        {
+          "id": "warm",
+          "label": "WARM INTRO",
+          "script_hint": "Hey [Name]! I was thinking about you..."
+        },
+        {
+          "id": "social",
+          "label": "SOCIAL MEDIA DM",
+          "script_hint": "Loved your post about..."
+        },
+        {
+          "id": "referral",
+          "label": "REFERRAL",
+          "script_hint": "[Friend] suggested I reach out..."
+        },
+        {
+          "id": "event",
+          "label": "EVENT/PARTY",
+          "script_hint": "Great event! What brings you here?"
+        }
+      ],
+      "all_lead_to": "discovery"
+    },
+    "2_discovery": {
+      "title": "DISCOVERY QUESTIONS",
+      "description": "Uncover pain points and needs",
+      "question_flow": [
+        {
+          "type": "opening",
+          "questions": [
+            "How would you describe your energy levels?",
+            "What does feeling your best look like?"
+          ]
+        },
+        {
+          "type": "pain_point",
+          "questions": [
+            "Where do you feel discomfort most?",
+            "How often does this happen?",
+            "Scale 1-10, how much does it impact you?"
+          ]
+        },
+        {
+          "type": "impact",
+          "questions": [
+            "What activities are you avoiding?",
+            "How does this affect your sleep/mood?",
+            "If this was solved, what would you do first?"
+          ]
+        },
+        {
+          "type": "solution",
+          "questions": [
+            "What have you tried before?",
+            "What's most important - speed, drug-free, or ease?"
+          ]
+        }
+      ],
+      "leads_to": "presentation"
+    },
+    "3_presentation": {
+      "title": "PRESENT THE SOLUTION",
+      "framework": "Problem \u2192 Agitate \u2192 Solve",
+      "steps": [
+        {
+          "step": "PROBLEM",
+          "content": "Many people struggle with men's health challenges..."
+        },
+        {
+          "step": "AGITATE",
+          "content": "Think about what it costs you - missed moments, frustration..."
+        },
+        {
+          "step": "SOLVE",
+          "content": "That's why Rocket uses Vibrotactile Technology..."
+        }
+      ],
+      "key_points": [
+        "Male vitality",
+        "Energy enhancement",
+        "Well-being"
+      ],
+      "differentiator": "100% Drug-Free \u2022 Non-Invasive \u2022 Works with your body",
+      "leads_to": "objection_check"
+    },
+    "4_objection_handling": {
+      "title": "HANDLE OBJECTIONS",
+      "technique": "Conversation Aikido: 'I understand... [Open Question]'",
+      "objections": [
+        {
+          "objection": "TOO EXPENSIVE",
+          "response": "I understand cost is important. What other criteria matter most to you beyond price?",
+          "psychology": "Shift focus to value"
+        },
+        {
+          "objection": "NEED TO THINK",
+          "response": "Of course! What specific questions would help you decide?",
+          "psychology": "Identify real concern"
+        },
+        {
+          "objection": "ASK MY SPOUSE",
+          "response": "Great idea! What concerns might they have we could address now?",
+          "psychology": "Surface objections early"
+        },
+        {
+          "objection": "DOES IT WORK?",
+          "response": "I understand the skepticism. What would you need to see or experience to feel confident?",
+          "psychology": "Let them define proof"
+        },
+        {
+          "objection": "TRIED BEFORE",
+          "response": "What did you like/dislike about those? What was missing?",
+          "psychology": "Learn from past failures"
+        },
+        {
+          "objection": "NOT INTERESTED",
+          "response": "That's fine. What specifically doesn't align with what you're looking for?",
+          "psychology": "Uncover hidden needs"
+        },
+        {
+          "objection": "NO TIME",
+          "response": "If you could reduce discomfort easily, how would that help your time and energy?",
+          "psychology": "Reframe to benefit"
+        },
+        {
+          "objection": "VS COMPETITOR",
+          "response": "What appeals to you about [competitor]? (Then explain VTT difference)",
+          "psychology": "Understand their criteria"
+        }
+      ],
+      "all_lead_to": "closing"
+    },
+    "5_closing": {
+      "title": "CLOSE THE SALE",
+      "pre_close": "Do you have any questions? Does this make sense?",
+      "techniques": [
+        {
+          "name": "ASSUMPTIVE",
+          "script": "Would you like to start with a single pack or save with the bundle?",
+          "when": "Strong buying signals"
+        },
+        {
+          "name": "ALTERNATIVE",
+          "script": "Would you prefer to pick it up today or have it shipped?",
+          "when": "Need gentle push"
+        },
+        {
+          "name": "URGENCY",
+          "script": "We have a special this week. Want to lock that in?",
+          "when": "They're hesitating"
+        },
+        {
+          "name": "SUMMARY",
+          "script": "So you want relief from X, without drugs, easily. [Product] does all that. Ready to try it?",
+          "when": "Complex conversation"
+        },
+        {
+          "name": "REFERRAL",
+          "script": "Who else do you know dealing with similar challenges?",
+          "when": "After successful close"
+        }
+      ],
+      "leads_to": "follow_up"
+    },
+    "6_follow_up": {
+      "title": "FOLLOW-UP SEQUENCE",
+      "sequence": [
+        {
+          "day": 1,
+          "action": "Thank you message + usage tips"
+        },
+        {
+          "day": 3,
+          "action": "Check-in: How are you feeling?"
+        },
+        {
+          "day": 7,
+          "action": "Results check + testimonial request"
+        },
+        {
+          "day": 14,
+          "action": "Reorder reminder + referral ask"
+        }
+      ],
+      "goal": "Build relationship, get testimonials, generate referrals"
+    }
+  },
+  "visual_layout": {
+    "format": "Top-to-bottom flowchart with horizontal branches",
+    "sections_flow": "Opening \u2192 Discovery \u2192 Present \u2192 Objections \u2192 Close \u2192 Follow-up",
+    "color_coding": {
+      "openings": "Blue (trust)",
+      "discovery": "Purple (exploration)",
+      "presentation": "Green (solution)",
+      "objections": "Orange (caution/handle)",
+      "closing": "Red (action/urgency)",
+      "follow_up": "Teal (relationship)"
+    }
+  }
+}
