@@ -1,0 +1,171 @@
+{
+  "freedom": {
+    "name": "Freedom",
+    "tagline": "Take care of those minor aches and pains",
+    "category": "Aches & Pains",
+    "benefits": [
+      "Pain relief",
+      "Drug-free solution",
+      "Non-invasive"
+    ],
+    "target_audience": "People experiencing minor aches, pains, and discomfort",
+    "has_how_it_works": true,
+    "has_testimonials": true
+  },
+  "liberty": {
+    "name": "Liberty",
+    "tagline": "Healthy living relies on better balance and mobility",
+    "category": "Mobility",
+    "benefits": [
+      "Improved balance",
+      "Better mobility",
+      "Enhanced stability"
+    ],
+    "target_audience": "Seniors, athletes, anyone wanting better balance and mobility",
+    "has_how_it_works": true,
+    "has_testimonials": true
+  },
+  "rem": {
+    "name": "REM",
+    "tagline": "Better, deeper sleep is the foundation for healthy living",
+    "category": "Sleep",
+    "benefits": [
+      "Deeper sleep",
+      "Better rest",
+      "Wake refreshed"
+    ],
+    "target_audience": "People with sleep issues, insomnia, or wanting better rest",
+    "has_how_it_works": true,
+    "has_testimonials": true
+  },
+  "victory": {
+    "name": "Victory",
+    "tagline": "Get stronger, faster, and more agile. Smash your personal bests",
+    "category": "Athletic Performance",
+    "benefits": [
+      "Enhanced strength",
+      "Improved endurance",
+      "Better agility"
+    ],
+    "target_audience": "Athletes, fitness enthusiasts, anyone wanting peak performance",
+    "has_how_it_works": true,
+    "has_testimonials": true
+  },
+  "focus": {
+    "name": "Focus",
+    "tagline": "Bolster your mind's concentration and attention",
+    "category": "Focus & Attention",
+    "benefits": [
+      "Better concentration",
+      "Improved attention",
+      "Mental clarity"
+    ],
+    "target_audience": "Students, professionals, anyone needing better focus",
+    "has_how_it_works": true,
+    "has_testimonials": true
+  },
+  "ignite": {
+    "name": "Ignite",
+    "tagline": "Burn calories even while at rest. Fire up your metabolism",
+    "category": "Max RMR",
+    "benefits": [
+      "Boosted metabolism",
+      "Calorie burning",
+      "Weight management support"
+    ],
+    "target_audience": "People wanting to lose weight or boost metabolism",
+    "has_how_it_works": true,
+    "has_testimonials": true
+  },
+  "kick-it": {
+    "name": "Kick It",
+    "tagline": "Support your willpower to overcome bad habits",
+    "category": "Will Power",
+    "benefits": [
+      "Willpower support",
+      "Habit breaking",
+      "Self-control"
+    ],
+    "target_audience": "People trying to quit smoking, overeating, or other habits",
+    "has_how_it_works": true,
+    "has_testimonials": true
+  },
+  "defend": {
+    "name": "Defend",
+    "tagline": "Support your health and wellness routine",
+    "category": "Immune Support",
+    "benefits": [
+      "Immune support",
+      "Wellness boost",
+      "Health maintenance"
+    ],
+    "target_audience": "Anyone wanting to support their immune system",
+    "has_how_it_works": true,
+    "has_testimonials": true
+  },
+  "joy": {
+    "name": "Joy",
+    "tagline": "Happiness is important for healthy living",
+    "category": "Mood",
+    "benefits": [
+      "Mood enhancement",
+      "Emotional well-being",
+      "Positive outlook"
+    ],
+    "target_audience": "People wanting to improve mood and emotional state",
+    "has_how_it_works": true,
+    "has_testimonials": true
+  },
+  "lumi": {
+    "name": "Lumi",
+    "tagline": "Skin care complements a healthy lifestyle",
+    "category": "Beauty",
+    "benefits": [
+      "Skin appearance",
+      "Radiant complexion",
+      "Beauty support"
+    ],
+    "target_audience": "People wanting healthier, more radiant skin",
+    "has_how_it_works": true,
+    "has_testimonials": true
+  },
+  "rocket": {
+    "name": "Rocket",
+    "tagline": "Enhance your inner energy and well-being",
+    "category": "Men's Health",
+    "benefits": [
+      "Male vitality",
+      "Energy enhancement",
+      "Well-being"
+    ],
+    "target_audience": "Men wanting to enhance vitality and energy",
+    "has_how_it_works": true,
+    "has_testimonials": true
+  },
+  "peace": {
+    "name": "Peace",
+    "tagline": "Manage your stress and experience greater calm and clarity",
+    "category": "Stress",
+    "benefits": [
+      "Stress management",
+      "Calm and clarity",
+      "Relaxation"
+    ],
+    "target_audience": "People experiencing stress, anxiety, or needing calm",
+    "has_how_it_works": true,
+    "has_testimonials": true
+  },
+  "boost": {
+    "name": "Boost",
+    "tagline": "Power up with clean energy. No sugar or caffeine",
+    "category": "Energy",
+    "benefits": [
+      "Clean energy",
+      "No caffeine crash",
+      "Sustained vitality"
+    ],
+    "target_audience": "Anyone needing energy without stimulants",
+    "has_how_it_works": true,
+    "has_testimonials": true
+  }
+}
