@@ -1,6 +1,6 @@
 # Objection Handling - Sales Frameworks
 
-*2 videos analyzed*
+*3 videos analyzed*
 
 ---
 
@@ -8,105 +8,80 @@
 
 **Source:** [https://www.youtube.com/watch?v=ylH5emU7JRA](https://www.youtube.com/watch?v=ylH5emU7JRA)
 
-Here's a structured analysis of the sales training video, tailored for a direct sales team selling Super Patch wellness products:
-
----
+This sales training video teaches a powerful communication technique for handling objections and questions, shifting from reactive answering to proactive understanding and inquiry.
 
 ## VIDEO ANALYSIS
 
 ### 1. MAIN TOPIC & TECHNIQUE
-
-The primary sales concept/technique being taught is **Conversation Aikido**. This technique focuses on deflecting objections and questions by understanding the underlying emotion/need and then guiding the conversation with open-ended questions, rather than directly answering or arguing.
+The primary sales concept/technique being taught is **Conversation Aikido**.
 
 ### 2. KEY FRAMEWORKS & STEP-BY-STEP PROCESS
-
 **Framework/Technique Name:** Conversation Aikido
 
 **Step-by-step process:**
-
-1.  **Receive the Statement/Objection:** The customer presents a statement, question, or objection (e.g., "Your product is too expensive," "You're always late").
-2.  **Acknowledge and Understand (Don't Answer):** Instead of immediately providing an answer or counter-argument, the salesperson expresses understanding and paraphrases the customer's statement or the feeling behind it. The key is to convey empathy and show you've heard them.
-3.  **Ask an Open-Ended Question:** Immediately follow the acknowledgment with an open-ended question designed to uncover the *real*, deeper issue, need, or interest driving their initial statement.
+1.  **Acknowledge and Understand:** When a customer presents an objection or question, respond with "I understand..." and repeat in your own words what they are saying or feeling.
+2.  **Redirect with an Open Question:** Follow up by asking an open-ended question that encourages them to elaborate on their underlying needs, issues, or interests.
 
 **The psychology/principle behind why it works:**
-
-*   **Avoids "Stupidity" (Emotional Overload):** The speaker uses a brain model to illustrate that when emotions rise (e.g., due to feeling attacked or argued with), the logical thinking part of the brain "disconnects." Direct answers or arguments raise emotions, making the other person less receptive to logic. "The higher emotion goes, the lower thinking goes." (0:55, 2:43-3:00)
-*   **Uncovers the Real Issue:** Surface-level objections (like "too expensive") are often not the true underlying problem. By avoiding a direct answer and instead asking an open question, you create an opportunity to discover what's *really* driving their hesitation, concern, or need. "When someone says your product is too expensive, that's not what their real issue is." (2:15-2:18)
-*   **Uses Their Energy Against Them (Aikido):** Like in martial arts, where an opponent's force is used against them, Conversation Aikido uses the energy of the objection to move the conversation forward constructively. You "go towards the punch, dodge it, and look and you're seeing the world in the same direction as the person who's attacking you." (4:28-4:54)
-*   **Fosters Connection and Trust:** By demonstrating active listening and a genuine desire to understand their perspective, you build rapport and trust. "I understand and accepting the energy that's coming from the other person and then giving back an open question." (7:00-7:08)
-*   **Shuts Down Argumentation:** It prevents the conversation from devolving into a "no, it's not" debate, which yields no valuable information and damages the relationship. "By giving the answer, we shut down the possibility of hearing what's really going on." (6:23-6:29)
+*   **The Brain Model:** The speaker illustrates that when confronted with an objection or a statement that feels like an attack, our "emotion goes up and thinking goes down." Directly answering or refuting their point ("No, it's not...") triggers an emotional reaction and shuts down their rational thinking.
+*   **Aikido Principle:** Instead of resisting or countering directly (like in karate), Conversation Aikido leverages the "energy, the force of the opponent against them." By acknowledging and going "towards the punch," you disarm the emotional response.
+*   **Uncovering True Needs:** By asking an open question *after* acknowledging their point, you guide them from an emotional, surface-level statement to revealing their deeper concerns, criteria, or motivations. This allows you to truly understand "what's the real underlying need, issue, interest of the person that you're listening to."
 
 ### 3. EXACT SCRIPTS & WORD TRACKS
-
-*   **General Opening Line for Understanding:** "I understand..." (3:39) or "I understand that..." (3:47)
-*   **General Structure for Objection Response:** "I understand that [restate their point in your words or describe the emotion you infer]. [Open-ended question to uncover deeper need/interest]."
+*   **General Objection/Question Response Pattern:**
+    *   "I understand [their point/feeling]. [Open-ended question]?"
 
 *   **Specific Objection Responses:**
-    *   **"Your product is too expensive."** (0:05, 1:28, 2:15, 3:47, 5:44, 6:33)
-        *   **Recommended Response:** "I understand that money is an important factor for you. What other criteria will be used in taking this decision?" (3:47-3:56)
-        *   **Alternative/Refined:** "I understand that money is an important criteria for you. What other things are important in this decision?" (6:36-6:41)
-    *   **"You're always late."** (0:17) (Used as a personal analogy)
-        *   **Recommended Response:** "I understand you feel frustrated. I understand you feel let down." (5:10-5:14) (Note: The speaker emphasizes understanding the *feeling* here.)
-    *   **"I'll have to speak to my boss."** (2:20, 6:43)
-        *   **Recommended Response:** "Hey, this is an important decision, I understand you want to get everyone involved. When can I come and meet with you and your boss together?" (6:44-6:53) (Note: The speaker then self-corrects, implying a more open question might be better. The emphasis is on understanding *why* they need to consult the boss.)
-    *   **General Inquiry to understand deeper issues:**
-        *   "What can we do now?" (5:28)
-        *   "What happened during the day?" (5:30)
-        *   "What would you like to talk about?" (5:31)
-        *   "What could we do this weekend?" (5:33)
+    *   **Objection:** "Your product is too expensive."
+    *   **Response:** "I understand that money is an important factor for you. What other criteria will be used in taking this decision?"
+    *   **Alternative Response (personal context example):** "I understand you feel frustrated," or "I understand you feel let down." (The speaker notes this requires practice to find words that "captures what the other person feels.")
+    *   **Objection:** "I'll have to speak to my boss."
+    *   **Response:** "Hey, this is an important decision, I understand you want to get everyone involved. What other things are going on?" (The speaker initially suggests "When can I come and meet with you and your boss together?" but then implicitly reframes it to a more open-ended question to align with the core principle.)
 
 ### 4. OBJECTION HANDLING
-
-*   **Common objections mentioned:**
-    *   "It's quite expensive / Your product is too expensive."
-    *   "You're always late." (Analogy)
-    *   "You never wash the dishes." (Analogy)
+*   **Common Objections Mentioned:**
+    *   "Your product is too expensive."
+    *   "You're always late." (Personal context, for illustrative purposes)
+    *   "You never wash the dishes." (Personal context, for illustrative purposes)
     *   "I'll have to speak to my boss."
     *   "Your competitor is better."
     *   "You failed us three years ago."
     *   "I don't trust your company."
 
-*   **Recommended responses (exact wording if provided):** See Section 3 above. The core is the "I understand + open question" structure.
+*   **Recommended Responses:** (See Section 3 for exact wording) The core recommended response is "I understand [their objection/feeling]. [Open-ended question to uncover underlying issues]?"
 
-*   **The reframe or psychology behind each response:** The goal is to move beyond the stated objection to uncover the customer's genuine needs, concerns, past experiences, decision-making criteria, and influencing factors, by inviting them to share more rather than shutting them down with a defensive answer. This approach keeps emotions low and encourages thoughtful, honest communication.
+*   **The reframe or psychology behind each response:**
+    *   The goal is to avoid directly refuting or defending. Instead, validate their perspective/emotion and then shift the conversation to their underlying criteria, needs, or decision-making process. This prevents immediate defensiveness and opens a path to deeper understanding.
 
 ### 5. KEY TAKEAWAYS
-
-1.  **Don't Answer, Understand:** The fundamental rule is to resist the urge to directly answer questions or objections. Instead, listen, acknowledge, and seek to understand the underlying concern.
-2.  **Use "I Understand" + Open Question:** Master the core "Conversation Aikido" technique: "I understand that [your interpretation of their point/feeling]. What [open-ended question to gain deeper insight]?"
-3.  **Control Emotional Response:** Recognize that direct arguments increase emotion and decrease rational thinking. Your calm, understanding approach keeps the conversation productive.
-4.  **Practice Consistently:** You have years of training to answer questions. It will take conscious, repeated practice (at least 18 years, as the speaker joked) to rewire this habit and effectively implement Conversation Aikido in the heat of the moment.
-5.  **Seek the "Real Underlying Need":** The ultimate objective is to go beneath the surface to identify the customer's true needs, issues, interests, and decision-making drivers, which are rarely articulated in the initial objection.
+1.  **Avoid Direct Answers to Objections:** Directly answering a question or refuting an objection triggers emotional responses and shuts down rational thought, preventing you from understanding the *real* issue.
+2.  **Practice "Conversation Aikido":** Master the two-step process: (1) "I understand..." followed by a restatement of their point/feeling, and (2) an open-ended question that seeks to uncover deeper needs, interests, or criteria.
+3.  **Focus on Understanding the "Why":** The customer's initial statement (e.g., "too expensive") is rarely the *real* issue. Your role is to understand what's truly behind their reasoning.
+4.  **Harness Emotional Energy:** Instead of confronting, "go towards the punch." Acknowledge their emotion or objection to diffuse tension and allow them to think more clearly.
+5.  **Repetition is Key:** The speaker emphasizes that years of schooling have trained us to answer questions. It will take "at least 18 years to get out of the habit" of directly answering, so consistent practice of "I understand" and open questions is crucial.
 
 ### 6. SUPER PATCH APPLICATION
+Here’s how Conversation Aikido can be specifically applied to selling Super Patch wellness products in a direct sales/network marketing context:
 
-Here's how these techniques can be specifically applied to selling Super Patch wellness products in a direct sales/network marketing context:
+1.  **Objection: "Super Patches are too expensive."**
+    *   **Aikido Response:** "I understand that price is an important factor when you're considering new wellness solutions. What aspects are most important for you in a product like this, beyond just the initial cost?"
+    *   **Psychology:** Validates their financial concern while shifting the focus to value, benefits, and their personal health priorities.
 
-*   **Product Context:** Super Patch offers non-invasive, drug-free wellness solutions via patented vibrating patterns, often focusing on areas like pain relief, sleep, balance, and energy. Customers might be skeptical of the technology, price, or efficacy compared to traditional methods.
+2.  **Objection: "Do these Super Patches really work? It sounds too good to be true."**
+    *   **Aikido Response:** "I completely understand why you might be skeptical about new technologies, and it's important to feel confident in your choices. What would you need to see, hear, or experience to truly feel that this is a credible solution for you?"
+    *   **Psychology:** Acknowledges their skepticism without being defensive, and empowers them to define their own path to belief, which could involve testimonials, scientific explanations, or a trial.
 
-*   **Specific Examples:**
+3.  **Objection: "I'm already using [another pain relief cream/supplement] for my [pain/sleep/energy]."**
+    *   **Aikido Response:** "That's great you've found something that helps, and I understand you have an existing routine. What do you like most about your current approach, and what, if anything, do you feel it might still be missing or could be improved upon?"
+    *   **Psychology:** Respects their current solution and opens a non-confrontational dialogue about potential unmet needs or areas where Super Patch might offer additional benefits without requiring them to abandon their current product.
 
-    1.  **Objection: "These patches seem too expensive for just a sticker."**
-        *   **Conversation Aikido Response:** "I understand that the cost is an important consideration, and you want to ensure you're getting value for your investment. What specific health or wellness goals are you hoping to achieve, and what other factors are you weighing when considering a new solution?"
-        *   **Psychology:** Acknowledges financial concern but immediately pivots to their personal health goals and broader decision criteria, moving beyond just the price tag to the *value* it might provide relative to their needs.
+4.  **Objection: "I need to think about it / talk to my spouse."**
+    *   **Aikido Response:** "I understand this is a significant decision for your health and well-being, and you want to ensure it's the right fit for your lifestyle. What specific questions or considerations would be most helpful for you and your spouse to discuss as you evaluate the Super Patch?"
+    *   **Psychology:** Validates their need for careful consideration and partner involvement. It helps identify precise sticking points or information gaps, allowing you to provide targeted support or clarification.
 
-    2.  **Objection: "I've tried a lot of different supplements/remedies for my pain, and nothing seems to work. Why would Super Patch be different?"**
-        *   **Conversation Aikido Response:** "I hear your frustration with past experiences, and it makes complete sense that you're cautious after trying so many things. Can you tell me a little more about what you've tried and what specifically you found disappointing or ineffective about them?"
-        *   **Psychology:** Validates their skepticism and past negative experiences, building empathy. It then prompts them to elaborate, helping you understand their specific pain points and perhaps identify gaps in previous solutions that Super Patch might address.
-
-    3.  **Objection: "I need to talk to my doctor before I try anything new like this."**
-        *   **Conversation Aikido Response:** "I completely understand and respect your desire to consult with your doctor, as health decisions are always important. What specific questions or information do you think your doctor would need to evaluate Super Patch, or what concerns do you anticipate they might have?"
-        *   **Psychology:** Reinforces their autonomy and caution, making them feel heard. It shifts the focus from a blanket deferral to specific, actionable information needed for the doctor, which you might be able to provide or help them frame.
-
-    4.  **Objection: "How does a patch really help me sleep/have more energy? It sounds like magic."**
-        *   **Conversation Aikido Response:** "I appreciate your curiosity about the science behind Super Patch, as it is a unique approach to wellness. What specifically about the 'how it works' aspect interests you most, or what makes you feel it might be 'magic'?"
-        *   **Psychology:** Encourages them to voice their specific areas of disbelief or curiosity about the underlying technology. This allows you to provide targeted information or demonstrations rather than a generic explanation that might not address their core skepticism.
-
-    5.  **Objection: "My friend tried it and didn't feel anything."**
-        *   **Conversation Aikido Response:** "I hear that your friend's experience left you wondering if it would work for you, and personal experiences can certainly be influential. Can you tell me more about what your friend was hoping to achieve, and what their specific routine or expectations were when using the patch?"
-        *   **Psychology:** Acknowledges the negative social proof but creates an opportunity to understand the context of the friend's experience (e.g., perhaps they used the wrong patch, for the wrong reason, or had unrealistic expectations). This helps prevent general dismissal based on limited information.
-
-By consistently applying Conversation Aikido, your sales team can move beyond transactional responses to build deeper relationships, truly understand customer needs, and effectively position Super Patch as the right solution.
+5.  **Objection: "How long until I see results from the Super Patch?"**
+    *   **Aikido Response:** "I understand you're eager to experience the benefits, and that's totally natural. What kind of results are you hoping for, and how quickly would you ideally like to start feeling a difference?"
+    *   **Psychology:** Acknowledges their desire for results and helps clarify their expectations, allowing you to tailor your explanation of typical timelines and individual variability.
 
 ---
 
@@ -114,45 +89,46 @@ By consistently applying Conversation Aikido, your sales team can move beyond tr
 
 **Source:** [https://www.youtube.com/watch?v=mDWUpuumAuo](https://www.youtube.com/watch?v=mDWUpuumAuo)
 
-Here's a structured analysis of the sales training video:
+Here's a structured analysis of the sales training video, focusing on actionable insights for a direct sales team, especially applicable to wellness products like Super Patch.
+
+---
 
 ## VIDEO ANALYSIS
 
 ### 1. MAIN TOPIC & TECHNIQUE
-
-The primary sales concept taught is **Prospect Self-Persuasion through De-framing Pain and Fear of Future Pain.** The core technique is **Consequence Questioning** delivered with a **Concerned Tone**, leading to **Identity Framing**, to encourage prospects to persuade *themselves* to change.
+The primary sales concept taught is **De-framing to Drive Change through Pain and Fear of Future Pain.** This technique aims to shift a prospect's mindset away from their current objections by subtly highlighting the negative consequences of inaction.
 
 ### 2. KEY FRAMEWORKS & STEP-BY-STEP PROCESS
 
-**A. Understanding the Drivers for Change:**
-*   **Principle:** Humans are driven to change by **pain** and the **fear of future pain**. If a prospect doesn't feel pain or fear of future pain related to their current situation, they see no need to change and will give objections.
-*   **Process:**
-    1.  Identify the prospect's current problems/pain points related to your product/service (even if seemingly superficial).
-    2.  Use layered "Consequence Questions" to uncover the deeper, more significant impacts of these problems on their life, business, and relationships.
+**A. Framework: Pain and Fear of Future Pain**
 
-**B. De-Framing through Consequence Questioning & Concerned Tone:**
-*   **Framework/Technique Name:** De-Framing with Consequence Questions (using a Concerned Tone)
+*   **Principle:** The two biggest emotional drivers that cause humans to want to change are current pain and the fear of future pain. Sales are made not by focusing on product benefits alone, but by making the prospect vividly feel and see the consequences of *not* solving their problem.
+*   **Step-by-step process (Consequence Questioning):**
+    1.  **Identify Initial Pain Point:** Ask the prospect about their current problem. (e.g., "low energy, brain fog, poor focus").
+    2.  **Dig Deeper into Immediate Consequences:** Ask "What happens then?" to uncover the direct results of the pain. (e.g., "They won't have enough energy to dominate their business, will lose a lot of money and a lot of productivity.")
+    3.  **Uncover Secondary Consequences:** Continue asking "What happens then?" to explore the ripple effects. (e.g., "Their business won't make as much money and won't perform as well.")
+    4.  **Reveal Deeper, Personal Consequences:** Press further until the consequences become highly personal and emotional. (e.g., "The business won't be around much longer," leading to "They'll be unemployed," "Can't provide for the family," "Compromise for the family.")
+    5.  **Connect to Emotional Drivers:** Ensure the prospect relives their current pain and recognizes the *fear of future pain* if they don't change.
+
+**B. Framework: De-framing with a Concerned Tone / EPQ (Empathetic Persuasion Question) Consequence Question**
+
+*   **Principle:** A concerned tone seeds doubt in the prospect's mind, lowering their guard and making them more open to considering they might be wrong, without directly accusing them. This subtly shifts their internal "frame" of thinking.
 *   **Step-by-step process:**
-    1.  Prospect expresses an objection or desire to delay. (e.g., "Now's not a good time for us, we'll get back to you.")
-    2.  Salesperson uses a **concerned tone** and asks for permission to ask a direct, potentially uncomfortable question.
-    3.  Salesperson asks a layered "Consequence Question" about the impact of *not* solving the problem, moving from immediate consequences to deeper, more significant ones (financial, relational, identity-based).
-    4.  Salesperson continues to ask "And what happens then?" or "How does that impact X?" until the prospect fully articulates and *feels* the profound negative consequences of their inaction.
-    5.  The concerned tone seeds doubt in the prospect's mind, lowering their guard and making them more open to considering their decision.
+    1.  **Acknowledge and Validate (implicitly):** When the prospect presents an objection like "Now's not a good time," or "I'll do it down the road," don't directly rebut it.
+    2.  **Seek Permission (with an escape hatch):** "Can I ask you something and you can always get back to me down the road. Can I ask you something?" (Wait for "Sure.")
+    3.  **Deliver the EPQ Consequence Question (with concerned tone):** "How... how could I communicate to you that you might be making a mistake, without you getting upset with me?"
+    4.  **Follow with Deeper Consequence Questions (as per A):** Once they open up, gently guide them through the consequences of *not* addressing the problem *now*, using your concerned tone.
 
-*   **Psychology/Principle:**
-    *   **Consequence Questioning:** Forces the prospect to visualize and emotionally connect with the negative outcomes of maintaining their status quo or delaying action. It moves them from a logical, superficial objection to an emotional, deeper realization of potential loss.
-    *   **Concerned Tone:** Projects empathy and genuine care, making the salesperson seem like an ally rather than an aggressive seller. This disarms the prospect, triggering doubt about their own decision without making them feel attacked. The prospect unconsciously feels the salesperson knows something they don't, which makes them more receptive.
+**C. Framework: Identity Frame**
 
-**C. Identity Framing:**
-*   **Framework/Technique Name:** Identity Framing
+*   **Principle:** People are driven by their self-identity. By painting a picture of negative consequences associated with a *type of person* who doesn't act, you encourage the prospect to differentiate themselves from that negative identity.
 *   **Step-by-step process:**
-    1.  Once the prospect is de-framed and has acknowledged the deep consequences of inaction (pain and fear of future pain), the salesperson introduces a question that contrasts their desired identity with the identity of someone who *fails* to address the problem.
-    2.  The question makes the prospect choose between identifying with a negative, undesirable archetype (e.g., "executives who never get promoted because they neglect their health") and a positive, aspirational one (e.g., "someone who optimizes their health for peak performance").
-*   **Psychology/Principle:** Humans are driven by who they believe themselves to be and who they aspire to be. By linking inaction to an undesirable identity and action to a desired one, the salesperson taps into a powerful intrinsic motivator. The prospect will want to *run away* from the negative identity and *run towards* the positive one, thus persuading themselves to buy.
+    1.  **After De-framing and Consequence Questions:** Once the prospect has acknowledged the negative future if they don't act, introduce a contrast.
+    2.  **Ask a Question about Their Identity:** "For you, why look at doing this now? Like, why not push it down the road like a lot of executives do who end up never fixing their health and they never get promoted?" This implicitly asks if they want to be like "a lot of executives" who fail, or if they identify as someone who acts differently.
 
 ### 3. EXACT SCRIPTS & WORD TRACKS
 
-*   **Common Objections/Frames (from 0:03-0:11):**
+*   **Common Prospect Objections/Frames (mentioned by speaker):**
     *   "I don't have the money"
     *   "Will it work for me?"
     *   "I'm not sure I should do it"
@@ -161,85 +137,222 @@ The primary sales concept taught is **Prospect Self-Persuasion through De-framin
     *   "I need to think it over"
     *   "I need to do more research"
     *   "How much is it going to cost?"
+    *   "We really liked you and what you had to say, but...now's not a good time for us. We'll get back to you when we are interested! Keep in touch!"
 
-*   **Email Death/Delay Response (from 0:31-0:39):**
-    *   "Ah, we really liked you and what you had to say, but... now's not a good time for us. We'll get back to you when we are interested. Keep in touch!"
+*   **Consequence Questioning Scripts (based on role-play):**
+    *   "What are the consequences if they don't purchase your program?"
+    *   "What happens then?" (Repeatedly)
+    *   "What happens to the business owner when they go under?"
+    *   "What happens to their family?"
+    *   "Like what? Tell me." (When prospect gives vague answers)
 
-*   **Opening Consequence Question (general, from 1:18):**
-    *   "And what are the consequences if they don't purchase your program?"
+*   **De-framing EPQ Question (use with a concerned tone):**
+    *   "Can I ask you something and you can always get back to me down the road. Can I ask you something?" (Wait for confirmation).
+    *   "How... how could I communicate to you that you might be making a mistake, without you getting upset with me?"
 
-*   **Layered Consequence Questions (demonstrated by speaker with prospect on health consulting, from 1:23-1:57):**
-    *   "Okay, and if they lose a lot of money and productivity, what's the consequences? Like, what happens then?"
-    *   "Uh, their business won't make as much money and won't perform as well."
-    *   "And what happens to the business then, when it doesn't perform?"
-    *   "Probably won't be around much longer."
-    *   "And what happens then when it goes out of business?"
-    *   "Uh, they'll probably be busking outside the casino." (Speaker clarifies: "No, no seriously, I mean, on a serious note, like what happens to the business owner when they go under?")
-    *   "Uh, not good things."
-    *   "Like what, tell me."
-    *   "Uh, they'll be unemployed."
-    *   "Okay, and they're not making any money, what happens to their family?"
-    *   "Can't provide for the family, yeah." (Speaker: "It's much deeper than just fixing their health.")
+*   **Re-engagement/Persistence (if they initially refuse to let you ask the EPQ):**
+    *   Prospect: "Oh no, I don't really have time, mate, sorry."
+    *   Salesperson (concerned tone): "Well, yeah, I mean, I don't want to get you angry at me, I guess the question I had for you, and like I said, you always get back to me. How... how can I communicate to you that you might be making a mistake, without you getting upset with me?"
+        *(This shows you're not pushing, but genuinely concerned for them, which further lowers their guard.)*
 
-*   **De-Framing Question with Concerned Tone (from 3:08 and 5:50):**
-    *   "Can I, hey, can I um, can I ask you something and you can always get back to me down the road, can I can I ask you something?"
-    *   *Prospect:* "Sure."
-    *   *Salesperson:* (Concerned Tone) "How um... how could I communicate to you that you might be making a mistake, without you getting upset with me?"
-    *   *Self-Correction Example (from 5:50):* "Yeah, not a problem. Um, can I, can I ask you something before I, you always call, call me in a couple months. Can I ask you something before I, before I head out?"
-    *   *Prospect:* "Oh, no, I don't really have time, mate, sorry."
-    *   *Salesperson:* "Well, yeah, I mean, I don't, I don't want to get you angry at me. I guess the question I had for you, and like I said, you always get back to me. How, how can I communicate to you, that, that you might be making a mistake, without you getting upset with me?"
-
-*   **Identity Frame Question (demonstrated from 7:00-7:40):**
-    *   *Salesperson:* "I mean, how does your spouse feel about it though? Like, does your spouse, like, does she want you to keep having these issues where you like having a hard time even performing at work? Like, does she want you to have to keep going through that?"
-    *   *Prospect:* "Nah, she's pretty pissed at me."
-    *   *Salesperson:* "How do you mean by pissed?"
-    *   *Prospect:* "Uh, she's probably, probably not happy with me."
-    *   *Salesperson:* "Okay. I don't want, I don't want you sleeping on the couch tonight, man. But, but, but in all seriousness. Does she want you to get your health back so you can really get promoted into that CEO role, so you can make more money for the family? Or what does she want you to do?"
-    *   *Prospect:* "Yeah, she would love that."
-    *   *Salesperson:* "Okay. But why now? Like, why, why look at doing this now? Like, why not, you know, push it down the road like a lot of executives do, who end up never fixing their health and they never get promoted?"
-    *   *Prospect:* "Yeah, if, if I pushed it back, my health would probably just get worse."
+*   **Deeper Consequence & Identity Frame Questions (example from role-play, adapt to prospect's situation):**
+    *   "Because I'm concerned for you because... I mean what happens if you don't do anything about this and you keep having these issues with your gut, where you're having these bowel movements during the day at work, and then your boss starts getting upset with you? Like how long is he going to give you before he lets you go?"
+    *   "How does your spouse feel about it though? Like, does your spouse... does she want you to keep having these issues where you like having a hard time even performing at work? Like, does she want you to have to keep going through that?"
+    *   "But in all seriousness... Does she want you to get your health back so you can really get promoted into that CEO role, so you can make more money for the family, or what does she want you to do?"
+    *   "But why now? Like why why look at doing this now? Like why not, you know, push it down the road like a lot of executives do, who end up never fixing their health and they never get promoted?"
 
 ### 4. OBJECTION HANDLING
 
-*   **Common Objections (General):** "I don't have the money," "Will it work for me?", "I'm not sure I should do it," "Next year is better," "I'll do it down the road," "I need to think it over," "I need to do more research," "How much is it going to cost?"
-*   **Specific Objection Handled:** "Now's not a good time for us. We'll get back to you when we are interested. Keep in touch!" (The "Email Death")
-*   **Recommended Response (via De-Framing & Identity Framing):** The speaker demonstrates *not* directly rebutting the objection, but rather asking questions to make the prospect self-persuade.
-    1.  **Permission & Concerned Tone:** "Can I ask you something... without you getting upset with me?" (This sets a non-confrontational, empathetic stage.)
-    2.  **Seed Doubt with Consequence Question:** "How could I communicate to you that you might be making a mistake, without you getting upset with me?"
-    3.  **Dig Deeper into Consequences:** Ask what will happen if they *don't* address the problem now (loss of energy, productivity, promotion, family impact, spouse's feelings).
-    4.  **Identity Reframe:** Contrast their current inaction with the identity of someone who fails to address similar issues, and their desired outcome with the identity of someone who takes action. This makes them *reject* the negative identity.
+*   **Objection:** "Now's not a good time for us. We'll get back to you when we are interested! Keep in touch!" (or similar delays like "Next year is better," "I'll do it down the road," "I need to think it over.")
+    *   **Recommended Response:** Do not try to directly overcome this objection with logic. Instead, use the **De-framing EPQ Question with a Concerned Tone**.
+    *   **Exact Wording:** "Can I ask you something and you can always get back to me down the road. Can I ask you something?" [Wait for "Sure."] "How... how could I communicate to you that you might be making a mistake, without you getting upset with me?"
+    *   **Reframe/Psychology:** This response doesn't argue; it introduces doubt about their current decision to delay. The concerned tone bypasses their logical resistance and targets their emotional drivers, making them wonder *what* they might be overlooking. It then allows you to seamlessly transition into deeper consequence questions.
 
-*   **Reframe/Psychology:** The goal is to shift the prospect's internal frame from "now is not a good time" to "if I don't act now, the consequences will be severe, and it goes against who I want to be." The salesperson uses a concerned tone to bypass resistance and plant seeds of doubt, leading the prospect to discover their own reasons for urgency and change.
+*   **Objection:** (After asking to ask a question) "No, I don't really have time, mate, sorry."
+    *   **Recommended Response:** Show understanding but gently persist with the deeper framing.
+    *   **Exact Wording:** "Well, yeah, I mean, I don't want to get you angry at me, I guess the question I had for you, and like I said, you always get back to me. How... how can I communicate to you that you might be making a mistake, without you getting upset with me?"
+    *   **Reframe/Psychology:** Reinforces sincerity and concern. It's difficult for a prospect to stay aggressive when faced with genuine concern and a non-confrontational request, especially when you've already given them an "out" (getting back to them later).
 
 ### 5. KEY TAKEAWAYS
 
-1.  **Focus on Self-Persuasion:** Don't try to persuade prospects yourself; help them persuade themselves by identifying their pain and the fear of future pain.
-2.  **Uncover Deeper Consequences:** Go beyond superficial problems. Use layered "Consequence Questions" ("And what happens then?") to reveal the true, emotional impact of inaction on their life, business, and family.
-3.  **Leverage Emotional Drivers:** The two biggest emotional drivers for humans to want to change are **pain** and the **fear of future pain**. Tap into these effectively.
-4.  **Master the Concerned Tone for De-Framing:** Use a genuinely concerned tone when asking potentially uncomfortable questions. This seeds doubt, lowers their guard, and makes them open to considering they might be making a mistake, without getting defensive.
-5.  **Utilize Identity Framing:** Help prospects associate inaction with an undesirable identity (e.g., someone who gives up or lets problems fester) and action with an aspirational identity (e.g., a high-performer, a loving spouse, a successful leader).
+1.  **Focus on Pain, Not Just Gain:** True motivation for change comes from current pain and the fear of future pain. Salespeople must become skilled at uncovering and amplifying these.
+2.  **Master Consequence Questioning:** Don't stop at the surface-level problem. Repeatedly ask "What happens then?" to connect their current issues to deeper emotional, financial, or personal consequences.
+3.  **Leverage the "Concerned Tone" for De-framing:** This tone subtly introduces doubt into the prospect's mind, making them receptive to new ideas without feeling attacked or defensive.
+4.  **Use the EPQ Consequence Question:** The script "How could I communicate to you that you might be making a mistake, without you getting upset with me?" is a powerful tool to shift a prospect's mindset.
+5.  **Employ Identity Framing:** Encourage prospects to identify with people who act proactively to solve their problems, rather than those who delay and suffer negative consequences.
 
 ### 6. SUPER PATCH APPLICATION
 
-These techniques can be powerfully applied to selling Super Patch wellness products:
+These techniques are highly effective for selling Super Patch wellness products, as they tap into intrinsic human desires for well-being and avoidance of suffering.
 
-*   **1. Identify Core Pain Points (from the prospect):**
-    *   Instead of just "You need better sleep," dig into their actual experience: "How has your sleep been lately?" (Prospect: "Terrible, I wake up exhausted.")
-    *   "How does that impact your day-to-day?" (Prospect: "I'm irritable with my kids, I can't focus at work, I drink too much coffee.")
-    *   *For Pain Relief:* "How does that knee pain limit what you can do?" (Prospect: "I can't play with my grandkids, I struggle at work, I miss out on hiking.")
+*   **Identifying Pain & Fear of Future Pain (for Super Patch products):**
+    *   **Prospect (e.g., for pain relief patches):** "My back pain has been bothering me for years, but I just live with it."
+    *   **Salesperson:** "I hear you, many people learn to live with discomfort. But let's look down the road. If this back pain continues or worsens, what does that mean for your ability to enjoy your retirement years, to play with your grandkids, or even just maintain your independence?" (Dig deeper: "What happens then when you can't lift things?" "How does your spouse feel watching you struggle?")
+    *   **Prospect (e.g., for energy/sleep patches):** "I'm always tired, but I just push through my day with coffee."
+    *   **Salesperson:** "Pushing through is tough, I admire your resilience. But what are the *real* consequences of that constant fatigue on your focus at work, on your mood with your family, or even on your overall health in the long run? What happens when that consistent lack of restorative sleep starts to impact your immune system or cognitive function?" (Dig deeper: "What happens then when you start making more mistakes at work because of the brain fog?" "How does your family feel when you're too exhausted to engage with them in the evenings?")
 
-*   **2. Apply Layered Consequence Questions (De-Framing):**
-    *   **Initial Delay:** Prospect says, "I'll think about it" or "It sounds interesting, but I'm busy right now."
-    *   **Salesperson (Concerned Tone):** "Can I ask you something, just between you and me? How could I share my concern that you might be missing out on a significant opportunity, without you getting annoyed with me?"
-    *   *If Prospect says "Sure":*
-        *   **For Sleep:** "You mentioned you wake up exhausted and are irritable with your kids. What are the consequences if you continue having poor sleep like this for the next 6-12 months? How does that impact your relationship with your family?" (Prospect: "It puts a strain on things, I feel guilty.") "And how does that impact your career, your focus and productivity at work?" (Prospect: "I'm falling behind, my boss is noticing.") "And what happens then, if your performance declines further?" (Prospect: "I could miss out on a promotion, or even risk my job.")
-        *   **For Pain:** "You said your knee pain stops you from playing with your grandkids. What are the long-term consequences if that pain continues to worsen, preventing you from being active with them as they grow up?" (Prospect: "I'd miss out on so many memories, I'd feel sad and regretful.") "And how does constant pain impact your mood and energy for everything else in your life?" (Prospect: "I'm always tired, grumpy, and feel like I'm aging faster.")
+*   **De-framing with a Concerned Tone (for Super Patch products):**
+    *   **Prospect:** "I've tried so many things for my sleep; I don't think these patches will work."
+    *   **Salesperson (concerned tone, genuinely):** "I completely understand that sentiment; it's natural to feel that way after trying so much. But, if I were to say there's a different approach to wellness, one that works with your body's natural systems rather than against them, how could I communicate that to you without you getting frustrated with me for bringing it up?"
+    *   **Prospect:** "It's not in my budget right now."
+    *   **Salesperson (concerned tone):** "I hear you on that, budgeting is important. But, just curious, how could I convey to you that perhaps putting off addressing this chronic pain now might actually cost you more in the long run – in terms of lost productivity, increasing medication costs, or even your quality of life – without you getting upset with me?"
 
-*   **3. Apply Identity Framing:**
-    *   *After digging deep into consequences for sleep issues:* "For you, do you want to be someone who just accepts chronic fatigue and its impact on your family and career, or do you want to be the kind of person who actively seeks solutions to optimize their health and be fully present for their life and work?"
-    *   *After uncovering pain consequences:* "Do you want to be defined by your pain, letting it dictate what you can and can't do, like many people who just live with it? Or do you want to be someone who takes proactive steps to reclaim their physical freedom and enjoy life without limitations?"
+*   **Identity Frame (for Super Patch products):**
+    *   **Salesperson (after uncovering pain/consequences):** "Many people continue to struggle with chronic issues, accepting it as part of aging or just their 'normal,' never exploring new technologies or solutions. They often look back with regret, wishing they had been more proactive. Are you someone who lets discomfort dictate your life, or are you the kind of person who embraces innovative solutions to reclaim their vitality and live life to the fullest?"
+    *   **Salesperson (for focus/productivity patches):** "You mentioned you're an ambitious professional/entrepreneur. Do you want to be like those who struggle with brain fog and low energy, letting it limit their potential, or are you the kind of driven individual who invests in cutting-edge wellness tools to optimize their mental clarity and dominate their field?"
 
-By following this process, the Super Patch salesperson guides the prospect to articulate *their own* reasons for needing the product *now*, shifting them from external objections to internal motivation driven by their deepest pains and aspirations.
+By consistently applying these methods, a Super Patch salesperson can shift the conversation from simply selling a product to helping prospects recognize the urgent need for change and persuade themselves to invest in their well-being.
+
+---
+
+## The Secret to Handling Any Sales Objection (They'll Never See It Coming)
+
+**Source:** [https://www.youtube.com/watch?v=-_sTrDwoZyM](https://www.youtube.com/watch?v=-_sTrDwoZyM)
+
+Here's a detailed analysis of the sales training video, structured to help train a direct sales team:
+
+---
+
+## VIDEO ANALYSIS
+
+### 1. MAIN TOPIC & TECHNIQUE
+
+The primary sales concept taught is **Proactive Objection Handling through Empathy and Confidence**. The technique involves identifying potential client objections upfront, validating the client's past experiences and concerns, and positioning oneself as the expert who understands their fears, thereby building trust and preempting resistance.
+
+### 2. KEY FRAMEWORKS & STEP-BY-STEP PROCESS
+
+**Framework/Technique 1: Pre-Emptive Objection Acknowledgment**
+
+*   **Step-by-step process:**
+    1.  **Gain permission to present:** Start by asking if the client understands your offerings and if they're open to learning more.
+    2.  **Anticipate and vocalize common objections:** Before the client even brings them up, list out their likely concerns based on your industry experience. Frame these as "Let me guess..." or "I imagine you might be thinking...".
+    3.  **Acknowledge past negative experiences:** Connect with their potential frustrations (e.g., high costs, slow results, lack of transparency).
+    4.  **Confirm their agreement:** Ask, "Am I right?" to get their validation.
+    5.  **Present your solution as the definitive answer:** Once rapport is built on shared understanding, they are more open to hearing how your solution addresses these very issues.
+
+*   **The psychology/principle behind why it works:**
+    *   **Empathy and Trust:** By articulating their unspoken objections, you demonstrate a deep understanding of their situation and past struggles, immediately building rapport and trust. You're showing you're not just another salesperson but someone who genuinely gets their challenges.
+    *   **Neutralizing Objections:** When you bring up an objection yourself, you strip it of its power as a surprise attack. It signals confidence and transparency, making the client less likely to use it as a defensive barrier.
+    *   **Expert Positioning:** It communicates that "this is not the first time you've done this." You've handled similar situations many times, making you appear as a knowledgeable and reliable expert who knows the landscape.
+
+**Framework/Technique 2: Empowering the Buyer to Vet Competitors**
+
+*   **Step-by-step process:**
+    1.  **Acknowledge price disparity:** Inform the client upfront that your prices will likely be higher than competitors.
+    2.  **Suggest alternative options:** Recommend that they speak with other providers who might offer lower prices.
+    3.  **Define the criteria for a confident choice:** Instruct the client on *what questions to ask* these other providers to truly evaluate their competence and effectiveness.
+    4.  **Set conditions for follow-up:** Only invite them back if they lack confidence in the cheaper option after asking the recommended questions.
+
+*   **The psychology/principle behind why it works:**
+    *   **Shifting Burden of Proof:** Instead of you proving your value against cheaper options, you're empowering the client to be an informed buyer and make competitors prove *their* value.
+    *   **Building Client Conviction:** The client discovers the differences themselves, leading to stronger, internalized belief in your value rather than just taking your word for it. They "earn" the higher price by seeing the disparity.
+    *   **Establishing Authority:** You act as a guide, educating them on what truly matters in making a decision, subtly positioning yourself as the authoritative expert. You're confident enough to let them "shop around" because you know your value will shine through.
+
+**Framework/Technique 3: Confident, Concise Communication (Avoid Over-Explaining)**
+
+*   **Step-by-step process:**
+    1.  **Speak with confidence:** Deliver statements and answers firmly.
+    2.  **Do not explain unless asked:** Resist the urge to justify prices, processes, or policies.
+    3.  **If asked for proof, provide it concisely:** Have your ammunition ready, but don't volunteer it.
+    4.  **Use brief, definitive answers for common "why" questions:** (e.g., "That's what it costs," "It's policy").
+
+*   **The psychology/principle behind why it works:**
+    *   **Perceived Value & Authority:** Over-explaining can make you seem defensive or unsure, diminishing your perceived value. Concise, confident answers project expertise and a take-it-or-leave-it attitude that often commands respect.
+    *   **Controlling the Narrative:** By not explaining, you prevent clients from finding new objections in your justifications. You keep the conversation focused on their needs and your solution's benefits, not on defending your operational costs or processes.
+    *   **Scarcity and Exclusivity:** A confident, non-explanatory stance implies that your offering is valuable enough that it doesn't *need* extensive justification, enhancing its perceived exclusivity.
+
+### 3. EXACT SCRIPTS & WORD TRACKS
+
+*   **Opening lines (Example Sales Call):**
+    *   "Chris, are you aware of what we do and how we do what we do?"
+    *   "Do you mind if I take five to ten minutes to tell you how we do what we do?"
+
+*   **Pre-emptive Objections (Example Sales Call):**
+    *   "Let me guess, you've hired sales reps in the past."
+    *   "And it costs a lot of money."
+    *   "You're paying every single month, and it's three to four to five months before you even see the results."
+    *   "And whatever results you get, there's no transparency about where those leads came from, whether they did anything or nothing, am I right?"
+
+*   **Designer's Price Acknowledgment (Coach's Script):**
+    *   "I just want to let you know something. I'm going to be two to three X of what anybody else is going to charge you."
+    *   "In fact, there's going to be another person who you're most likely going to be talking to who's going to give you a price lower."
+    *   "And if you get what you need from this person, we don't need to have a conversation, you don't need to call me."
+    *   "Only call me if you don't feel confident that they're going to do a good job for you."
+
+*   **Discovery questions (for client to ask competitors, Coach's Script):**
+    *   "What evidence do you have that what you're saying has worked and that you've done this before?"
+
+*   **Objection responses (Exact wording):**
+    *   **Client:** "Why is it cost this much?"
+    *   **Salesperson:** "That's what it costs." (or) "That's what my customers pay me."
+    *   **Client:** "Why is it like that?"
+    *   **Salesperson:** "Policy." (or) "We don't do that."
+
+### 4. OBJECTION HANDLING
+
+*   **Common objections mentioned:**
+    *   "It costs too much money" / "Always going with the cheaper option"
+    *   "It's going to take too long (to see results)"
+    *   "There's no transparency (on results/leads)"
+    *   "I'm not even sure what you do works / It's kind of all magic" (Lack of proof/efficacy)
+
+*   **Recommended responses/strategies (exact wording if provided):**
+
+    *   **Strategy for Cost Objection (using "Empowering the Buyer"):**
+        *   **Acknowledge upfront:** "I just want to let you know something. I'm going to be two to three X of what anybody else is going to charge you."
+        *   **Direct to competitor:** "In fact, there's going to be another person who you're most likely going to be talking to who's going to give you a price lower."
+        *   **Set confidence as the deciding factor:** "Only call me if you don't feel confident that they're going to do a good job for you."
+        *   **Equip them with vetting questions:** "I want you to ask anybody that you talk to these three questions so that you are an informed buyer: What evidence do you have that what you're saying has worked and that you've done this before?"
+        *   **Direct response (when asked why *your* price is high):** "That's what it costs." or "That's what my customers pay me."
+
+    *   **Strategy for Time, Transparency, Efficacy Objections (using "Pre-Emptive Acknowledgment"):**
+        *   "Let me guess... you've hired sales reps in the past."
+        *   "And it costs a lot of money, you're paying every single month, and it's three to four to five months before you even see the results."
+        *   "And whatever results you get, there's no transparency about where those leads came from, whether they did anything or nothing, am I right?"
+
+*   **The reframe or psychology behind each response:**
+    *   **Cost:** Reframes the decision from "price" to "confidence in results." It puts the onus on the cheaper competitor to prove their worth, making the client appreciate the expert's confidence and proven track record. The direct answer "That's what it costs" projects unwavering value.
+    *   **Time, Transparency, Efficacy:** By voicing these common frustrations, the salesperson shows they understand the client's pain points from past experiences, immediately establishing empathy and trust. This pre-empts the client from having to state these objections, making them feel heard and understood before a solution is even offered.
+
+### 5. KEY TAKEAWAYS
+
+1.  **Know your client's objections before they speak them:** Research and anticipate the common hurdles so you can address them proactively.
+2.  **Pre-empt objections with empathy:** Start by verbalizing their likely fears and negative past experiences to build immediate trust and rapport.
+3.  **Empower clients to vet competitors:** Give them specific, powerful questions to ask other providers, positioning yourself as the trusted guide who ensures they make an informed decision, even if it's not with you (initially).
+4.  **Be confident and concise:** Avoid over-explaining or justifying your prices/policies unless explicitly asked for specific proof. Let your authority and the perceived value of your offering speak for itself.
+5.  **Only provide proof when asked:** Don't volunteer case studies or testimonials. Save that "ammunition" for when the client specifically requests evidence, making it more impactful.
+
+### 6. SUPER PATCH APPLICATION
+
+These techniques can be incredibly powerful for selling Super Patch wellness products in a direct sales/network marketing context, where skepticism about new health technology and comparisons to conventional methods (pills, creams, therapy) are common.
+
+1.  **Pre-emptive Objection Acknowledgment for Super Patch:**
+    *   **Salesperson Opening:** "I understand you might be curious about Super Patch. Before I tell you how they work, I imagine you might be thinking things like..."
+    *   **Anticipate Objections:** "Let me guess, you might be thinking 'Do these patches *really* work?', or 'How can a sticker possibly help with pain or sleep?', or 'Is this just another gimmick like so many other things out there?', or even 'Is this going to be super expensive for just a patch?' Am I right?"
+    *   **Psychology:** This immediately validates their skepticism, showing you understand their potential doubts, making them feel heard and reducing their guard.
+
+2.  **Empowering the Buyer to Vet Competitors (Alternative Pain/Sleep Solutions):**
+    *   **Acknowledge Alternatives:** "You know, Super Patch might seem like a unique solution, and it is. You could certainly continue with your usual methods for pain relief or sleep, like pills, creams, or even other supplements. Our patches might look simpler, but they work differently."
+    *   **Equip with Vetting Questions:** "When you're comparing, I want you to ask yourself a few things about those other options:
+        *   'What evidence do I have that these methods are truly safe for long-term use without side effects?'
+        *   'How quickly and consistently do they provide noticeable relief or improvement?'
+        *   'Are they addressing the root cause or just masking symptoms?'
+        *   'Am I fully confident in what I'm currently using to give me the results I truly want?'"
+    *   **Set Conditions:** "If you find that your current methods aren't giving you the confidence you need on those points, then let's talk more about how Super Patch offers a different, non-invasive, drug-free approach with a clear mechanism of action."
+    *   **Psychology:** This shifts the focus from "patches vs. pills" to "effective, safe, long-term solutions vs. temporary fixes." The client starts to question their current choices, making them more open to Super Patch as a potentially superior alternative.
+
+3.  **Confident, Concise Communication for Super Patch:**
+    *   **Objection: "It's too expensive for just a patch."**
+        *   **Response:** "That's what it costs for this patented, drug-free technology." (or) "My satisfied customers find the investment worth it for the consistent relief and improved well-being."
+        *   **Avoid:** Don't launch into explaining R&D, manufacturing costs, or the complexity of the vibratory technology unless *specifically* asked for scientific details.
+    *   **Objection: "How can a sticker possibly work?"**
+        *   **Response:** "Super Patch uses unique vibratory technology that interacts with your body's nervous system. It's a non-invasive way to support your body's natural functions."
+        *   **Avoid:** Don't immediately delve into quantum physics or neuroscience jargon unless the client expresses deep scientific curiosity. Keep it high-level and confident.
+    *   **Objection: "Where's the proof?"**
+        *   **Response (if not asked for proof initially):** "We have numerous testimonials and studies supporting the efficacy of Super Patch. Which specific area are you most interested in seeing evidence for?" (Then provide targeted proof, e.g., link to a specific study or testimonial video.)
+        *   **Psychology:** This projects authority and avoids overwhelming the client with information they haven't asked for. It maintains the "expert" stance that you have the answers, but will only provide what's relevant to their specific query.
+
+By implementing these techniques, direct sales teams for Super Patch can build stronger trust, address skepticism head-on, and effectively differentiate their product from conventional solutions, leading to higher conversion rates and more confident customers.
 
 ---
 

@@ -1,50 +1,25 @@
 {
-  "processed_at": "2025-12-22T02:43:59.110093",
-  "total_analyzed": 7,
+  "processed_at": "2025-12-22T02:48:27.325247",
+  "total_analyzed": 2,
   "total_errors": 1,
-  "total_skipped": 2,
+  "total_skipped": 12,
   "model": "gemini-2.5-flash",
   "videos": [
     {
-      "title": "The BEST Tips for Professional Sales People - Grant Cardone",
-      "category": "Famous Sales Trainers",
-      "url": "https://www.youtube.com/watch?v=RXreDCyZe64"
+      "title": "The Best Online Course Platforms Compared (2025)",
+      "category": "Playlists & Full Courses",
+      "url": "https://www.youtube.com/watch?v=vwqw6l6VEnk"
     },
     {
-      "title": "Grant Cardone Coaching His Sales Team LIVE!",
-      "category": "Famous Sales Trainers",
-      "url": "https://www.youtube.com/watch?v=XEdsdikkVCo&vl=en"
-    },
-    {
-      "title": "Mastering Sales | Jordan Belfort Part One",
-      "category": "Famous Sales Trainers",
-      "url": "https://www.youtube.com/watch?v=G_Dw1wHtfE0"
-    },
-    {
-      "title": "Jordan Belfort Reveals How To Sell Anything To Anyone At Anytime",
-      "category": "Famous Sales Trainers",
-      "url": "https://www.youtube.com/watch?v=3ZHQFacAzRU"
-    },
-    {
-      "title": "How to Persist, Be Patient and Succeed | Jordan Belfort | Goalcast",
-      "category": "Famous Sales Trainers",
-      "url": "https://www.youtube.com/watch?v=PtJXC4EvLTM"
-    },
-    {
-      "title": "Brian Tracy: Self Confidence is Key | 5 Minute Sales Training",
-      "category": "Famous Sales Trainers",
-      "url": "https://www.youtube.com/watch?v=grSnCHhKhLE"
-    },
-    {
-      "title": "Brian Tracy on Sales - Nordic Business Forum 2012",
-      "category": "Famous Sales Trainers",
-      "url": "https://www.youtube.com/watch?v=Ph6H915jijM"
+      "title": "Full 18-Minute Cold Calling Course (For SaaS Sales)",
+      "category": "Playlists & Full Courses",
+      "url": "https://www.youtube.com/watch?v=m2z1tgfv8Kc"
     }
   ],
   "errors": [
     {
-      "title": "Advanced Selling In Action, Brian Tracy",
-      "url": "https://www.youtube.com/watch?v=A_faq9svxXE",
+      "title": "The Ultimate Sales Training for 2025 [Full Course]",
+      "url": "https://www.youtube.com/watch?v=StVqS0jD7Ls",
       "error": "400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'The input token count exceeds the maximum number of tokens allowed 1048576.', 'status': 'INVALID_ARGUMENT'}}"
     }
   ]
