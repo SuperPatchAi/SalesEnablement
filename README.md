@@ -191,9 +191,36 @@ Each product script will include:
 | Tool | Purpose |
 |------|---------|
 | **Firecrawl** | Deep research and web scraping |
+| **Google Gemini** | Video analysis and framework extraction |
 | **Cursor AI** | Code and content generation |
 | **GitHub** | Version control and collaboration |
 | **MCP Servers** | AI tool integrations |
+
+### Video Analysis Pipeline
+
+We use Google Gemini's multimodal capabilities to analyze YouTube videos directly:
+
+```bash
+# Setup
+pip install google-generativeai
+export GEMINI_API_KEY="your-key"
+
+# Analyze single video
+python scripts/gemini_video_analyzer.py "https://youtube.com/watch?v=VIDEO_ID"
+
+# Analyze by category
+python scripts/gemini_video_analyzer.py --json youtube_videos.json --category objection-handling
+
+# Compile all analyses into frameworks document
+python scripts/gemini_video_analyzer.py --compile
+```
+
+**What Gemini Extracts:**
+- Main sales concepts and techniques
+- Step-by-step frameworks
+- Exact scripts and word tracks
+- Objection handling responses
+- Super Patch-specific applications
 
 ---
 
