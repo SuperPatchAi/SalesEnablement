@@ -1,0 +1,20 @@
+{
+  "processed_at": "2025-12-22T01:20:59.867929",
+  "total_analyzed": 2,
+  "total_errors": 0,
+  "total_skipped": 0,
+  "model": "gemini-2.5-flash",
+  "videos": [
+    {
+      "title": "The Secret to Direct Sales Success (It's not selling!)",
+      "category": "Direct Sales & Network Marketing",
+      "url": "https://www.youtube.com/watch?v=quAd1lzUgA0"
+    },
+    {
+      "title": "Direct Selling Tips and Tricks",
+      "category": "Direct Sales & Network Marketing",
+      "url": "https://www.youtube.com/watch?v=rzdGWfpuOq4"
+    }
+  ],
+  "errors": []
+}
