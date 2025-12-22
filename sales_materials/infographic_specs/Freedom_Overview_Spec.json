@@ -1,0 +1,129 @@
+{
+  "metadata": {
+    "product": "Freedom",
+    "category": "Aches & Pains",
+    "tagline": "Take care of those minor aches and pains",
+    "generated": "2025-12-22T03:47:53.848365",
+    "version": "2.0"
+  },
+  "design_system": {
+    "colors": {
+      "primary": "#2E7D32",
+      "secondary": "#81C784",
+      "accent": "#FF5722",
+      "background": "#E8F5E9",
+      "text": "#1B5E20"
+    },
+    "typography": {
+      "headline": "Bold sans-serif, 48pt, white on primary color",
+      "subheadline": "Semi-bold, 24pt, primary color",
+      "body": "Regular, 14pt, text color",
+      "step_numbers": "Extra bold, 36pt, accent color",
+      "cta": "Bold, 18pt, white on accent"
+    },
+    "spacing": {
+      "section_gap": "40px",
+      "element_gap": "20px",
+      "padding": "30px"
+    }
+  },
+  "layout": {
+    "type": "vertical_flow",
+    "sections": [
+      {
+        "name": "header",
+        "height": "15%",
+        "content": {
+          "logo_area": "Super Patch logo (top left)",
+          "product_name": "Freedom",
+          "tagline": "Take care of those minor aches and pains"
+        }
+      },
+      {
+        "name": "problem_section",
+        "height": "20%",
+        "content": {
+          "title": "THE CHALLENGE",
+          "pain_points": [
+            "Struggling with aches & pains issues?",
+            "Tired of temporary solutions?",
+            "Looking for drug-free alternatives?"
+          ],
+          "icon": "frustrated_person_icon"
+        }
+      },
+      {
+        "name": "solution_section",
+        "height": "25%",
+        "content": {
+          "title": "THE FREEDOM SOLUTION",
+          "benefits": [
+            "Pain relief",
+            "Drug-free solution",
+            "Non-invasive"
+          ],
+          "key_differentiator": "100% Drug-Free \u2022 Non-Invasive \u2022 Vibrotactile Technology"
+        }
+      },
+      {
+        "name": "process_section",
+        "height": "30%",
+        "content": {
+          "title": "5 SIMPLE STEPS TO SUCCESS",
+          "steps": [
+            {
+              "number": 1,
+              "title": "CONNECT",
+              "description": "Start with genuine rapport",
+              "icon": "handshake"
+            },
+            {
+              "number": 2,
+              "title": "DISCOVER",
+              "description": "Uncover their aches & pains challenges",
+              "icon": "magnifying_glass"
+            },
+            {
+              "number": 3,
+              "title": "PRESENT",
+              "description": "Show how Freedom helps",
+              "icon": "presentation"
+            },
+            {
+              "number": 4,
+              "title": "HANDLE",
+              "description": "Address concerns confidently",
+              "icon": "shield_check"
+            },
+            {
+              "number": 5,
+              "title": "CLOSE",
+              "description": "Ask for the commitment",
+              "icon": "trophy"
+            }
+          ],
+          "layout": "horizontal_flow_with_arrows"
+        }
+      },
+      {
+        "name": "cta_section",
+        "height": "10%",
+        "content": {
+          "cta_text": "START SELLING TODAY",
+          "supporting_text": "Help customers experience pain relief"
+        }
+      }
+    ]
+  },
+  "visual_elements": {
+    "icons": "modern flat icons with rounded corners",
+    "arrows": "curved flow arrows between steps",
+    "shapes": "rounded rectangles, soft shadows",
+    "imagery": "abstract wellness imagery, no photorealistic people"
+  },
+  "accessibility": {
+    "contrast_ratio": "minimum 4.5:1",
+    "color_blindness": "use patterns in addition to color",
+    "text_sizing": "minimum 12pt for all body text"
+  }
+}

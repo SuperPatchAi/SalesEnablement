@@ -1,0 +1,4279 @@
+{
+  "freedom": {
+    "overview": {
+      "metadata": {
+        "product": "Freedom",
+        "category": "Aches & Pains",
+        "tagline": "Take care of those minor aches and pains",
+        "generated": "2025-12-22T03:47:53.848365",
+        "version": "2.0"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#2E7D32",
+          "secondary": "#81C784",
+          "accent": "#FF5722",
+          "background": "#E8F5E9",
+          "text": "#1B5E20"
+        },
+        "typography": {
+          "headline": "Bold sans-serif, 48pt, white on primary color",
+          "subheadline": "Semi-bold, 24pt, primary color",
+          "body": "Regular, 14pt, text color",
+          "step_numbers": "Extra bold, 36pt, accent color",
+          "cta": "Bold, 18pt, white on accent"
+        },
+        "spacing": {
+          "section_gap": "40px",
+          "element_gap": "20px",
+          "padding": "30px"
+        }
+      },
+      "layout": {
+        "type": "vertical_flow",
+        "sections": [
+          {
+            "name": "header",
+            "height": "15%",
+            "content": {
+              "logo_area": "Super Patch logo (top left)",
+              "product_name": "Freedom",
+              "tagline": "Take care of those minor aches and pains"
+            }
+          },
+          {
+            "name": "problem_section",
+            "height": "20%",
+            "content": {
+              "title": "THE CHALLENGE",
+              "pain_points": [
+                "Struggling with aches & pains issues?",
+                "Tired of temporary solutions?",
+                "Looking for drug-free alternatives?"
+              ],
+              "icon": "frustrated_person_icon"
+            }
+          },
+          {
+            "name": "solution_section",
+            "height": "25%",
+            "content": {
+              "title": "THE FREEDOM SOLUTION",
+              "benefits": [
+                "Pain relief",
+                "Drug-free solution",
+                "Non-invasive"
+              ],
+              "key_differentiator": "100% Drug-Free \u2022 Non-Invasive \u2022 Vibrotactile Technology"
+            }
+          },
+          {
+            "name": "process_section",
+            "height": "30%",
+            "content": {
+              "title": "5 SIMPLE STEPS TO SUCCESS",
+              "steps": [
+                {
+                  "number": 1,
+                  "title": "CONNECT",
+                  "description": "Start with genuine rapport",
+                  "icon": "handshake"
+                },
+                {
+                  "number": 2,
+                  "title": "DISCOVER",
+                  "description": "Uncover their aches & pains challenges",
+                  "icon": "magnifying_glass"
+                },
+                {
+                  "number": 3,
+                  "title": "PRESENT",
+                  "description": "Show how Freedom helps",
+                  "icon": "presentation"
+                },
+                {
+                  "number": 4,
+                  "title": "HANDLE",
+                  "description": "Address concerns confidently",
+                  "icon": "shield_check"
+                },
+                {
+                  "number": 5,
+                  "title": "CLOSE",
+                  "description": "Ask for the commitment",
+                  "icon": "trophy"
+                }
+              ],
+              "layout": "horizontal_flow_with_arrows"
+            }
+          },
+          {
+            "name": "cta_section",
+            "height": "10%",
+            "content": {
+              "cta_text": "START SELLING TODAY",
+              "supporting_text": "Help customers experience pain relief"
+            }
+          }
+        ]
+      },
+      "visual_elements": {
+        "icons": "modern flat icons with rounded corners",
+        "arrows": "curved flow arrows between steps",
+        "shapes": "rounded rectangles, soft shadows",
+        "imagery": "abstract wellness imagery, no photorealistic people"
+      },
+      "accessibility": {
+        "contrast_ratio": "minimum 4.5:1",
+        "color_blindness": "use patterns in addition to color",
+        "text_sizing": "minimum 12pt for all body text"
+      }
+    },
+    "flowchart": {
+      "metadata": {
+        "product": "Freedom",
+        "type": "sales_process_flowchart",
+        "purpose": "Step-by-step sales conversation guide"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#2E7D32",
+          "secondary": "#81C784",
+          "accent": "#FF5722",
+          "background": "#E8F5E9",
+          "text": "#1B5E20"
+        },
+        "style": "modern flowchart with decision branches"
+      },
+      "flowchart": {
+        "orientation": "top_to_bottom",
+        "nodes": [
+          {
+            "id": "start",
+            "type": "start_node",
+            "label": "START CONVERSATION",
+            "shape": "rounded_rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "rapport",
+            "type": "action",
+            "label": "BUILD RAPPORT",
+            "description": "Smile, use their name, find common ground",
+            "script": "Hi! I love your energy today. How's your week going?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "discover",
+            "type": "action",
+            "label": "ASK DISCOVERY QUESTIONS",
+            "description": "Uncover aches & pains pain points",
+            "script": "Have you ever struggled with aches & pains challenges?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_interested",
+            "type": "decision",
+            "label": "INTERESTED?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "yes": "present",
+              "no": "handle_not_interested"
+            }
+          },
+          {
+            "id": "handle_not_interested",
+            "type": "objection",
+            "label": "HANDLE: 'NOT INTERESTED'",
+            "script": "I understand. Just curious - what would need to be different for this to be worth exploring?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "present",
+            "type": "action",
+            "label": "PRESENT FREEDOM",
+            "description": "Share Pain relief, Drug-free solution",
+            "script": "The Freedom patch uses vibrotactile technology to help with pain relief...",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_objection",
+            "type": "decision",
+            "label": "ANY OBJECTIONS?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "price": "handle_price",
+              "think": "handle_think",
+              "spouse": "handle_spouse",
+              "none": "close"
+            }
+          },
+          {
+            "id": "handle_price",
+            "type": "objection",
+            "label": "HANDLE: 'TOO EXPENSIVE'",
+            "script": "I understand cost is important. What criteria beyond price matters most to you?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_think",
+            "type": "objection",
+            "label": "HANDLE: 'NEED TO THINK'",
+            "script": "Of course! What specific questions would help you decide?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_spouse",
+            "type": "objection",
+            "label": "HANDLE: 'ASK SPOUSE'",
+            "script": "Great idea! What concerns might they have that we could address now?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "close",
+            "type": "action",
+            "label": "CLOSE THE SALE",
+            "description": "Use assumptive or alternative close",
+            "script": "Would you like to start with a single pack or save with the bundle?",
+            "shape": "rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "success",
+            "type": "end_node",
+            "label": "SUCCESS! \ud83c\udf89",
+            "description": "Schedule follow-up, ask for referrals",
+            "shape": "rounded_rectangle",
+            "color": "accent"
+          }
+        ],
+        "connections": [
+          {
+            "from": "start",
+            "to": "rapport"
+          },
+          {
+            "from": "rapport",
+            "to": "discover"
+          },
+          {
+            "from": "discover",
+            "to": "decision_interested"
+          },
+          {
+            "from": "decision_interested",
+            "to": "present",
+            "label": "YES"
+          },
+          {
+            "from": "decision_interested",
+            "to": "handle_not_interested",
+            "label": "NO"
+          },
+          {
+            "from": "handle_not_interested",
+            "to": "discover",
+            "label": "RE-ENGAGE"
+          },
+          {
+            "from": "present",
+            "to": "decision_objection"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_price",
+            "label": "PRICE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_think",
+            "label": "THINK"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_spouse",
+            "label": "SPOUSE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "close",
+            "label": "NONE"
+          },
+          {
+            "from": "handle_price",
+            "to": "close"
+          },
+          {
+            "from": "handle_think",
+            "to": "close"
+          },
+          {
+            "from": "handle_spouse",
+            "to": "close"
+          },
+          {
+            "from": "close",
+            "to": "success"
+          }
+        ]
+      }
+    }
+  },
+  "liberty": {
+    "overview": {
+      "metadata": {
+        "product": "Liberty",
+        "category": "Mobility",
+        "tagline": "Healthy living relies on better balance and mobility",
+        "generated": "2025-12-22T03:48:39.589898",
+        "version": "2.0"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#00897B",
+          "secondary": "#80CBC4",
+          "accent": "#FF7043",
+          "background": "#E0F2F1",
+          "text": "#004D40"
+        },
+        "typography": {
+          "headline": "Bold sans-serif, 48pt, white on primary color",
+          "subheadline": "Semi-bold, 24pt, primary color",
+          "body": "Regular, 14pt, text color",
+          "step_numbers": "Extra bold, 36pt, accent color",
+          "cta": "Bold, 18pt, white on accent"
+        },
+        "spacing": {
+          "section_gap": "40px",
+          "element_gap": "20px",
+          "padding": "30px"
+        }
+      },
+      "layout": {
+        "type": "vertical_flow",
+        "sections": [
+          {
+            "name": "header",
+            "height": "15%",
+            "content": {
+              "logo_area": "Super Patch logo (top left)",
+              "product_name": "Liberty",
+              "tagline": "Healthy living relies on better balance and mobility"
+            }
+          },
+          {
+            "name": "problem_section",
+            "height": "20%",
+            "content": {
+              "title": "THE CHALLENGE",
+              "pain_points": [
+                "Struggling with mobility issues?",
+                "Tired of temporary solutions?",
+                "Looking for drug-free alternatives?"
+              ],
+              "icon": "frustrated_person_icon"
+            }
+          },
+          {
+            "name": "solution_section",
+            "height": "25%",
+            "content": {
+              "title": "THE LIBERTY SOLUTION",
+              "benefits": [
+                "Improved balance",
+                "Better mobility",
+                "Enhanced stability"
+              ],
+              "key_differentiator": "100% Drug-Free \u2022 Non-Invasive \u2022 Vibrotactile Technology"
+            }
+          },
+          {
+            "name": "process_section",
+            "height": "30%",
+            "content": {
+              "title": "5 SIMPLE STEPS TO SUCCESS",
+              "steps": [
+                {
+                  "number": 1,
+                  "title": "CONNECT",
+                  "description": "Start with genuine rapport",
+                  "icon": "handshake"
+                },
+                {
+                  "number": 2,
+                  "title": "DISCOVER",
+                  "description": "Uncover their mobility challenges",
+                  "icon": "magnifying_glass"
+                },
+                {
+                  "number": 3,
+                  "title": "PRESENT",
+                  "description": "Show how Liberty helps",
+                  "icon": "presentation"
+                },
+                {
+                  "number": 4,
+                  "title": "HANDLE",
+                  "description": "Address concerns confidently",
+                  "icon": "shield_check"
+                },
+                {
+                  "number": 5,
+                  "title": "CLOSE",
+                  "description": "Ask for the commitment",
+                  "icon": "trophy"
+                }
+              ],
+              "layout": "horizontal_flow_with_arrows"
+            }
+          },
+          {
+            "name": "cta_section",
+            "height": "10%",
+            "content": {
+              "cta_text": "START SELLING TODAY",
+              "supporting_text": "Help customers experience improved balance"
+            }
+          }
+        ]
+      },
+      "visual_elements": {
+        "icons": "modern flat icons with rounded corners",
+        "arrows": "curved flow arrows between steps",
+        "shapes": "rounded rectangles, soft shadows",
+        "imagery": "abstract wellness imagery, no photorealistic people"
+      },
+      "accessibility": {
+        "contrast_ratio": "minimum 4.5:1",
+        "color_blindness": "use patterns in addition to color",
+        "text_sizing": "minimum 12pt for all body text"
+      }
+    },
+    "flowchart": {
+      "metadata": {
+        "product": "Liberty",
+        "type": "sales_process_flowchart",
+        "purpose": "Step-by-step sales conversation guide"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#00897B",
+          "secondary": "#80CBC4",
+          "accent": "#FF7043",
+          "background": "#E0F2F1",
+          "text": "#004D40"
+        },
+        "style": "modern flowchart with decision branches"
+      },
+      "flowchart": {
+        "orientation": "top_to_bottom",
+        "nodes": [
+          {
+            "id": "start",
+            "type": "start_node",
+            "label": "START CONVERSATION",
+            "shape": "rounded_rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "rapport",
+            "type": "action",
+            "label": "BUILD RAPPORT",
+            "description": "Smile, use their name, find common ground",
+            "script": "Hi! I love your energy today. How's your week going?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "discover",
+            "type": "action",
+            "label": "ASK DISCOVERY QUESTIONS",
+            "description": "Uncover mobility pain points",
+            "script": "Have you ever struggled with mobility challenges?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_interested",
+            "type": "decision",
+            "label": "INTERESTED?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "yes": "present",
+              "no": "handle_not_interested"
+            }
+          },
+          {
+            "id": "handle_not_interested",
+            "type": "objection",
+            "label": "HANDLE: 'NOT INTERESTED'",
+            "script": "I understand. Just curious - what would need to be different for this to be worth exploring?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "present",
+            "type": "action",
+            "label": "PRESENT LIBERTY",
+            "description": "Share Improved balance, Better mobility",
+            "script": "The Liberty patch uses vibrotactile technology to help with improved balance...",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_objection",
+            "type": "decision",
+            "label": "ANY OBJECTIONS?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "price": "handle_price",
+              "think": "handle_think",
+              "spouse": "handle_spouse",
+              "none": "close"
+            }
+          },
+          {
+            "id": "handle_price",
+            "type": "objection",
+            "label": "HANDLE: 'TOO EXPENSIVE'",
+            "script": "I understand cost is important. What criteria beyond price matters most to you?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_think",
+            "type": "objection",
+            "label": "HANDLE: 'NEED TO THINK'",
+            "script": "Of course! What specific questions would help you decide?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_spouse",
+            "type": "objection",
+            "label": "HANDLE: 'ASK SPOUSE'",
+            "script": "Great idea! What concerns might they have that we could address now?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "close",
+            "type": "action",
+            "label": "CLOSE THE SALE",
+            "description": "Use assumptive or alternative close",
+            "script": "Would you like to start with a single pack or save with the bundle?",
+            "shape": "rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "success",
+            "type": "end_node",
+            "label": "SUCCESS! \ud83c\udf89",
+            "description": "Schedule follow-up, ask for referrals",
+            "shape": "rounded_rectangle",
+            "color": "accent"
+          }
+        ],
+        "connections": [
+          {
+            "from": "start",
+            "to": "rapport"
+          },
+          {
+            "from": "rapport",
+            "to": "discover"
+          },
+          {
+            "from": "discover",
+            "to": "decision_interested"
+          },
+          {
+            "from": "decision_interested",
+            "to": "present",
+            "label": "YES"
+          },
+          {
+            "from": "decision_interested",
+            "to": "handle_not_interested",
+            "label": "NO"
+          },
+          {
+            "from": "handle_not_interested",
+            "to": "discover",
+            "label": "RE-ENGAGE"
+          },
+          {
+            "from": "present",
+            "to": "decision_objection"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_price",
+            "label": "PRICE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_think",
+            "label": "THINK"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_spouse",
+            "label": "SPOUSE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "close",
+            "label": "NONE"
+          },
+          {
+            "from": "handle_price",
+            "to": "close"
+          },
+          {
+            "from": "handle_think",
+            "to": "close"
+          },
+          {
+            "from": "handle_spouse",
+            "to": "close"
+          },
+          {
+            "from": "close",
+            "to": "success"
+          }
+        ]
+      }
+    }
+  },
+  "rem": {
+    "overview": {
+      "metadata": {
+        "product": "REM",
+        "category": "Sleep",
+        "tagline": "Better, deeper sleep is the foundation for healthy living",
+        "generated": "2025-12-22T03:49:27.985720",
+        "version": "2.0"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#1565C0",
+          "secondary": "#64B5F6",
+          "accent": "#7E57C2",
+          "background": "#E3F2FD",
+          "text": "#0D47A1"
+        },
+        "typography": {
+          "headline": "Bold sans-serif, 48pt, white on primary color",
+          "subheadline": "Semi-bold, 24pt, primary color",
+          "body": "Regular, 14pt, text color",
+          "step_numbers": "Extra bold, 36pt, accent color",
+          "cta": "Bold, 18pt, white on accent"
+        },
+        "spacing": {
+          "section_gap": "40px",
+          "element_gap": "20px",
+          "padding": "30px"
+        }
+      },
+      "layout": {
+        "type": "vertical_flow",
+        "sections": [
+          {
+            "name": "header",
+            "height": "15%",
+            "content": {
+              "logo_area": "Super Patch logo (top left)",
+              "product_name": "REM",
+              "tagline": "Better, deeper sleep is the foundation for healthy living"
+            }
+          },
+          {
+            "name": "problem_section",
+            "height": "20%",
+            "content": {
+              "title": "THE CHALLENGE",
+              "pain_points": [
+                "Struggling with sleep issues?",
+                "Tired of temporary solutions?",
+                "Looking for drug-free alternatives?"
+              ],
+              "icon": "frustrated_person_icon"
+            }
+          },
+          {
+            "name": "solution_section",
+            "height": "25%",
+            "content": {
+              "title": "THE REM SOLUTION",
+              "benefits": [
+                "Deeper sleep",
+                "Better rest",
+                "Wake refreshed"
+              ],
+              "key_differentiator": "100% Drug-Free \u2022 Non-Invasive \u2022 Vibrotactile Technology"
+            }
+          },
+          {
+            "name": "process_section",
+            "height": "30%",
+            "content": {
+              "title": "5 SIMPLE STEPS TO SUCCESS",
+              "steps": [
+                {
+                  "number": 1,
+                  "title": "CONNECT",
+                  "description": "Start with genuine rapport",
+                  "icon": "handshake"
+                },
+                {
+                  "number": 2,
+                  "title": "DISCOVER",
+                  "description": "Uncover their sleep challenges",
+                  "icon": "magnifying_glass"
+                },
+                {
+                  "number": 3,
+                  "title": "PRESENT",
+                  "description": "Show how REM helps",
+                  "icon": "presentation"
+                },
+                {
+                  "number": 4,
+                  "title": "HANDLE",
+                  "description": "Address concerns confidently",
+                  "icon": "shield_check"
+                },
+                {
+                  "number": 5,
+                  "title": "CLOSE",
+                  "description": "Ask for the commitment",
+                  "icon": "trophy"
+                }
+              ],
+              "layout": "horizontal_flow_with_arrows"
+            }
+          },
+          {
+            "name": "cta_section",
+            "height": "10%",
+            "content": {
+              "cta_text": "START SELLING TODAY",
+              "supporting_text": "Help customers experience deeper sleep"
+            }
+          }
+        ]
+      },
+      "visual_elements": {
+        "icons": "modern flat icons with rounded corners",
+        "arrows": "curved flow arrows between steps",
+        "shapes": "rounded rectangles, soft shadows",
+        "imagery": "abstract wellness imagery, no photorealistic people"
+      },
+      "accessibility": {
+        "contrast_ratio": "minimum 4.5:1",
+        "color_blindness": "use patterns in addition to color",
+        "text_sizing": "minimum 12pt for all body text"
+      }
+    },
+    "flowchart": {
+      "metadata": {
+        "product": "REM",
+        "type": "sales_process_flowchart",
+        "purpose": "Step-by-step sales conversation guide"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#1565C0",
+          "secondary": "#64B5F6",
+          "accent": "#7E57C2",
+          "background": "#E3F2FD",
+          "text": "#0D47A1"
+        },
+        "style": "modern flowchart with decision branches"
+      },
+      "flowchart": {
+        "orientation": "top_to_bottom",
+        "nodes": [
+          {
+            "id": "start",
+            "type": "start_node",
+            "label": "START CONVERSATION",
+            "shape": "rounded_rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "rapport",
+            "type": "action",
+            "label": "BUILD RAPPORT",
+            "description": "Smile, use their name, find common ground",
+            "script": "Hi! I love your energy today. How's your week going?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "discover",
+            "type": "action",
+            "label": "ASK DISCOVERY QUESTIONS",
+            "description": "Uncover sleep pain points",
+            "script": "Have you ever struggled with sleep challenges?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_interested",
+            "type": "decision",
+            "label": "INTERESTED?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "yes": "present",
+              "no": "handle_not_interested"
+            }
+          },
+          {
+            "id": "handle_not_interested",
+            "type": "objection",
+            "label": "HANDLE: 'NOT INTERESTED'",
+            "script": "I understand. Just curious - what would need to be different for this to be worth exploring?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "present",
+            "type": "action",
+            "label": "PRESENT REM",
+            "description": "Share Deeper sleep, Better rest",
+            "script": "The REM patch uses vibrotactile technology to help with deeper sleep...",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_objection",
+            "type": "decision",
+            "label": "ANY OBJECTIONS?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "price": "handle_price",
+              "think": "handle_think",
+              "spouse": "handle_spouse",
+              "none": "close"
+            }
+          },
+          {
+            "id": "handle_price",
+            "type": "objection",
+            "label": "HANDLE: 'TOO EXPENSIVE'",
+            "script": "I understand cost is important. What criteria beyond price matters most to you?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_think",
+            "type": "objection",
+            "label": "HANDLE: 'NEED TO THINK'",
+            "script": "Of course! What specific questions would help you decide?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_spouse",
+            "type": "objection",
+            "label": "HANDLE: 'ASK SPOUSE'",
+            "script": "Great idea! What concerns might they have that we could address now?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "close",
+            "type": "action",
+            "label": "CLOSE THE SALE",
+            "description": "Use assumptive or alternative close",
+            "script": "Would you like to start with a single pack or save with the bundle?",
+            "shape": "rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "success",
+            "type": "end_node",
+            "label": "SUCCESS! \ud83c\udf89",
+            "description": "Schedule follow-up, ask for referrals",
+            "shape": "rounded_rectangle",
+            "color": "accent"
+          }
+        ],
+        "connections": [
+          {
+            "from": "start",
+            "to": "rapport"
+          },
+          {
+            "from": "rapport",
+            "to": "discover"
+          },
+          {
+            "from": "discover",
+            "to": "decision_interested"
+          },
+          {
+            "from": "decision_interested",
+            "to": "present",
+            "label": "YES"
+          },
+          {
+            "from": "decision_interested",
+            "to": "handle_not_interested",
+            "label": "NO"
+          },
+          {
+            "from": "handle_not_interested",
+            "to": "discover",
+            "label": "RE-ENGAGE"
+          },
+          {
+            "from": "present",
+            "to": "decision_objection"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_price",
+            "label": "PRICE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_think",
+            "label": "THINK"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_spouse",
+            "label": "SPOUSE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "close",
+            "label": "NONE"
+          },
+          {
+            "from": "handle_price",
+            "to": "close"
+          },
+          {
+            "from": "handle_think",
+            "to": "close"
+          },
+          {
+            "from": "handle_spouse",
+            "to": "close"
+          },
+          {
+            "from": "close",
+            "to": "success"
+          }
+        ]
+      }
+    }
+  },
+  "victory": {
+    "overview": {
+      "metadata": {
+        "product": "Victory",
+        "category": "Athletic Performance",
+        "tagline": "Get stronger, faster, and more agile. Smash your personal bests",
+        "generated": "2025-12-22T03:50:06.577269",
+        "version": "2.0"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#D32F2F",
+          "secondary": "#FF8A80",
+          "accent": "#FFD600",
+          "background": "#FFEBEE",
+          "text": "#B71C1C"
+        },
+        "typography": {
+          "headline": "Bold sans-serif, 48pt, white on primary color",
+          "subheadline": "Semi-bold, 24pt, primary color",
+          "body": "Regular, 14pt, text color",
+          "step_numbers": "Extra bold, 36pt, accent color",
+          "cta": "Bold, 18pt, white on accent"
+        },
+        "spacing": {
+          "section_gap": "40px",
+          "element_gap": "20px",
+          "padding": "30px"
+        }
+      },
+      "layout": {
+        "type": "vertical_flow",
+        "sections": [
+          {
+            "name": "header",
+            "height": "15%",
+            "content": {
+              "logo_area": "Super Patch logo (top left)",
+              "product_name": "Victory",
+              "tagline": "Get stronger, faster, and more agile. Smash your personal bests"
+            }
+          },
+          {
+            "name": "problem_section",
+            "height": "20%",
+            "content": {
+              "title": "THE CHALLENGE",
+              "pain_points": [
+                "Struggling with athletic performance issues?",
+                "Tired of temporary solutions?",
+                "Looking for drug-free alternatives?"
+              ],
+              "icon": "frustrated_person_icon"
+            }
+          },
+          {
+            "name": "solution_section",
+            "height": "25%",
+            "content": {
+              "title": "THE VICTORY SOLUTION",
+              "benefits": [
+                "Enhanced strength",
+                "Improved endurance",
+                "Better agility"
+              ],
+              "key_differentiator": "100% Drug-Free \u2022 Non-Invasive \u2022 Vibrotactile Technology"
+            }
+          },
+          {
+            "name": "process_section",
+            "height": "30%",
+            "content": {
+              "title": "5 SIMPLE STEPS TO SUCCESS",
+              "steps": [
+                {
+                  "number": 1,
+                  "title": "CONNECT",
+                  "description": "Start with genuine rapport",
+                  "icon": "handshake"
+                },
+                {
+                  "number": 2,
+                  "title": "DISCOVER",
+                  "description": "Uncover their athletic performance challenges",
+                  "icon": "magnifying_glass"
+                },
+                {
+                  "number": 3,
+                  "title": "PRESENT",
+                  "description": "Show how Victory helps",
+                  "icon": "presentation"
+                },
+                {
+                  "number": 4,
+                  "title": "HANDLE",
+                  "description": "Address concerns confidently",
+                  "icon": "shield_check"
+                },
+                {
+                  "number": 5,
+                  "title": "CLOSE",
+                  "description": "Ask for the commitment",
+                  "icon": "trophy"
+                }
+              ],
+              "layout": "horizontal_flow_with_arrows"
+            }
+          },
+          {
+            "name": "cta_section",
+            "height": "10%",
+            "content": {
+              "cta_text": "START SELLING TODAY",
+              "supporting_text": "Help customers experience enhanced strength"
+            }
+          }
+        ]
+      },
+      "visual_elements": {
+        "icons": "modern flat icons with rounded corners",
+        "arrows": "curved flow arrows between steps",
+        "shapes": "rounded rectangles, soft shadows",
+        "imagery": "abstract wellness imagery, no photorealistic people"
+      },
+      "accessibility": {
+        "contrast_ratio": "minimum 4.5:1",
+        "color_blindness": "use patterns in addition to color",
+        "text_sizing": "minimum 12pt for all body text"
+      }
+    },
+    "flowchart": {
+      "metadata": {
+        "product": "Victory",
+        "type": "sales_process_flowchart",
+        "purpose": "Step-by-step sales conversation guide"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#D32F2F",
+          "secondary": "#FF8A80",
+          "accent": "#FFD600",
+          "background": "#FFEBEE",
+          "text": "#B71C1C"
+        },
+        "style": "modern flowchart with decision branches"
+      },
+      "flowchart": {
+        "orientation": "top_to_bottom",
+        "nodes": [
+          {
+            "id": "start",
+            "type": "start_node",
+            "label": "START CONVERSATION",
+            "shape": "rounded_rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "rapport",
+            "type": "action",
+            "label": "BUILD RAPPORT",
+            "description": "Smile, use their name, find common ground",
+            "script": "Hi! I love your energy today. How's your week going?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "discover",
+            "type": "action",
+            "label": "ASK DISCOVERY QUESTIONS",
+            "description": "Uncover athletic performance pain points",
+            "script": "Have you ever struggled with athletic performance challenges?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_interested",
+            "type": "decision",
+            "label": "INTERESTED?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "yes": "present",
+              "no": "handle_not_interested"
+            }
+          },
+          {
+            "id": "handle_not_interested",
+            "type": "objection",
+            "label": "HANDLE: 'NOT INTERESTED'",
+            "script": "I understand. Just curious - what would need to be different for this to be worth exploring?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "present",
+            "type": "action",
+            "label": "PRESENT VICTORY",
+            "description": "Share Enhanced strength, Improved endurance",
+            "script": "The Victory patch uses vibrotactile technology to help with enhanced strength...",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_objection",
+            "type": "decision",
+            "label": "ANY OBJECTIONS?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "price": "handle_price",
+              "think": "handle_think",
+              "spouse": "handle_spouse",
+              "none": "close"
+            }
+          },
+          {
+            "id": "handle_price",
+            "type": "objection",
+            "label": "HANDLE: 'TOO EXPENSIVE'",
+            "script": "I understand cost is important. What criteria beyond price matters most to you?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_think",
+            "type": "objection",
+            "label": "HANDLE: 'NEED TO THINK'",
+            "script": "Of course! What specific questions would help you decide?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_spouse",
+            "type": "objection",
+            "label": "HANDLE: 'ASK SPOUSE'",
+            "script": "Great idea! What concerns might they have that we could address now?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "close",
+            "type": "action",
+            "label": "CLOSE THE SALE",
+            "description": "Use assumptive or alternative close",
+            "script": "Would you like to start with a single pack or save with the bundle?",
+            "shape": "rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "success",
+            "type": "end_node",
+            "label": "SUCCESS! \ud83c\udf89",
+            "description": "Schedule follow-up, ask for referrals",
+            "shape": "rounded_rectangle",
+            "color": "accent"
+          }
+        ],
+        "connections": [
+          {
+            "from": "start",
+            "to": "rapport"
+          },
+          {
+            "from": "rapport",
+            "to": "discover"
+          },
+          {
+            "from": "discover",
+            "to": "decision_interested"
+          },
+          {
+            "from": "decision_interested",
+            "to": "present",
+            "label": "YES"
+          },
+          {
+            "from": "decision_interested",
+            "to": "handle_not_interested",
+            "label": "NO"
+          },
+          {
+            "from": "handle_not_interested",
+            "to": "discover",
+            "label": "RE-ENGAGE"
+          },
+          {
+            "from": "present",
+            "to": "decision_objection"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_price",
+            "label": "PRICE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_think",
+            "label": "THINK"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_spouse",
+            "label": "SPOUSE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "close",
+            "label": "NONE"
+          },
+          {
+            "from": "handle_price",
+            "to": "close"
+          },
+          {
+            "from": "handle_think",
+            "to": "close"
+          },
+          {
+            "from": "handle_spouse",
+            "to": "close"
+          },
+          {
+            "from": "close",
+            "to": "success"
+          }
+        ]
+      }
+    }
+  },
+  "focus": {
+    "overview": {
+      "metadata": {
+        "product": "Focus",
+        "category": "Focus & Attention",
+        "tagline": "Bolster your mind's concentration and attention",
+        "generated": "2025-12-22T03:50:50.760341",
+        "version": "2.0"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#0277BD",
+          "secondary": "#4FC3F7",
+          "accent": "#00E676",
+          "background": "#E1F5FE",
+          "text": "#01579B"
+        },
+        "typography": {
+          "headline": "Bold sans-serif, 48pt, white on primary color",
+          "subheadline": "Semi-bold, 24pt, primary color",
+          "body": "Regular, 14pt, text color",
+          "step_numbers": "Extra bold, 36pt, accent color",
+          "cta": "Bold, 18pt, white on accent"
+        },
+        "spacing": {
+          "section_gap": "40px",
+          "element_gap": "20px",
+          "padding": "30px"
+        }
+      },
+      "layout": {
+        "type": "vertical_flow",
+        "sections": [
+          {
+            "name": "header",
+            "height": "15%",
+            "content": {
+              "logo_area": "Super Patch logo (top left)",
+              "product_name": "Focus",
+              "tagline": "Bolster your mind's concentration and attention"
+            }
+          },
+          {
+            "name": "problem_section",
+            "height": "20%",
+            "content": {
+              "title": "THE CHALLENGE",
+              "pain_points": [
+                "Struggling with focus & attention issues?",
+                "Tired of temporary solutions?",
+                "Looking for drug-free alternatives?"
+              ],
+              "icon": "frustrated_person_icon"
+            }
+          },
+          {
+            "name": "solution_section",
+            "height": "25%",
+            "content": {
+              "title": "THE FOCUS SOLUTION",
+              "benefits": [
+                "Better concentration",
+                "Improved attention",
+                "Mental clarity"
+              ],
+              "key_differentiator": "100% Drug-Free \u2022 Non-Invasive \u2022 Vibrotactile Technology"
+            }
+          },
+          {
+            "name": "process_section",
+            "height": "30%",
+            "content": {
+              "title": "5 SIMPLE STEPS TO SUCCESS",
+              "steps": [
+                {
+                  "number": 1,
+                  "title": "CONNECT",
+                  "description": "Start with genuine rapport",
+                  "icon": "handshake"
+                },
+                {
+                  "number": 2,
+                  "title": "DISCOVER",
+                  "description": "Uncover their focus & attention challenges",
+                  "icon": "magnifying_glass"
+                },
+                {
+                  "number": 3,
+                  "title": "PRESENT",
+                  "description": "Show how Focus helps",
+                  "icon": "presentation"
+                },
+                {
+                  "number": 4,
+                  "title": "HANDLE",
+                  "description": "Address concerns confidently",
+                  "icon": "shield_check"
+                },
+                {
+                  "number": 5,
+                  "title": "CLOSE",
+                  "description": "Ask for the commitment",
+                  "icon": "trophy"
+                }
+              ],
+              "layout": "horizontal_flow_with_arrows"
+            }
+          },
+          {
+            "name": "cta_section",
+            "height": "10%",
+            "content": {
+              "cta_text": "START SELLING TODAY",
+              "supporting_text": "Help customers experience better concentration"
+            }
+          }
+        ]
+      },
+      "visual_elements": {
+        "icons": "modern flat icons with rounded corners",
+        "arrows": "curved flow arrows between steps",
+        "shapes": "rounded rectangles, soft shadows",
+        "imagery": "abstract wellness imagery, no photorealistic people"
+      },
+      "accessibility": {
+        "contrast_ratio": "minimum 4.5:1",
+        "color_blindness": "use patterns in addition to color",
+        "text_sizing": "minimum 12pt for all body text"
+      }
+    },
+    "flowchart": {
+      "metadata": {
+        "product": "Focus",
+        "type": "sales_process_flowchart",
+        "purpose": "Step-by-step sales conversation guide"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#0277BD",
+          "secondary": "#4FC3F7",
+          "accent": "#00E676",
+          "background": "#E1F5FE",
+          "text": "#01579B"
+        },
+        "style": "modern flowchart with decision branches"
+      },
+      "flowchart": {
+        "orientation": "top_to_bottom",
+        "nodes": [
+          {
+            "id": "start",
+            "type": "start_node",
+            "label": "START CONVERSATION",
+            "shape": "rounded_rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "rapport",
+            "type": "action",
+            "label": "BUILD RAPPORT",
+            "description": "Smile, use their name, find common ground",
+            "script": "Hi! I love your energy today. How's your week going?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "discover",
+            "type": "action",
+            "label": "ASK DISCOVERY QUESTIONS",
+            "description": "Uncover focus & attention pain points",
+            "script": "Have you ever struggled with focus & attention challenges?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_interested",
+            "type": "decision",
+            "label": "INTERESTED?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "yes": "present",
+              "no": "handle_not_interested"
+            }
+          },
+          {
+            "id": "handle_not_interested",
+            "type": "objection",
+            "label": "HANDLE: 'NOT INTERESTED'",
+            "script": "I understand. Just curious - what would need to be different for this to be worth exploring?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "present",
+            "type": "action",
+            "label": "PRESENT FOCUS",
+            "description": "Share Better concentration, Improved attention",
+            "script": "The Focus patch uses vibrotactile technology to help with better concentration...",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_objection",
+            "type": "decision",
+            "label": "ANY OBJECTIONS?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "price": "handle_price",
+              "think": "handle_think",
+              "spouse": "handle_spouse",
+              "none": "close"
+            }
+          },
+          {
+            "id": "handle_price",
+            "type": "objection",
+            "label": "HANDLE: 'TOO EXPENSIVE'",
+            "script": "I understand cost is important. What criteria beyond price matters most to you?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_think",
+            "type": "objection",
+            "label": "HANDLE: 'NEED TO THINK'",
+            "script": "Of course! What specific questions would help you decide?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_spouse",
+            "type": "objection",
+            "label": "HANDLE: 'ASK SPOUSE'",
+            "script": "Great idea! What concerns might they have that we could address now?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "close",
+            "type": "action",
+            "label": "CLOSE THE SALE",
+            "description": "Use assumptive or alternative close",
+            "script": "Would you like to start with a single pack or save with the bundle?",
+            "shape": "rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "success",
+            "type": "end_node",
+            "label": "SUCCESS! \ud83c\udf89",
+            "description": "Schedule follow-up, ask for referrals",
+            "shape": "rounded_rectangle",
+            "color": "accent"
+          }
+        ],
+        "connections": [
+          {
+            "from": "start",
+            "to": "rapport"
+          },
+          {
+            "from": "rapport",
+            "to": "discover"
+          },
+          {
+            "from": "discover",
+            "to": "decision_interested"
+          },
+          {
+            "from": "decision_interested",
+            "to": "present",
+            "label": "YES"
+          },
+          {
+            "from": "decision_interested",
+            "to": "handle_not_interested",
+            "label": "NO"
+          },
+          {
+            "from": "handle_not_interested",
+            "to": "discover",
+            "label": "RE-ENGAGE"
+          },
+          {
+            "from": "present",
+            "to": "decision_objection"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_price",
+            "label": "PRICE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_think",
+            "label": "THINK"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_spouse",
+            "label": "SPOUSE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "close",
+            "label": "NONE"
+          },
+          {
+            "from": "handle_price",
+            "to": "close"
+          },
+          {
+            "from": "handle_think",
+            "to": "close"
+          },
+          {
+            "from": "handle_spouse",
+            "to": "close"
+          },
+          {
+            "from": "close",
+            "to": "success"
+          }
+        ]
+      }
+    }
+  },
+  "ignite": {
+    "overview": {
+      "metadata": {
+        "product": "Ignite",
+        "category": "Max RMR",
+        "tagline": "Burn calories even while at rest. Fire up your metabolism",
+        "generated": "2025-12-22T03:51:37.227067",
+        "version": "2.0"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#E64A19",
+          "secondary": "#FF8A65",
+          "accent": "#FFCA28",
+          "background": "#FBE9E7",
+          "text": "#BF360C"
+        },
+        "typography": {
+          "headline": "Bold sans-serif, 48pt, white on primary color",
+          "subheadline": "Semi-bold, 24pt, primary color",
+          "body": "Regular, 14pt, text color",
+          "step_numbers": "Extra bold, 36pt, accent color",
+          "cta": "Bold, 18pt, white on accent"
+        },
+        "spacing": {
+          "section_gap": "40px",
+          "element_gap": "20px",
+          "padding": "30px"
+        }
+      },
+      "layout": {
+        "type": "vertical_flow",
+        "sections": [
+          {
+            "name": "header",
+            "height": "15%",
+            "content": {
+              "logo_area": "Super Patch logo (top left)",
+              "product_name": "Ignite",
+              "tagline": "Burn calories even while at rest. Fire up your metabolism"
+            }
+          },
+          {
+            "name": "problem_section",
+            "height": "20%",
+            "content": {
+              "title": "THE CHALLENGE",
+              "pain_points": [
+                "Struggling with max rmr issues?",
+                "Tired of temporary solutions?",
+                "Looking for drug-free alternatives?"
+              ],
+              "icon": "frustrated_person_icon"
+            }
+          },
+          {
+            "name": "solution_section",
+            "height": "25%",
+            "content": {
+              "title": "THE IGNITE SOLUTION",
+              "benefits": [
+                "Boosted metabolism",
+                "Calorie burning",
+                "Weight management support"
+              ],
+              "key_differentiator": "100% Drug-Free \u2022 Non-Invasive \u2022 Vibrotactile Technology"
+            }
+          },
+          {
+            "name": "process_section",
+            "height": "30%",
+            "content": {
+              "title": "5 SIMPLE STEPS TO SUCCESS",
+              "steps": [
+                {
+                  "number": 1,
+                  "title": "CONNECT",
+                  "description": "Start with genuine rapport",
+                  "icon": "handshake"
+                },
+                {
+                  "number": 2,
+                  "title": "DISCOVER",
+                  "description": "Uncover their max rmr challenges",
+                  "icon": "magnifying_glass"
+                },
+                {
+                  "number": 3,
+                  "title": "PRESENT",
+                  "description": "Show how Ignite helps",
+                  "icon": "presentation"
+                },
+                {
+                  "number": 4,
+                  "title": "HANDLE",
+                  "description": "Address concerns confidently",
+                  "icon": "shield_check"
+                },
+                {
+                  "number": 5,
+                  "title": "CLOSE",
+                  "description": "Ask for the commitment",
+                  "icon": "trophy"
+                }
+              ],
+              "layout": "horizontal_flow_with_arrows"
+            }
+          },
+          {
+            "name": "cta_section",
+            "height": "10%",
+            "content": {
+              "cta_text": "START SELLING TODAY",
+              "supporting_text": "Help customers experience boosted metabolism"
+            }
+          }
+        ]
+      },
+      "visual_elements": {
+        "icons": "modern flat icons with rounded corners",
+        "arrows": "curved flow arrows between steps",
+        "shapes": "rounded rectangles, soft shadows",
+        "imagery": "abstract wellness imagery, no photorealistic people"
+      },
+      "accessibility": {
+        "contrast_ratio": "minimum 4.5:1",
+        "color_blindness": "use patterns in addition to color",
+        "text_sizing": "minimum 12pt for all body text"
+      }
+    },
+    "flowchart": {
+      "metadata": {
+        "product": "Ignite",
+        "type": "sales_process_flowchart",
+        "purpose": "Step-by-step sales conversation guide"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#E64A19",
+          "secondary": "#FF8A65",
+          "accent": "#FFCA28",
+          "background": "#FBE9E7",
+          "text": "#BF360C"
+        },
+        "style": "modern flowchart with decision branches"
+      },
+      "flowchart": {
+        "orientation": "top_to_bottom",
+        "nodes": [
+          {
+            "id": "start",
+            "type": "start_node",
+            "label": "START CONVERSATION",
+            "shape": "rounded_rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "rapport",
+            "type": "action",
+            "label": "BUILD RAPPORT",
+            "description": "Smile, use their name, find common ground",
+            "script": "Hi! I love your energy today. How's your week going?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "discover",
+            "type": "action",
+            "label": "ASK DISCOVERY QUESTIONS",
+            "description": "Uncover max rmr pain points",
+            "script": "Have you ever struggled with max rmr challenges?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_interested",
+            "type": "decision",
+            "label": "INTERESTED?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "yes": "present",
+              "no": "handle_not_interested"
+            }
+          },
+          {
+            "id": "handle_not_interested",
+            "type": "objection",
+            "label": "HANDLE: 'NOT INTERESTED'",
+            "script": "I understand. Just curious - what would need to be different for this to be worth exploring?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "present",
+            "type": "action",
+            "label": "PRESENT IGNITE",
+            "description": "Share Boosted metabolism, Calorie burning",
+            "script": "The Ignite patch uses vibrotactile technology to help with boosted metabolism...",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_objection",
+            "type": "decision",
+            "label": "ANY OBJECTIONS?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "price": "handle_price",
+              "think": "handle_think",
+              "spouse": "handle_spouse",
+              "none": "close"
+            }
+          },
+          {
+            "id": "handle_price",
+            "type": "objection",
+            "label": "HANDLE: 'TOO EXPENSIVE'",
+            "script": "I understand cost is important. What criteria beyond price matters most to you?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_think",
+            "type": "objection",
+            "label": "HANDLE: 'NEED TO THINK'",
+            "script": "Of course! What specific questions would help you decide?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_spouse",
+            "type": "objection",
+            "label": "HANDLE: 'ASK SPOUSE'",
+            "script": "Great idea! What concerns might they have that we could address now?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "close",
+            "type": "action",
+            "label": "CLOSE THE SALE",
+            "description": "Use assumptive or alternative close",
+            "script": "Would you like to start with a single pack or save with the bundle?",
+            "shape": "rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "success",
+            "type": "end_node",
+            "label": "SUCCESS! \ud83c\udf89",
+            "description": "Schedule follow-up, ask for referrals",
+            "shape": "rounded_rectangle",
+            "color": "accent"
+          }
+        ],
+        "connections": [
+          {
+            "from": "start",
+            "to": "rapport"
+          },
+          {
+            "from": "rapport",
+            "to": "discover"
+          },
+          {
+            "from": "discover",
+            "to": "decision_interested"
+          },
+          {
+            "from": "decision_interested",
+            "to": "present",
+            "label": "YES"
+          },
+          {
+            "from": "decision_interested",
+            "to": "handle_not_interested",
+            "label": "NO"
+          },
+          {
+            "from": "handle_not_interested",
+            "to": "discover",
+            "label": "RE-ENGAGE"
+          },
+          {
+            "from": "present",
+            "to": "decision_objection"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_price",
+            "label": "PRICE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_think",
+            "label": "THINK"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_spouse",
+            "label": "SPOUSE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "close",
+            "label": "NONE"
+          },
+          {
+            "from": "handle_price",
+            "to": "close"
+          },
+          {
+            "from": "handle_think",
+            "to": "close"
+          },
+          {
+            "from": "handle_spouse",
+            "to": "close"
+          },
+          {
+            "from": "close",
+            "to": "success"
+          }
+        ]
+      }
+    }
+  },
+  "kick-it": {
+    "overview": {
+      "metadata": {
+        "product": "Kick It",
+        "category": "Will Power",
+        "tagline": "Support your willpower to overcome bad habits",
+        "generated": "2025-12-22T03:52:21.534798",
+        "version": "2.0"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#6A1B9A",
+          "secondary": "#BA68C8",
+          "accent": "#00E5FF",
+          "background": "#F3E5F5",
+          "text": "#4A148C"
+        },
+        "typography": {
+          "headline": "Bold sans-serif, 48pt, white on primary color",
+          "subheadline": "Semi-bold, 24pt, primary color",
+          "body": "Regular, 14pt, text color",
+          "step_numbers": "Extra bold, 36pt, accent color",
+          "cta": "Bold, 18pt, white on accent"
+        },
+        "spacing": {
+          "section_gap": "40px",
+          "element_gap": "20px",
+          "padding": "30px"
+        }
+      },
+      "layout": {
+        "type": "vertical_flow",
+        "sections": [
+          {
+            "name": "header",
+            "height": "15%",
+            "content": {
+              "logo_area": "Super Patch logo (top left)",
+              "product_name": "Kick It",
+              "tagline": "Support your willpower to overcome bad habits"
+            }
+          },
+          {
+            "name": "problem_section",
+            "height": "20%",
+            "content": {
+              "title": "THE CHALLENGE",
+              "pain_points": [
+                "Struggling with will power issues?",
+                "Tired of temporary solutions?",
+                "Looking for drug-free alternatives?"
+              ],
+              "icon": "frustrated_person_icon"
+            }
+          },
+          {
+            "name": "solution_section",
+            "height": "25%",
+            "content": {
+              "title": "THE KICK IT SOLUTION",
+              "benefits": [
+                "Willpower support",
+                "Habit breaking",
+                "Self-control"
+              ],
+              "key_differentiator": "100% Drug-Free \u2022 Non-Invasive \u2022 Vibrotactile Technology"
+            }
+          },
+          {
+            "name": "process_section",
+            "height": "30%",
+            "content": {
+              "title": "5 SIMPLE STEPS TO SUCCESS",
+              "steps": [
+                {
+                  "number": 1,
+                  "title": "CONNECT",
+                  "description": "Start with genuine rapport",
+                  "icon": "handshake"
+                },
+                {
+                  "number": 2,
+                  "title": "DISCOVER",
+                  "description": "Uncover their will power challenges",
+                  "icon": "magnifying_glass"
+                },
+                {
+                  "number": 3,
+                  "title": "PRESENT",
+                  "description": "Show how Kick It helps",
+                  "icon": "presentation"
+                },
+                {
+                  "number": 4,
+                  "title": "HANDLE",
+                  "description": "Address concerns confidently",
+                  "icon": "shield_check"
+                },
+                {
+                  "number": 5,
+                  "title": "CLOSE",
+                  "description": "Ask for the commitment",
+                  "icon": "trophy"
+                }
+              ],
+              "layout": "horizontal_flow_with_arrows"
+            }
+          },
+          {
+            "name": "cta_section",
+            "height": "10%",
+            "content": {
+              "cta_text": "START SELLING TODAY",
+              "supporting_text": "Help customers experience willpower support"
+            }
+          }
+        ]
+      },
+      "visual_elements": {
+        "icons": "modern flat icons with rounded corners",
+        "arrows": "curved flow arrows between steps",
+        "shapes": "rounded rectangles, soft shadows",
+        "imagery": "abstract wellness imagery, no photorealistic people"
+      },
+      "accessibility": {
+        "contrast_ratio": "minimum 4.5:1",
+        "color_blindness": "use patterns in addition to color",
+        "text_sizing": "minimum 12pt for all body text"
+      }
+    },
+    "flowchart": {
+      "metadata": {
+        "product": "Kick It",
+        "type": "sales_process_flowchart",
+        "purpose": "Step-by-step sales conversation guide"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#6A1B9A",
+          "secondary": "#BA68C8",
+          "accent": "#00E5FF",
+          "background": "#F3E5F5",
+          "text": "#4A148C"
+        },
+        "style": "modern flowchart with decision branches"
+      },
+      "flowchart": {
+        "orientation": "top_to_bottom",
+        "nodes": [
+          {
+            "id": "start",
+            "type": "start_node",
+            "label": "START CONVERSATION",
+            "shape": "rounded_rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "rapport",
+            "type": "action",
+            "label": "BUILD RAPPORT",
+            "description": "Smile, use their name, find common ground",
+            "script": "Hi! I love your energy today. How's your week going?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "discover",
+            "type": "action",
+            "label": "ASK DISCOVERY QUESTIONS",
+            "description": "Uncover will power pain points",
+            "script": "Have you ever struggled with will power challenges?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_interested",
+            "type": "decision",
+            "label": "INTERESTED?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "yes": "present",
+              "no": "handle_not_interested"
+            }
+          },
+          {
+            "id": "handle_not_interested",
+            "type": "objection",
+            "label": "HANDLE: 'NOT INTERESTED'",
+            "script": "I understand. Just curious - what would need to be different for this to be worth exploring?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "present",
+            "type": "action",
+            "label": "PRESENT KICK IT",
+            "description": "Share Willpower support, Habit breaking",
+            "script": "The Kick It patch uses vibrotactile technology to help with willpower support...",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_objection",
+            "type": "decision",
+            "label": "ANY OBJECTIONS?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "price": "handle_price",
+              "think": "handle_think",
+              "spouse": "handle_spouse",
+              "none": "close"
+            }
+          },
+          {
+            "id": "handle_price",
+            "type": "objection",
+            "label": "HANDLE: 'TOO EXPENSIVE'",
+            "script": "I understand cost is important. What criteria beyond price matters most to you?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_think",
+            "type": "objection",
+            "label": "HANDLE: 'NEED TO THINK'",
+            "script": "Of course! What specific questions would help you decide?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_spouse",
+            "type": "objection",
+            "label": "HANDLE: 'ASK SPOUSE'",
+            "script": "Great idea! What concerns might they have that we could address now?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "close",
+            "type": "action",
+            "label": "CLOSE THE SALE",
+            "description": "Use assumptive or alternative close",
+            "script": "Would you like to start with a single pack or save with the bundle?",
+            "shape": "rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "success",
+            "type": "end_node",
+            "label": "SUCCESS! \ud83c\udf89",
+            "description": "Schedule follow-up, ask for referrals",
+            "shape": "rounded_rectangle",
+            "color": "accent"
+          }
+        ],
+        "connections": [
+          {
+            "from": "start",
+            "to": "rapport"
+          },
+          {
+            "from": "rapport",
+            "to": "discover"
+          },
+          {
+            "from": "discover",
+            "to": "decision_interested"
+          },
+          {
+            "from": "decision_interested",
+            "to": "present",
+            "label": "YES"
+          },
+          {
+            "from": "decision_interested",
+            "to": "handle_not_interested",
+            "label": "NO"
+          },
+          {
+            "from": "handle_not_interested",
+            "to": "discover",
+            "label": "RE-ENGAGE"
+          },
+          {
+            "from": "present",
+            "to": "decision_objection"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_price",
+            "label": "PRICE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_think",
+            "label": "THINK"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_spouse",
+            "label": "SPOUSE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "close",
+            "label": "NONE"
+          },
+          {
+            "from": "handle_price",
+            "to": "close"
+          },
+          {
+            "from": "handle_think",
+            "to": "close"
+          },
+          {
+            "from": "handle_spouse",
+            "to": "close"
+          },
+          {
+            "from": "close",
+            "to": "success"
+          }
+        ]
+      }
+    }
+  },
+  "defend": {
+    "overview": {
+      "metadata": {
+        "product": "Defend",
+        "category": "Immune Support",
+        "tagline": "Support your health and wellness routine",
+        "generated": "2025-12-22T03:53:07.789991",
+        "version": "2.0"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#388E3C",
+          "secondary": "#A5D6A7",
+          "accent": "#03A9F4",
+          "background": "#E8F5E9",
+          "text": "#1B5E20"
+        },
+        "typography": {
+          "headline": "Bold sans-serif, 48pt, white on primary color",
+          "subheadline": "Semi-bold, 24pt, primary color",
+          "body": "Regular, 14pt, text color",
+          "step_numbers": "Extra bold, 36pt, accent color",
+          "cta": "Bold, 18pt, white on accent"
+        },
+        "spacing": {
+          "section_gap": "40px",
+          "element_gap": "20px",
+          "padding": "30px"
+        }
+      },
+      "layout": {
+        "type": "vertical_flow",
+        "sections": [
+          {
+            "name": "header",
+            "height": "15%",
+            "content": {
+              "logo_area": "Super Patch logo (top left)",
+              "product_name": "Defend",
+              "tagline": "Support your health and wellness routine"
+            }
+          },
+          {
+            "name": "problem_section",
+            "height": "20%",
+            "content": {
+              "title": "THE CHALLENGE",
+              "pain_points": [
+                "Struggling with immune support issues?",
+                "Tired of temporary solutions?",
+                "Looking for drug-free alternatives?"
+              ],
+              "icon": "frustrated_person_icon"
+            }
+          },
+          {
+            "name": "solution_section",
+            "height": "25%",
+            "content": {
+              "title": "THE DEFEND SOLUTION",
+              "benefits": [
+                "Immune support",
+                "Wellness boost",
+                "Health maintenance"
+              ],
+              "key_differentiator": "100% Drug-Free \u2022 Non-Invasive \u2022 Vibrotactile Technology"
+            }
+          },
+          {
+            "name": "process_section",
+            "height": "30%",
+            "content": {
+              "title": "5 SIMPLE STEPS TO SUCCESS",
+              "steps": [
+                {
+                  "number": 1,
+                  "title": "CONNECT",
+                  "description": "Start with genuine rapport",
+                  "icon": "handshake"
+                },
+                {
+                  "number": 2,
+                  "title": "DISCOVER",
+                  "description": "Uncover their immune support challenges",
+                  "icon": "magnifying_glass"
+                },
+                {
+                  "number": 3,
+                  "title": "PRESENT",
+                  "description": "Show how Defend helps",
+                  "icon": "presentation"
+                },
+                {
+                  "number": 4,
+                  "title": "HANDLE",
+                  "description": "Address concerns confidently",
+                  "icon": "shield_check"
+                },
+                {
+                  "number": 5,
+                  "title": "CLOSE",
+                  "description": "Ask for the commitment",
+                  "icon": "trophy"
+                }
+              ],
+              "layout": "horizontal_flow_with_arrows"
+            }
+          },
+          {
+            "name": "cta_section",
+            "height": "10%",
+            "content": {
+              "cta_text": "START SELLING TODAY",
+              "supporting_text": "Help customers experience immune support"
+            }
+          }
+        ]
+      },
+      "visual_elements": {
+        "icons": "modern flat icons with rounded corners",
+        "arrows": "curved flow arrows between steps",
+        "shapes": "rounded rectangles, soft shadows",
+        "imagery": "abstract wellness imagery, no photorealistic people"
+      },
+      "accessibility": {
+        "contrast_ratio": "minimum 4.5:1",
+        "color_blindness": "use patterns in addition to color",
+        "text_sizing": "minimum 12pt for all body text"
+      }
+    },
+    "flowchart": {
+      "metadata": {
+        "product": "Defend",
+        "type": "sales_process_flowchart",
+        "purpose": "Step-by-step sales conversation guide"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#388E3C",
+          "secondary": "#A5D6A7",
+          "accent": "#03A9F4",
+          "background": "#E8F5E9",
+          "text": "#1B5E20"
+        },
+        "style": "modern flowchart with decision branches"
+      },
+      "flowchart": {
+        "orientation": "top_to_bottom",
+        "nodes": [
+          {
+            "id": "start",
+            "type": "start_node",
+            "label": "START CONVERSATION",
+            "shape": "rounded_rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "rapport",
+            "type": "action",
+            "label": "BUILD RAPPORT",
+            "description": "Smile, use their name, find common ground",
+            "script": "Hi! I love your energy today. How's your week going?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "discover",
+            "type": "action",
+            "label": "ASK DISCOVERY QUESTIONS",
+            "description": "Uncover immune support pain points",
+            "script": "Have you ever struggled with immune support challenges?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_interested",
+            "type": "decision",
+            "label": "INTERESTED?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "yes": "present",
+              "no": "handle_not_interested"
+            }
+          },
+          {
+            "id": "handle_not_interested",
+            "type": "objection",
+            "label": "HANDLE: 'NOT INTERESTED'",
+            "script": "I understand. Just curious - what would need to be different for this to be worth exploring?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "present",
+            "type": "action",
+            "label": "PRESENT DEFEND",
+            "description": "Share Immune support, Wellness boost",
+            "script": "The Defend patch uses vibrotactile technology to help with immune support...",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_objection",
+            "type": "decision",
+            "label": "ANY OBJECTIONS?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "price": "handle_price",
+              "think": "handle_think",
+              "spouse": "handle_spouse",
+              "none": "close"
+            }
+          },
+          {
+            "id": "handle_price",
+            "type": "objection",
+            "label": "HANDLE: 'TOO EXPENSIVE'",
+            "script": "I understand cost is important. What criteria beyond price matters most to you?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_think",
+            "type": "objection",
+            "label": "HANDLE: 'NEED TO THINK'",
+            "script": "Of course! What specific questions would help you decide?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_spouse",
+            "type": "objection",
+            "label": "HANDLE: 'ASK SPOUSE'",
+            "script": "Great idea! What concerns might they have that we could address now?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "close",
+            "type": "action",
+            "label": "CLOSE THE SALE",
+            "description": "Use assumptive or alternative close",
+            "script": "Would you like to start with a single pack or save with the bundle?",
+            "shape": "rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "success",
+            "type": "end_node",
+            "label": "SUCCESS! \ud83c\udf89",
+            "description": "Schedule follow-up, ask for referrals",
+            "shape": "rounded_rectangle",
+            "color": "accent"
+          }
+        ],
+        "connections": [
+          {
+            "from": "start",
+            "to": "rapport"
+          },
+          {
+            "from": "rapport",
+            "to": "discover"
+          },
+          {
+            "from": "discover",
+            "to": "decision_interested"
+          },
+          {
+            "from": "decision_interested",
+            "to": "present",
+            "label": "YES"
+          },
+          {
+            "from": "decision_interested",
+            "to": "handle_not_interested",
+            "label": "NO"
+          },
+          {
+            "from": "handle_not_interested",
+            "to": "discover",
+            "label": "RE-ENGAGE"
+          },
+          {
+            "from": "present",
+            "to": "decision_objection"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_price",
+            "label": "PRICE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_think",
+            "label": "THINK"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_spouse",
+            "label": "SPOUSE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "close",
+            "label": "NONE"
+          },
+          {
+            "from": "handle_price",
+            "to": "close"
+          },
+          {
+            "from": "handle_think",
+            "to": "close"
+          },
+          {
+            "from": "handle_spouse",
+            "to": "close"
+          },
+          {
+            "from": "close",
+            "to": "success"
+          }
+        ]
+      }
+    }
+  },
+  "joy": {
+    "overview": {
+      "metadata": {
+        "product": "Joy",
+        "category": "Mood",
+        "tagline": "Happiness is important for healthy living",
+        "generated": "2025-12-22T03:53:46.066005",
+        "version": "2.0"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#8E24AA",
+          "secondary": "#CE93D8",
+          "accent": "#FFD54F",
+          "background": "#F3E5F5",
+          "text": "#4A148C"
+        },
+        "typography": {
+          "headline": "Bold sans-serif, 48pt, white on primary color",
+          "subheadline": "Semi-bold, 24pt, primary color",
+          "body": "Regular, 14pt, text color",
+          "step_numbers": "Extra bold, 36pt, accent color",
+          "cta": "Bold, 18pt, white on accent"
+        },
+        "spacing": {
+          "section_gap": "40px",
+          "element_gap": "20px",
+          "padding": "30px"
+        }
+      },
+      "layout": {
+        "type": "vertical_flow",
+        "sections": [
+          {
+            "name": "header",
+            "height": "15%",
+            "content": {
+              "logo_area": "Super Patch logo (top left)",
+              "product_name": "Joy",
+              "tagline": "Happiness is important for healthy living"
+            }
+          },
+          {
+            "name": "problem_section",
+            "height": "20%",
+            "content": {
+              "title": "THE CHALLENGE",
+              "pain_points": [
+                "Struggling with mood issues?",
+                "Tired of temporary solutions?",
+                "Looking for drug-free alternatives?"
+              ],
+              "icon": "frustrated_person_icon"
+            }
+          },
+          {
+            "name": "solution_section",
+            "height": "25%",
+            "content": {
+              "title": "THE JOY SOLUTION",
+              "benefits": [
+                "Mood enhancement",
+                "Emotional well-being",
+                "Positive outlook"
+              ],
+              "key_differentiator": "100% Drug-Free \u2022 Non-Invasive \u2022 Vibrotactile Technology"
+            }
+          },
+          {
+            "name": "process_section",
+            "height": "30%",
+            "content": {
+              "title": "5 SIMPLE STEPS TO SUCCESS",
+              "steps": [
+                {
+                  "number": 1,
+                  "title": "CONNECT",
+                  "description": "Start with genuine rapport",
+                  "icon": "handshake"
+                },
+                {
+                  "number": 2,
+                  "title": "DISCOVER",
+                  "description": "Uncover their mood challenges",
+                  "icon": "magnifying_glass"
+                },
+                {
+                  "number": 3,
+                  "title": "PRESENT",
+                  "description": "Show how Joy helps",
+                  "icon": "presentation"
+                },
+                {
+                  "number": 4,
+                  "title": "HANDLE",
+                  "description": "Address concerns confidently",
+                  "icon": "shield_check"
+                },
+                {
+                  "number": 5,
+                  "title": "CLOSE",
+                  "description": "Ask for the commitment",
+                  "icon": "trophy"
+                }
+              ],
+              "layout": "horizontal_flow_with_arrows"
+            }
+          },
+          {
+            "name": "cta_section",
+            "height": "10%",
+            "content": {
+              "cta_text": "START SELLING TODAY",
+              "supporting_text": "Help customers experience mood enhancement"
+            }
+          }
+        ]
+      },
+      "visual_elements": {
+        "icons": "modern flat icons with rounded corners",
+        "arrows": "curved flow arrows between steps",
+        "shapes": "rounded rectangles, soft shadows",
+        "imagery": "abstract wellness imagery, no photorealistic people"
+      },
+      "accessibility": {
+        "contrast_ratio": "minimum 4.5:1",
+        "color_blindness": "use patterns in addition to color",
+        "text_sizing": "minimum 12pt for all body text"
+      }
+    },
+    "flowchart": {
+      "metadata": {
+        "product": "Joy",
+        "type": "sales_process_flowchart",
+        "purpose": "Step-by-step sales conversation guide"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#8E24AA",
+          "secondary": "#CE93D8",
+          "accent": "#FFD54F",
+          "background": "#F3E5F5",
+          "text": "#4A148C"
+        },
+        "style": "modern flowchart with decision branches"
+      },
+      "flowchart": {
+        "orientation": "top_to_bottom",
+        "nodes": [
+          {
+            "id": "start",
+            "type": "start_node",
+            "label": "START CONVERSATION",
+            "shape": "rounded_rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "rapport",
+            "type": "action",
+            "label": "BUILD RAPPORT",
+            "description": "Smile, use their name, find common ground",
+            "script": "Hi! I love your energy today. How's your week going?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "discover",
+            "type": "action",
+            "label": "ASK DISCOVERY QUESTIONS",
+            "description": "Uncover mood pain points",
+            "script": "Have you ever struggled with mood challenges?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_interested",
+            "type": "decision",
+            "label": "INTERESTED?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "yes": "present",
+              "no": "handle_not_interested"
+            }
+          },
+          {
+            "id": "handle_not_interested",
+            "type": "objection",
+            "label": "HANDLE: 'NOT INTERESTED'",
+            "script": "I understand. Just curious - what would need to be different for this to be worth exploring?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "present",
+            "type": "action",
+            "label": "PRESENT JOY",
+            "description": "Share Mood enhancement, Emotional well-being",
+            "script": "The Joy patch uses vibrotactile technology to help with mood enhancement...",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_objection",
+            "type": "decision",
+            "label": "ANY OBJECTIONS?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "price": "handle_price",
+              "think": "handle_think",
+              "spouse": "handle_spouse",
+              "none": "close"
+            }
+          },
+          {
+            "id": "handle_price",
+            "type": "objection",
+            "label": "HANDLE: 'TOO EXPENSIVE'",
+            "script": "I understand cost is important. What criteria beyond price matters most to you?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_think",
+            "type": "objection",
+            "label": "HANDLE: 'NEED TO THINK'",
+            "script": "Of course! What specific questions would help you decide?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_spouse",
+            "type": "objection",
+            "label": "HANDLE: 'ASK SPOUSE'",
+            "script": "Great idea! What concerns might they have that we could address now?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "close",
+            "type": "action",
+            "label": "CLOSE THE SALE",
+            "description": "Use assumptive or alternative close",
+            "script": "Would you like to start with a single pack or save with the bundle?",
+            "shape": "rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "success",
+            "type": "end_node",
+            "label": "SUCCESS! \ud83c\udf89",
+            "description": "Schedule follow-up, ask for referrals",
+            "shape": "rounded_rectangle",
+            "color": "accent"
+          }
+        ],
+        "connections": [
+          {
+            "from": "start",
+            "to": "rapport"
+          },
+          {
+            "from": "rapport",
+            "to": "discover"
+          },
+          {
+            "from": "discover",
+            "to": "decision_interested"
+          },
+          {
+            "from": "decision_interested",
+            "to": "present",
+            "label": "YES"
+          },
+          {
+            "from": "decision_interested",
+            "to": "handle_not_interested",
+            "label": "NO"
+          },
+          {
+            "from": "handle_not_interested",
+            "to": "discover",
+            "label": "RE-ENGAGE"
+          },
+          {
+            "from": "present",
+            "to": "decision_objection"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_price",
+            "label": "PRICE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_think",
+            "label": "THINK"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_spouse",
+            "label": "SPOUSE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "close",
+            "label": "NONE"
+          },
+          {
+            "from": "handle_price",
+            "to": "close"
+          },
+          {
+            "from": "handle_think",
+            "to": "close"
+          },
+          {
+            "from": "handle_spouse",
+            "to": "close"
+          },
+          {
+            "from": "close",
+            "to": "success"
+          }
+        ]
+      }
+    }
+  },
+  "lumi": {
+    "overview": {
+      "metadata": {
+        "product": "Lumi",
+        "category": "Beauty",
+        "tagline": "Skin care complements a healthy lifestyle",
+        "generated": "2025-12-22T03:54:29.779060",
+        "version": "2.0"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#EC407A",
+          "secondary": "#F48FB1",
+          "accent": "#FFD700",
+          "background": "#FCE4EC",
+          "text": "#880E4F"
+        },
+        "typography": {
+          "headline": "Bold sans-serif, 48pt, white on primary color",
+          "subheadline": "Semi-bold, 24pt, primary color",
+          "body": "Regular, 14pt, text color",
+          "step_numbers": "Extra bold, 36pt, accent color",
+          "cta": "Bold, 18pt, white on accent"
+        },
+        "spacing": {
+          "section_gap": "40px",
+          "element_gap": "20px",
+          "padding": "30px"
+        }
+      },
+      "layout": {
+        "type": "vertical_flow",
+        "sections": [
+          {
+            "name": "header",
+            "height": "15%",
+            "content": {
+              "logo_area": "Super Patch logo (top left)",
+              "product_name": "Lumi",
+              "tagline": "Skin care complements a healthy lifestyle"
+            }
+          },
+          {
+            "name": "problem_section",
+            "height": "20%",
+            "content": {
+              "title": "THE CHALLENGE",
+              "pain_points": [
+                "Struggling with beauty issues?",
+                "Tired of temporary solutions?",
+                "Looking for drug-free alternatives?"
+              ],
+              "icon": "frustrated_person_icon"
+            }
+          },
+          {
+            "name": "solution_section",
+            "height": "25%",
+            "content": {
+              "title": "THE LUMI SOLUTION",
+              "benefits": [
+                "Skin appearance",
+                "Radiant complexion",
+                "Beauty support"
+              ],
+              "key_differentiator": "100% Drug-Free \u2022 Non-Invasive \u2022 Vibrotactile Technology"
+            }
+          },
+          {
+            "name": "process_section",
+            "height": "30%",
+            "content": {
+              "title": "5 SIMPLE STEPS TO SUCCESS",
+              "steps": [
+                {
+                  "number": 1,
+                  "title": "CONNECT",
+                  "description": "Start with genuine rapport",
+                  "icon": "handshake"
+                },
+                {
+                  "number": 2,
+                  "title": "DISCOVER",
+                  "description": "Uncover their beauty challenges",
+                  "icon": "magnifying_glass"
+                },
+                {
+                  "number": 3,
+                  "title": "PRESENT",
+                  "description": "Show how Lumi helps",
+                  "icon": "presentation"
+                },
+                {
+                  "number": 4,
+                  "title": "HANDLE",
+                  "description": "Address concerns confidently",
+                  "icon": "shield_check"
+                },
+                {
+                  "number": 5,
+                  "title": "CLOSE",
+                  "description": "Ask for the commitment",
+                  "icon": "trophy"
+                }
+              ],
+              "layout": "horizontal_flow_with_arrows"
+            }
+          },
+          {
+            "name": "cta_section",
+            "height": "10%",
+            "content": {
+              "cta_text": "START SELLING TODAY",
+              "supporting_text": "Help customers experience skin appearance"
+            }
+          }
+        ]
+      },
+      "visual_elements": {
+        "icons": "modern flat icons with rounded corners",
+        "arrows": "curved flow arrows between steps",
+        "shapes": "rounded rectangles, soft shadows",
+        "imagery": "abstract wellness imagery, no photorealistic people"
+      },
+      "accessibility": {
+        "contrast_ratio": "minimum 4.5:1",
+        "color_blindness": "use patterns in addition to color",
+        "text_sizing": "minimum 12pt for all body text"
+      }
+    },
+    "flowchart": {
+      "metadata": {
+        "product": "Lumi",
+        "type": "sales_process_flowchart",
+        "purpose": "Step-by-step sales conversation guide"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#EC407A",
+          "secondary": "#F48FB1",
+          "accent": "#FFD700",
+          "background": "#FCE4EC",
+          "text": "#880E4F"
+        },
+        "style": "modern flowchart with decision branches"
+      },
+      "flowchart": {
+        "orientation": "top_to_bottom",
+        "nodes": [
+          {
+            "id": "start",
+            "type": "start_node",
+            "label": "START CONVERSATION",
+            "shape": "rounded_rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "rapport",
+            "type": "action",
+            "label": "BUILD RAPPORT",
+            "description": "Smile, use their name, find common ground",
+            "script": "Hi! I love your energy today. How's your week going?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "discover",
+            "type": "action",
+            "label": "ASK DISCOVERY QUESTIONS",
+            "description": "Uncover beauty pain points",
+            "script": "Have you ever struggled with beauty challenges?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_interested",
+            "type": "decision",
+            "label": "INTERESTED?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "yes": "present",
+              "no": "handle_not_interested"
+            }
+          },
+          {
+            "id": "handle_not_interested",
+            "type": "objection",
+            "label": "HANDLE: 'NOT INTERESTED'",
+            "script": "I understand. Just curious - what would need to be different for this to be worth exploring?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "present",
+            "type": "action",
+            "label": "PRESENT LUMI",
+            "description": "Share Skin appearance, Radiant complexion",
+            "script": "The Lumi patch uses vibrotactile technology to help with skin appearance...",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_objection",
+            "type": "decision",
+            "label": "ANY OBJECTIONS?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "price": "handle_price",
+              "think": "handle_think",
+              "spouse": "handle_spouse",
+              "none": "close"
+            }
+          },
+          {
+            "id": "handle_price",
+            "type": "objection",
+            "label": "HANDLE: 'TOO EXPENSIVE'",
+            "script": "I understand cost is important. What criteria beyond price matters most to you?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_think",
+            "type": "objection",
+            "label": "HANDLE: 'NEED TO THINK'",
+            "script": "Of course! What specific questions would help you decide?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_spouse",
+            "type": "objection",
+            "label": "HANDLE: 'ASK SPOUSE'",
+            "script": "Great idea! What concerns might they have that we could address now?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "close",
+            "type": "action",
+            "label": "CLOSE THE SALE",
+            "description": "Use assumptive or alternative close",
+            "script": "Would you like to start with a single pack or save with the bundle?",
+            "shape": "rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "success",
+            "type": "end_node",
+            "label": "SUCCESS! \ud83c\udf89",
+            "description": "Schedule follow-up, ask for referrals",
+            "shape": "rounded_rectangle",
+            "color": "accent"
+          }
+        ],
+        "connections": [
+          {
+            "from": "start",
+            "to": "rapport"
+          },
+          {
+            "from": "rapport",
+            "to": "discover"
+          },
+          {
+            "from": "discover",
+            "to": "decision_interested"
+          },
+          {
+            "from": "decision_interested",
+            "to": "present",
+            "label": "YES"
+          },
+          {
+            "from": "decision_interested",
+            "to": "handle_not_interested",
+            "label": "NO"
+          },
+          {
+            "from": "handle_not_interested",
+            "to": "discover",
+            "label": "RE-ENGAGE"
+          },
+          {
+            "from": "present",
+            "to": "decision_objection"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_price",
+            "label": "PRICE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_think",
+            "label": "THINK"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_spouse",
+            "label": "SPOUSE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "close",
+            "label": "NONE"
+          },
+          {
+            "from": "handle_price",
+            "to": "close"
+          },
+          {
+            "from": "handle_think",
+            "to": "close"
+          },
+          {
+            "from": "handle_spouse",
+            "to": "close"
+          },
+          {
+            "from": "close",
+            "to": "success"
+          }
+        ]
+      }
+    }
+  },
+  "rocket": {
+    "overview": {
+      "metadata": {
+        "product": "Rocket",
+        "category": "Men's Health",
+        "tagline": "Enhance your inner energy and well-being",
+        "generated": "2025-12-22T03:55:10.956103",
+        "version": "2.0"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#1976D2",
+          "secondary": "#42A5F5",
+          "accent": "#FF5722",
+          "background": "#E3F2FD",
+          "text": "#0D47A1"
+        },
+        "typography": {
+          "headline": "Bold sans-serif, 48pt, white on primary color",
+          "subheadline": "Semi-bold, 24pt, primary color",
+          "body": "Regular, 14pt, text color",
+          "step_numbers": "Extra bold, 36pt, accent color",
+          "cta": "Bold, 18pt, white on accent"
+        },
+        "spacing": {
+          "section_gap": "40px",
+          "element_gap": "20px",
+          "padding": "30px"
+        }
+      },
+      "layout": {
+        "type": "vertical_flow",
+        "sections": [
+          {
+            "name": "header",
+            "height": "15%",
+            "content": {
+              "logo_area": "Super Patch logo (top left)",
+              "product_name": "Rocket",
+              "tagline": "Enhance your inner energy and well-being"
+            }
+          },
+          {
+            "name": "problem_section",
+            "height": "20%",
+            "content": {
+              "title": "THE CHALLENGE",
+              "pain_points": [
+                "Struggling with men's health issues?",
+                "Tired of temporary solutions?",
+                "Looking for drug-free alternatives?"
+              ],
+              "icon": "frustrated_person_icon"
+            }
+          },
+          {
+            "name": "solution_section",
+            "height": "25%",
+            "content": {
+              "title": "THE ROCKET SOLUTION",
+              "benefits": [
+                "Male vitality",
+                "Energy enhancement",
+                "Well-being"
+              ],
+              "key_differentiator": "100% Drug-Free \u2022 Non-Invasive \u2022 Vibrotactile Technology"
+            }
+          },
+          {
+            "name": "process_section",
+            "height": "30%",
+            "content": {
+              "title": "5 SIMPLE STEPS TO SUCCESS",
+              "steps": [
+                {
+                  "number": 1,
+                  "title": "CONNECT",
+                  "description": "Start with genuine rapport",
+                  "icon": "handshake"
+                },
+                {
+                  "number": 2,
+                  "title": "DISCOVER",
+                  "description": "Uncover their men's health challenges",
+                  "icon": "magnifying_glass"
+                },
+                {
+                  "number": 3,
+                  "title": "PRESENT",
+                  "description": "Show how Rocket helps",
+                  "icon": "presentation"
+                },
+                {
+                  "number": 4,
+                  "title": "HANDLE",
+                  "description": "Address concerns confidently",
+                  "icon": "shield_check"
+                },
+                {
+                  "number": 5,
+                  "title": "CLOSE",
+                  "description": "Ask for the commitment",
+                  "icon": "trophy"
+                }
+              ],
+              "layout": "horizontal_flow_with_arrows"
+            }
+          },
+          {
+            "name": "cta_section",
+            "height": "10%",
+            "content": {
+              "cta_text": "START SELLING TODAY",
+              "supporting_text": "Help customers experience male vitality"
+            }
+          }
+        ]
+      },
+      "visual_elements": {
+        "icons": "modern flat icons with rounded corners",
+        "arrows": "curved flow arrows between steps",
+        "shapes": "rounded rectangles, soft shadows",
+        "imagery": "abstract wellness imagery, no photorealistic people"
+      },
+      "accessibility": {
+        "contrast_ratio": "minimum 4.5:1",
+        "color_blindness": "use patterns in addition to color",
+        "text_sizing": "minimum 12pt for all body text"
+      }
+    },
+    "flowchart": {
+      "metadata": {
+        "product": "Rocket",
+        "type": "sales_process_flowchart",
+        "purpose": "Step-by-step sales conversation guide"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#1976D2",
+          "secondary": "#42A5F5",
+          "accent": "#FF5722",
+          "background": "#E3F2FD",
+          "text": "#0D47A1"
+        },
+        "style": "modern flowchart with decision branches"
+      },
+      "flowchart": {
+        "orientation": "top_to_bottom",
+        "nodes": [
+          {
+            "id": "start",
+            "type": "start_node",
+            "label": "START CONVERSATION",
+            "shape": "rounded_rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "rapport",
+            "type": "action",
+            "label": "BUILD RAPPORT",
+            "description": "Smile, use their name, find common ground",
+            "script": "Hi! I love your energy today. How's your week going?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "discover",
+            "type": "action",
+            "label": "ASK DISCOVERY QUESTIONS",
+            "description": "Uncover men's health pain points",
+            "script": "Have you ever struggled with men's health challenges?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_interested",
+            "type": "decision",
+            "label": "INTERESTED?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "yes": "present",
+              "no": "handle_not_interested"
+            }
+          },
+          {
+            "id": "handle_not_interested",
+            "type": "objection",
+            "label": "HANDLE: 'NOT INTERESTED'",
+            "script": "I understand. Just curious - what would need to be different for this to be worth exploring?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "present",
+            "type": "action",
+            "label": "PRESENT ROCKET",
+            "description": "Share Male vitality, Energy enhancement",
+            "script": "The Rocket patch uses vibrotactile technology to help with male vitality...",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_objection",
+            "type": "decision",
+            "label": "ANY OBJECTIONS?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "price": "handle_price",
+              "think": "handle_think",
+              "spouse": "handle_spouse",
+              "none": "close"
+            }
+          },
+          {
+            "id": "handle_price",
+            "type": "objection",
+            "label": "HANDLE: 'TOO EXPENSIVE'",
+            "script": "I understand cost is important. What criteria beyond price matters most to you?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_think",
+            "type": "objection",
+            "label": "HANDLE: 'NEED TO THINK'",
+            "script": "Of course! What specific questions would help you decide?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_spouse",
+            "type": "objection",
+            "label": "HANDLE: 'ASK SPOUSE'",
+            "script": "Great idea! What concerns might they have that we could address now?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "close",
+            "type": "action",
+            "label": "CLOSE THE SALE",
+            "description": "Use assumptive or alternative close",
+            "script": "Would you like to start with a single pack or save with the bundle?",
+            "shape": "rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "success",
+            "type": "end_node",
+            "label": "SUCCESS! \ud83c\udf89",
+            "description": "Schedule follow-up, ask for referrals",
+            "shape": "rounded_rectangle",
+            "color": "accent"
+          }
+        ],
+        "connections": [
+          {
+            "from": "start",
+            "to": "rapport"
+          },
+          {
+            "from": "rapport",
+            "to": "discover"
+          },
+          {
+            "from": "discover",
+            "to": "decision_interested"
+          },
+          {
+            "from": "decision_interested",
+            "to": "present",
+            "label": "YES"
+          },
+          {
+            "from": "decision_interested",
+            "to": "handle_not_interested",
+            "label": "NO"
+          },
+          {
+            "from": "handle_not_interested",
+            "to": "discover",
+            "label": "RE-ENGAGE"
+          },
+          {
+            "from": "present",
+            "to": "decision_objection"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_price",
+            "label": "PRICE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_think",
+            "label": "THINK"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_spouse",
+            "label": "SPOUSE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "close",
+            "label": "NONE"
+          },
+          {
+            "from": "handle_price",
+            "to": "close"
+          },
+          {
+            "from": "handle_think",
+            "to": "close"
+          },
+          {
+            "from": "handle_spouse",
+            "to": "close"
+          },
+          {
+            "from": "close",
+            "to": "success"
+          }
+        ]
+      }
+    }
+  },
+  "peace": {
+    "overview": {
+      "metadata": {
+        "product": "Peace",
+        "category": "Stress",
+        "tagline": "Manage your stress and experience greater calm and clarity",
+        "generated": "2025-12-22T03:55:51.656453",
+        "version": "2.0"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#5C6BC0",
+          "secondary": "#9FA8DA",
+          "accent": "#26C6DA",
+          "background": "#E8EAF6",
+          "text": "#283593"
+        },
+        "typography": {
+          "headline": "Bold sans-serif, 48pt, white on primary color",
+          "subheadline": "Semi-bold, 24pt, primary color",
+          "body": "Regular, 14pt, text color",
+          "step_numbers": "Extra bold, 36pt, accent color",
+          "cta": "Bold, 18pt, white on accent"
+        },
+        "spacing": {
+          "section_gap": "40px",
+          "element_gap": "20px",
+          "padding": "30px"
+        }
+      },
+      "layout": {
+        "type": "vertical_flow",
+        "sections": [
+          {
+            "name": "header",
+            "height": "15%",
+            "content": {
+              "logo_area": "Super Patch logo (top left)",
+              "product_name": "Peace",
+              "tagline": "Manage your stress and experience greater calm and clarity"
+            }
+          },
+          {
+            "name": "problem_section",
+            "height": "20%",
+            "content": {
+              "title": "THE CHALLENGE",
+              "pain_points": [
+                "Struggling with stress issues?",
+                "Tired of temporary solutions?",
+                "Looking for drug-free alternatives?"
+              ],
+              "icon": "frustrated_person_icon"
+            }
+          },
+          {
+            "name": "solution_section",
+            "height": "25%",
+            "content": {
+              "title": "THE PEACE SOLUTION",
+              "benefits": [
+                "Stress management",
+                "Calm and clarity",
+                "Relaxation"
+              ],
+              "key_differentiator": "100% Drug-Free \u2022 Non-Invasive \u2022 Vibrotactile Technology"
+            }
+          },
+          {
+            "name": "process_section",
+            "height": "30%",
+            "content": {
+              "title": "5 SIMPLE STEPS TO SUCCESS",
+              "steps": [
+                {
+                  "number": 1,
+                  "title": "CONNECT",
+                  "description": "Start with genuine rapport",
+                  "icon": "handshake"
+                },
+                {
+                  "number": 2,
+                  "title": "DISCOVER",
+                  "description": "Uncover their stress challenges",
+                  "icon": "magnifying_glass"
+                },
+                {
+                  "number": 3,
+                  "title": "PRESENT",
+                  "description": "Show how Peace helps",
+                  "icon": "presentation"
+                },
+                {
+                  "number": 4,
+                  "title": "HANDLE",
+                  "description": "Address concerns confidently",
+                  "icon": "shield_check"
+                },
+                {
+                  "number": 5,
+                  "title": "CLOSE",
+                  "description": "Ask for the commitment",
+                  "icon": "trophy"
+                }
+              ],
+              "layout": "horizontal_flow_with_arrows"
+            }
+          },
+          {
+            "name": "cta_section",
+            "height": "10%",
+            "content": {
+              "cta_text": "START SELLING TODAY",
+              "supporting_text": "Help customers experience stress management"
+            }
+          }
+        ]
+      },
+      "visual_elements": {
+        "icons": "modern flat icons with rounded corners",
+        "arrows": "curved flow arrows between steps",
+        "shapes": "rounded rectangles, soft shadows",
+        "imagery": "abstract wellness imagery, no photorealistic people"
+      },
+      "accessibility": {
+        "contrast_ratio": "minimum 4.5:1",
+        "color_blindness": "use patterns in addition to color",
+        "text_sizing": "minimum 12pt for all body text"
+      }
+    },
+    "flowchart": {
+      "metadata": {
+        "product": "Peace",
+        "type": "sales_process_flowchart",
+        "purpose": "Step-by-step sales conversation guide"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#5C6BC0",
+          "secondary": "#9FA8DA",
+          "accent": "#26C6DA",
+          "background": "#E8EAF6",
+          "text": "#283593"
+        },
+        "style": "modern flowchart with decision branches"
+      },
+      "flowchart": {
+        "orientation": "top_to_bottom",
+        "nodes": [
+          {
+            "id": "start",
+            "type": "start_node",
+            "label": "START CONVERSATION",
+            "shape": "rounded_rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "rapport",
+            "type": "action",
+            "label": "BUILD RAPPORT",
+            "description": "Smile, use their name, find common ground",
+            "script": "Hi! I love your energy today. How's your week going?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "discover",
+            "type": "action",
+            "label": "ASK DISCOVERY QUESTIONS",
+            "description": "Uncover stress pain points",
+            "script": "Have you ever struggled with stress challenges?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_interested",
+            "type": "decision",
+            "label": "INTERESTED?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "yes": "present",
+              "no": "handle_not_interested"
+            }
+          },
+          {
+            "id": "handle_not_interested",
+            "type": "objection",
+            "label": "HANDLE: 'NOT INTERESTED'",
+            "script": "I understand. Just curious - what would need to be different for this to be worth exploring?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "present",
+            "type": "action",
+            "label": "PRESENT PEACE",
+            "description": "Share Stress management, Calm and clarity",
+            "script": "The Peace patch uses vibrotactile technology to help with stress management...",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_objection",
+            "type": "decision",
+            "label": "ANY OBJECTIONS?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "price": "handle_price",
+              "think": "handle_think",
+              "spouse": "handle_spouse",
+              "none": "close"
+            }
+          },
+          {
+            "id": "handle_price",
+            "type": "objection",
+            "label": "HANDLE: 'TOO EXPENSIVE'",
+            "script": "I understand cost is important. What criteria beyond price matters most to you?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_think",
+            "type": "objection",
+            "label": "HANDLE: 'NEED TO THINK'",
+            "script": "Of course! What specific questions would help you decide?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_spouse",
+            "type": "objection",
+            "label": "HANDLE: 'ASK SPOUSE'",
+            "script": "Great idea! What concerns might they have that we could address now?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "close",
+            "type": "action",
+            "label": "CLOSE THE SALE",
+            "description": "Use assumptive or alternative close",
+            "script": "Would you like to start with a single pack or save with the bundle?",
+            "shape": "rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "success",
+            "type": "end_node",
+            "label": "SUCCESS! \ud83c\udf89",
+            "description": "Schedule follow-up, ask for referrals",
+            "shape": "rounded_rectangle",
+            "color": "accent"
+          }
+        ],
+        "connections": [
+          {
+            "from": "start",
+            "to": "rapport"
+          },
+          {
+            "from": "rapport",
+            "to": "discover"
+          },
+          {
+            "from": "discover",
+            "to": "decision_interested"
+          },
+          {
+            "from": "decision_interested",
+            "to": "present",
+            "label": "YES"
+          },
+          {
+            "from": "decision_interested",
+            "to": "handle_not_interested",
+            "label": "NO"
+          },
+          {
+            "from": "handle_not_interested",
+            "to": "discover",
+            "label": "RE-ENGAGE"
+          },
+          {
+            "from": "present",
+            "to": "decision_objection"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_price",
+            "label": "PRICE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_think",
+            "label": "THINK"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_spouse",
+            "label": "SPOUSE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "close",
+            "label": "NONE"
+          },
+          {
+            "from": "handle_price",
+            "to": "close"
+          },
+          {
+            "from": "handle_think",
+            "to": "close"
+          },
+          {
+            "from": "handle_spouse",
+            "to": "close"
+          },
+          {
+            "from": "close",
+            "to": "success"
+          }
+        ]
+      }
+    }
+  },
+  "boost": {
+    "overview": {
+      "metadata": {
+        "product": "Boost",
+        "category": "Energy",
+        "tagline": "Power up with clean energy. No sugar or caffeine",
+        "generated": "2025-12-22T03:56:33.917769",
+        "version": "2.0"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#FF6F00",
+          "secondary": "#FFB74D",
+          "accent": "#FFC107",
+          "background": "#FFF3E0",
+          "text": "#E65100"
+        },
+        "typography": {
+          "headline": "Bold sans-serif, 48pt, white on primary color",
+          "subheadline": "Semi-bold, 24pt, primary color",
+          "body": "Regular, 14pt, text color",
+          "step_numbers": "Extra bold, 36pt, accent color",
+          "cta": "Bold, 18pt, white on accent"
+        },
+        "spacing": {
+          "section_gap": "40px",
+          "element_gap": "20px",
+          "padding": "30px"
+        }
+      },
+      "layout": {
+        "type": "vertical_flow",
+        "sections": [
+          {
+            "name": "header",
+            "height": "15%",
+            "content": {
+              "logo_area": "Super Patch logo (top left)",
+              "product_name": "Boost",
+              "tagline": "Power up with clean energy. No sugar or caffeine"
+            }
+          },
+          {
+            "name": "problem_section",
+            "height": "20%",
+            "content": {
+              "title": "THE CHALLENGE",
+              "pain_points": [
+                "Struggling with energy issues?",
+                "Tired of temporary solutions?",
+                "Looking for drug-free alternatives?"
+              ],
+              "icon": "frustrated_person_icon"
+            }
+          },
+          {
+            "name": "solution_section",
+            "height": "25%",
+            "content": {
+              "title": "THE BOOST SOLUTION",
+              "benefits": [
+                "Clean energy",
+                "No caffeine crash",
+                "Sustained vitality"
+              ],
+              "key_differentiator": "100% Drug-Free \u2022 Non-Invasive \u2022 Vibrotactile Technology"
+            }
+          },
+          {
+            "name": "process_section",
+            "height": "30%",
+            "content": {
+              "title": "5 SIMPLE STEPS TO SUCCESS",
+              "steps": [
+                {
+                  "number": 1,
+                  "title": "CONNECT",
+                  "description": "Start with genuine rapport",
+                  "icon": "handshake"
+                },
+                {
+                  "number": 2,
+                  "title": "DISCOVER",
+                  "description": "Uncover their energy challenges",
+                  "icon": "magnifying_glass"
+                },
+                {
+                  "number": 3,
+                  "title": "PRESENT",
+                  "description": "Show how Boost helps",
+                  "icon": "presentation"
+                },
+                {
+                  "number": 4,
+                  "title": "HANDLE",
+                  "description": "Address concerns confidently",
+                  "icon": "shield_check"
+                },
+                {
+                  "number": 5,
+                  "title": "CLOSE",
+                  "description": "Ask for the commitment",
+                  "icon": "trophy"
+                }
+              ],
+              "layout": "horizontal_flow_with_arrows"
+            }
+          },
+          {
+            "name": "cta_section",
+            "height": "10%",
+            "content": {
+              "cta_text": "START SELLING TODAY",
+              "supporting_text": "Help customers experience clean energy"
+            }
+          }
+        ]
+      },
+      "visual_elements": {
+        "icons": "modern flat icons with rounded corners",
+        "arrows": "curved flow arrows between steps",
+        "shapes": "rounded rectangles, soft shadows",
+        "imagery": "abstract wellness imagery, no photorealistic people"
+      },
+      "accessibility": {
+        "contrast_ratio": "minimum 4.5:1",
+        "color_blindness": "use patterns in addition to color",
+        "text_sizing": "minimum 12pt for all body text"
+      }
+    },
+    "flowchart": {
+      "metadata": {
+        "product": "Boost",
+        "type": "sales_process_flowchart",
+        "purpose": "Step-by-step sales conversation guide"
+      },
+      "design_system": {
+        "colors": {
+          "primary": "#FF6F00",
+          "secondary": "#FFB74D",
+          "accent": "#FFC107",
+          "background": "#FFF3E0",
+          "text": "#E65100"
+        },
+        "style": "modern flowchart with decision branches"
+      },
+      "flowchart": {
+        "orientation": "top_to_bottom",
+        "nodes": [
+          {
+            "id": "start",
+            "type": "start_node",
+            "label": "START CONVERSATION",
+            "shape": "rounded_rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "rapport",
+            "type": "action",
+            "label": "BUILD RAPPORT",
+            "description": "Smile, use their name, find common ground",
+            "script": "Hi! I love your energy today. How's your week going?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "discover",
+            "type": "action",
+            "label": "ASK DISCOVERY QUESTIONS",
+            "description": "Uncover energy pain points",
+            "script": "Have you ever struggled with energy challenges?",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_interested",
+            "type": "decision",
+            "label": "INTERESTED?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "yes": "present",
+              "no": "handle_not_interested"
+            }
+          },
+          {
+            "id": "handle_not_interested",
+            "type": "objection",
+            "label": "HANDLE: 'NOT INTERESTED'",
+            "script": "I understand. Just curious - what would need to be different for this to be worth exploring?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "present",
+            "type": "action",
+            "label": "PRESENT BOOST",
+            "description": "Share Clean energy, No caffeine crash",
+            "script": "The Boost patch uses vibrotactile technology to help with clean energy...",
+            "shape": "rectangle",
+            "color": "secondary"
+          },
+          {
+            "id": "decision_objection",
+            "type": "decision",
+            "label": "ANY OBJECTIONS?",
+            "shape": "diamond",
+            "color": "accent",
+            "branches": {
+              "price": "handle_price",
+              "think": "handle_think",
+              "spouse": "handle_spouse",
+              "none": "close"
+            }
+          },
+          {
+            "id": "handle_price",
+            "type": "objection",
+            "label": "HANDLE: 'TOO EXPENSIVE'",
+            "script": "I understand cost is important. What criteria beyond price matters most to you?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_think",
+            "type": "objection",
+            "label": "HANDLE: 'NEED TO THINK'",
+            "script": "Of course! What specific questions would help you decide?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "handle_spouse",
+            "type": "objection",
+            "label": "HANDLE: 'ASK SPOUSE'",
+            "script": "Great idea! What concerns might they have that we could address now?",
+            "shape": "hexagon",
+            "color": "accent"
+          },
+          {
+            "id": "close",
+            "type": "action",
+            "label": "CLOSE THE SALE",
+            "description": "Use assumptive or alternative close",
+            "script": "Would you like to start with a single pack or save with the bundle?",
+            "shape": "rectangle",
+            "color": "primary"
+          },
+          {
+            "id": "success",
+            "type": "end_node",
+            "label": "SUCCESS! \ud83c\udf89",
+            "description": "Schedule follow-up, ask for referrals",
+            "shape": "rounded_rectangle",
+            "color": "accent"
+          }
+        ],
+        "connections": [
+          {
+            "from": "start",
+            "to": "rapport"
+          },
+          {
+            "from": "rapport",
+            "to": "discover"
+          },
+          {
+            "from": "discover",
+            "to": "decision_interested"
+          },
+          {
+            "from": "decision_interested",
+            "to": "present",
+            "label": "YES"
+          },
+          {
+            "from": "decision_interested",
+            "to": "handle_not_interested",
+            "label": "NO"
+          },
+          {
+            "from": "handle_not_interested",
+            "to": "discover",
+            "label": "RE-ENGAGE"
+          },
+          {
+            "from": "present",
+            "to": "decision_objection"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_price",
+            "label": "PRICE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_think",
+            "label": "THINK"
+          },
+          {
+            "from": "decision_objection",
+            "to": "handle_spouse",
+            "label": "SPOUSE"
+          },
+          {
+            "from": "decision_objection",
+            "to": "close",
+            "label": "NONE"
+          },
+          {
+            "from": "handle_price",
+            "to": "close"
+          },
+          {
+            "from": "handle_think",
+            "to": "close"
+          },
+          {
+            "from": "handle_spouse",
+            "to": "close"
+          },
+          {
+            "from": "close",
+            "to": "success"
+          }
+        ]
+      }
+    }
+  }
+}

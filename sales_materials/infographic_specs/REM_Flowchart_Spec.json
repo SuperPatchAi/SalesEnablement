@@ -1,0 +1,198 @@
+{
+  "metadata": {
+    "product": "REM",
+    "type": "sales_process_flowchart",
+    "purpose": "Step-by-step sales conversation guide"
+  },
+  "design_system": {
+    "colors": {
+      "primary": "#1565C0",
+      "secondary": "#64B5F6",
+      "accent": "#7E57C2",
+      "background": "#E3F2FD",
+      "text": "#0D47A1"
+    },
+    "style": "modern flowchart with decision branches"
+  },
+  "flowchart": {
+    "orientation": "top_to_bottom",
+    "nodes": [
+      {
+        "id": "start",
+        "type": "start_node",
+        "label": "START CONVERSATION",
+        "shape": "rounded_rectangle",
+        "color": "primary"
+      },
+      {
+        "id": "rapport",
+        "type": "action",
+        "label": "BUILD RAPPORT",
+        "description": "Smile, use their name, find common ground",
+        "script": "Hi! I love your energy today. How's your week going?",
+        "shape": "rectangle",
+        "color": "secondary"
+      },
+      {
+        "id": "discover",
+        "type": "action",
+        "label": "ASK DISCOVERY QUESTIONS",
+        "description": "Uncover sleep pain points",
+        "script": "Have you ever struggled with sleep challenges?",
+        "shape": "rectangle",
+        "color": "secondary"
+      },
+      {
+        "id": "decision_interested",
+        "type": "decision",
+        "label": "INTERESTED?",
+        "shape": "diamond",
+        "color": "accent",
+        "branches": {
+          "yes": "present",
+          "no": "handle_not_interested"
+        }
+      },
+      {
+        "id": "handle_not_interested",
+        "type": "objection",
+        "label": "HANDLE: 'NOT INTERESTED'",
+        "script": "I understand. Just curious - what would need to be different for this to be worth exploring?",
+        "shape": "hexagon",
+        "color": "accent"
+      },
+      {
+        "id": "present",
+        "type": "action",
+        "label": "PRESENT REM",
+        "description": "Share Deeper sleep, Better rest",
+        "script": "The REM patch uses vibrotactile technology to help with deeper sleep...",
+        "shape": "rectangle",
+        "color": "secondary"
+      },
+      {
+        "id": "decision_objection",
+        "type": "decision",
+        "label": "ANY OBJECTIONS?",
+        "shape": "diamond",
+        "color": "accent",
+        "branches": {
+          "price": "handle_price",
+          "think": "handle_think",
+          "spouse": "handle_spouse",
+          "none": "close"
+        }
+      },
+      {
+        "id": "handle_price",
+        "type": "objection",
+        "label": "HANDLE: 'TOO EXPENSIVE'",
+        "script": "I understand cost is important. What criteria beyond price matters most to you?",
+        "shape": "hexagon",
+        "color": "accent"
+      },
+      {
+        "id": "handle_think",
+        "type": "objection",
+        "label": "HANDLE: 'NEED TO THINK'",
+        "script": "Of course! What specific questions would help you decide?",
+        "shape": "hexagon",
+        "color": "accent"
+      },
+      {
+        "id": "handle_spouse",
+        "type": "objection",
+        "label": "HANDLE: 'ASK SPOUSE'",
+        "script": "Great idea! What concerns might they have that we could address now?",
+        "shape": "hexagon",
+        "color": "accent"
+      },
+      {
+        "id": "close",
+        "type": "action",
+        "label": "CLOSE THE SALE",
+        "description": "Use assumptive or alternative close",
+        "script": "Would you like to start with a single pack or save with the bundle?",
+        "shape": "rectangle",
+        "color": "primary"
+      },
+      {
+        "id": "success",
+        "type": "end_node",
+        "label": "SUCCESS! \ud83c\udf89",
+        "description": "Schedule follow-up, ask for referrals",
+        "shape": "rounded_rectangle",
+        "color": "accent"
+      }
+    ],
+    "connections": [
+      {
+        "from": "start",
+        "to": "rapport"
+      },
+      {
+        "from": "rapport",
+        "to": "discover"
+      },
+      {
+        "from": "discover",
+        "to": "decision_interested"
+      },
+      {
+        "from": "decision_interested",
+        "to": "present",
+        "label": "YES"
+      },
+      {
+        "from": "decision_interested",
+        "to": "handle_not_interested",
+        "label": "NO"
+      },
+      {
+        "from": "handle_not_interested",
+        "to": "discover",
+        "label": "RE-ENGAGE"
+      },
+      {
+        "from": "present",
+        "to": "decision_objection"
+      },
+      {
+        "from": "decision_objection",
+        "to": "handle_price",
+        "label": "PRICE"
+      },
+      {
+        "from": "decision_objection",
+        "to": "handle_think",
+        "label": "THINK"
+      },
+      {
+        "from": "decision_objection",
+        "to": "handle_spouse",
+        "label": "SPOUSE"
+      },
+      {
+        "from": "decision_objection",
+        "to": "close",
+        "label": "NONE"
+      },
+      {
+        "from": "handle_price",
+        "to": "close"
+      },
+      {
+        "from": "handle_think",
+        "to": "close"
+      },
+      {
+        "from": "handle_spouse",
+        "to": "close"
+      },
+      {
+        "from": "close",
+        "to": "success"
+      }
+    ]
+  }
+}
