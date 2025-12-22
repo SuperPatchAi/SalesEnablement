@@ -20,157 +20,138 @@ A comprehensive sales enablement resource library for the Super Patch direct sal
 
 ```
 /SalesEnablement
-├── README.md                    # Project overview (this file)
-├── YouTube videos.md            # Curated list of 60 training videos
-├── youtube_videos.json          # Structured video data for processing
-├── FirecrawlReference           # Firecrawl API configuration reference
-├── .cursor/
-│   └── mcp.json                 # MCP server configuration
+├── README.md                              # Project overview (this file)
+├── YouTube videos.md                      # Curated list of 60 training videos
+├── youtube_videos.json                    # Structured video data
 │
-├── /frameworks (planned)        # Extracted sales frameworks
-│   ├── closing-techniques.md
-│   ├── objection-handling.md
-│   ├── rapport-building.md
-│   └── prospecting.md
+├── /analyses                              # 44 individual video analyses
+│   ├── [video_id].md                      # Detailed framework extractions
+│   └── [video_id].json                    # Raw analysis data
 │
-├── /scripts (planned)           # Product-specific sales scripts
-│   ├── /super-patch-products
-│   │   ├── freedom-patch.md
-│   │   ├── liberty-patch.md
-│   │   ├── victory-patch.md
-│   │   └── [other products].md
-│   └── /objection-responses
-│       ├── price-objections.md
-│       ├── timing-objections.md
-│       ├── spouse-objections.md
-│       └── skepticism-objections.md
+├── /frameworks                            # Compiled sales frameworks (600KB+)
+│   ├── all_frameworks.md                  # Master document (537KB)
+│   ├── objection_handling.md              # Objection responses & scripts
+│   ├── closing_techniques.md              # Closing methods & frameworks
+│   ├── cold_calling.md                    # Cold call scripts & openers
+│   ├── sales_psychology_and_building_rapport.md
+│   ├── follow-up_strategies.md            # Follow-up sequences
+│   ├── famous_sales_trainers.md           # Cardone, Belfort, Tracy methods
+│   ├── direct_sales_and_network_marketing.md
+│   ├── general_sales_training.md
+│   └── playlists_and_full_courses.md
 │
-└── /training (planned)          # Training materials
-    ├── onboarding-guide.md
-    ├── daily-routines.md
-    └── success-metrics.md
+├── /products                              # Super Patch product reference
+│   ├── SuperPatch_Product_Reference.md    # Complete product guide
+│   ├── SuperPatch_Research_Analysis.md    # Technology deep dive
+│   └── superpatch_products.json           # Structured product data
+│
+├── /scripts                               # Analysis & automation tools
+│   ├── gemini_video_analyzer.py           # Gemini video analysis
+│   ├── local_transcribe.py                # Local transcription fallback
+│   └── transcribe_video.py                # YouTube transcription
+│
+└── /.cursor
+    └── mcp.json                           # Firecrawl MCP configuration
 ```
 
 ---
 
-## 📚 Research Sources
+## ✅ Completed Work
 
-### YouTube Training Videos (60 curated resources)
+### Phase 1: Research & Collection ✅
+- [x] Set up Firecrawl MCP for deep research
+- [x] Curate 60 YouTube training videos
+- [x] Organize videos by 9 categories
+- [x] Create structured JSON for processing
 
-| Category | Count | Focus |
-|----------|-------|-------|
-| Playlists & Full Courses | 15 | Comprehensive training programs |
-| Famous Sales Trainers | 10 | Grant Cardone, Jordan Belfort, Brian Tracy |
-| Sales Psychology & Rapport | 8 | Building trust and understanding buyers |
-| Follow-Up Strategies | 8 | Converting prospects to customers |
-| Direct Sales & Network Marketing | 6 | MLM and direct selling specific |
-| Closing Techniques | 5 | Sealing the deal |
-| Objection Handling | 3 | Overcoming buyer resistance |
-| Cold Calling | 3 | Prospecting and outreach |
-| General Sales Training | 2 | Foundational skills |
+### Phase 2: Framework Extraction ✅
+- [x] Analyze 44 videos using Google Gemini 2.5
+- [x] Extract step-by-step frameworks from each
+- [x] Document exact scripts and word tracks
+- [x] Compile into category-specific framework docs
+- [x] Create master frameworks document (537KB)
 
-### Featured Experts
-- **Jeremy Miner** - NEPQ (Neuro-Emotional Persuasion Questions)
-- **Grant Cardone** - 10X Sales System
-- **Jordan Belfort** - Straight Line Persuasion
-- **Brian Tracy** - Psychology of Selling
-- **Andy Elliott** - Automotive & High-Ticket Sales
-- **Jeb Blount** - Fanatical Prospecting
+### Phase 2.5: Product Research ✅
+- [x] Scrape Super Patch website for all products
+- [x] Document all 13 patches with benefits
+- [x] Create target customer profiles
+- [x] Document pain points for each product
+- [x] Build objection response templates
 
 ---
 
-## 🔧 Key Frameworks to Extract
+## 📚 Sales Frameworks Extracted
 
-### 1. Closing Techniques
-- The Assumptive Close
-- The Alternative Close
-- The Urgency Close
-- The Summary Close
-- NEPQ Closing Questions
+### Videos Analyzed: 44
 
-### 2. Objection Handling
-- Feel-Felt-Found Method
-- Acknowledge-Ask-Advocate
-- Isolate and Address
-- Preemptive Objection Handling
-- The "That's Exactly Why" Reframe
+| Category | Videos | Key Frameworks |
+|----------|--------|----------------|
+| Objection Handling | 3 | De-framing, Consequence Questioning, Identity Framing |
+| Closing Techniques | 5 | 5-Step Close, Assumptive Close, Value-Based Closing |
+| Cold Calling | 3 | Opening Lines, Pattern Interrupts, Cold Call Scripts |
+| Direct Sales & MLM | 6 | 3+3+3 Method, Relationship-First, Network Building |
+| Follow-Up Strategies | 8 | Follow-Up Blueprints, Personalization, Multi-Touch |
+| Sales Psychology | 8 | Rapport Building, Trust, Buyer Psychology |
+| Famous Trainers | 7 | Cardone 10X, Belfort Straight Line, Tracy Methods |
+| General Training | 2 | Prospecting, Motivation |
+| Courses | 2 | Full training programs |
 
-### 3. Rapport Building
-- Mirroring and Matching
-- Active Listening Techniques
-- The 3+3+3=3000 Method (Modern Direct Seller)
-- Question-Based Selling
-- Tonality and Body Language
-
-### 4. Prospecting & Follow-Up
-- The 5-Touch Follow-Up System
-- Value-First Outreach
-- Social Selling Strategies
-- Referral Generation Scripts
+### Featured Expert Frameworks:
+- **Jeremy Miner** - NEPQ, De-framing, Consequence Questions
+- **Grant Cardone** - 10X Mindset, Massive Action
+- **Jordan Belfort** - Straight Line Persuasion, Tonality
+- **Brian Tracy** - Psychology of Selling, Self-Confidence
+- **Andy Elliott** - Rapport Building, Energy Matching
 
 ---
 
-## 🎯 Super Patch Product Scripts (Planned)
+## 🏷️ Super Patch Products (13 Patches)
 
-Each product script will include:
-
-```
-├── Product Overview
-│   ├── Key Benefits
-│   ├── Target Customer Profile
-│   └── Unique Selling Points
-│
-├── Opening Scripts
-│   ├── Cold Approach
-│   ├── Warm Introduction
-│   └── Referral Introduction
-│
-├── Discovery Questions
-│   ├── Pain Point Questions
-│   ├── Impact Questions
-│   └── Solution Questions
-│
-├── Presentation Framework
-│   ├── Problem-Agitate-Solve
-│   ├── Feature-Advantage-Benefit
-│   └── Story-Based Selling
-│
-├── Objection Responses
-│   ├── "It's too expensive"
-│   ├── "I need to think about it"
-│   ├── "I need to talk to my spouse"
-│   ├── "Does it really work?"
-│   ├── "I've tried patches before"
-│   └── "I'm not interested"
-│
-└── Closing Scripts
-    ├── Trial Close Questions
-    ├── Assumptive Close
-    └── Urgency Creation
-```
+| Category | Patch | Target Benefit |
+|----------|-------|----------------|
+| Aches & Pains | **Freedom** | Drug-free pain relief |
+| Mobility | **Liberty** | Balance & stability |
+| Sleep | **REM** | Deep, restful sleep |
+| Athletic Performance | **Victory** | Strength, speed, agility |
+| Focus & Attention | **Focus** | Concentration & clarity |
+| Max RMR | **Ignite** | Metabolism boost |
+| Will Power | **Kick It** | Habit breaking support |
+| Immune Support | **Defend** | Wellness maintenance |
+| Mood | **Joy** | Emotional well-being |
+| Beauty | **Lumi** | Skin appearance |
+| Men's Health | **Rocket** | Male vitality |
+| Stress | **Peace** | Calm & clarity |
+| Energy | **Boost** | Clean energy (no caffeine) |
 
 ---
 
 ## 🚀 Implementation Roadmap
 
-### Phase 1: Research & Collection ✅
+### Phase 1: Research & Collection ✅ COMPLETE
 - [x] Set up Firecrawl MCP for deep research
 - [x] Curate 60+ YouTube training videos
 - [x] Organize videos by category
 - [x] Create structured JSON for processing
 
-### Phase 2: Framework Extraction (Next)
-- [ ] Watch and analyze top videos from each category
-- [ ] Document key frameworks and techniques
-- [ ] Create framework summary documents
-- [ ] Identify Super Patch-applicable strategies
+### Phase 2: Framework Extraction ✅ COMPLETE
+- [x] Analyze 44 videos with Gemini AI
+- [x] Document key frameworks and techniques
+- [x] Create 10 framework summary documents
+- [x] Extract exact scripts and word tracks
+- [x] Include Super Patch applications
 
-### Phase 3: Script Development
-- [ ] List all Super Patch products
-- [ ] Create product-specific benefit statements
-- [ ] Develop opening scripts for each product
+### Phase 2.5: Product Research ✅ COMPLETE
+- [x] Research all Super Patch products
+- [x] Document 13 patches with full details
+- [x] Create target customer profiles
+- [x] Build objection response templates
+
+### Phase 3: Script Development 🔜 NEXT
+- [ ] Create product-specific sales scripts
+- [ ] Develop opening scripts for each patch
 - [ ] Write discovery question banks
-- [ ] Build objection response library
+- [ ] Build complete objection response library
+- [ ] Create closing scripts per product
 
 ### Phase 4: Training Materials
 - [ ] Create onboarding guide for new reps
@@ -191,18 +172,15 @@ Each product script will include:
 | Tool | Purpose |
 |------|---------|
 | **Firecrawl** | Deep research and web scraping |
-| **Google Gemini** | Video analysis and framework extraction |
+| **Google Gemini 2.5** | Video analysis and framework extraction |
 | **Cursor AI** | Code and content generation |
 | **GitHub** | Version control and collaboration |
-| **MCP Servers** | AI tool integrations |
 
 ### Video Analysis Pipeline
 
-We use Google Gemini's multimodal capabilities to analyze YouTube videos directly:
-
 ```bash
 # Setup
-pip install google-generativeai
+pip install google-genai
 export GEMINI_API_KEY="your-key"
 
 # Analyze single video
@@ -215,47 +193,40 @@ python scripts/gemini_video_analyzer.py --json youtube_videos.json --category ob
 python scripts/gemini_video_analyzer.py --compile
 ```
 
-**What Gemini Extracts:**
-- Main sales concepts and techniques
-- Step-by-step frameworks
-- Exact scripts and word tracks
-- Objection handling responses
-- Super Patch-specific applications
-
 ---
 
 ## 📖 How to Use This Repository
 
 ### For Sales Managers
-1. Review the training video list in `YouTube videos.md`
-2. Assign relevant videos to team members
-3. Use framework documents for team training
+1. Review framework docs in `/frameworks` for training content
+2. Use `products/SuperPatch_Product_Reference.md` for product training
+3. Assign specific framework docs to team members
 4. Customize scripts for your team's style
 
 ### For Sales Representatives
-1. Study the framework documents
-2. Practice scripts with role-play partners
-3. Use objection responses as quick reference
-4. Track which techniques work best for you
+1. **Start here:** `products/SuperPatch_Product_Reference.md`
+2. **Study frameworks:** `frameworks/all_frameworks.md`
+3. **Practice objections:** `frameworks/objection_handling.md`
+4. **Master closing:** `frameworks/closing_techniques.md`
 
-### For Content Contributors
-1. Watch assigned training videos
-2. Extract key techniques and frameworks
-3. Document in the appropriate framework file
-4. Submit for review and integration
+### Quick Reference:
+- **Need objection help?** → `frameworks/objection_handling.md`
+- **Need closing scripts?** → `frameworks/closing_techniques.md`
+- **Need product info?** → `products/SuperPatch_Product_Reference.md`
+- **Need rapport tips?** → `frameworks/sales_psychology_and_building_rapport.md`
 
 ---
 
-## 📊 Success Metrics
+## 📊 Content Statistics
 
-We'll measure the effectiveness of these materials by tracking:
-
-- **Conversion Rate** - Prospects to customers
-- **Average Deal Size** - Revenue per sale
-- **Sales Cycle Length** - Time from first contact to close
-- **Objection Overcome Rate** - Successfully addressed objections
-- **Rep Ramp Time** - Time for new reps to hit quota
-- **Customer Satisfaction** - Post-sale feedback scores
+| Content Type | Count/Size |
+|--------------|------------|
+| Training Videos Curated | 60 |
+| Videos Analyzed | 44 |
+| Framework Documents | 10 |
+| Total Framework Content | 600KB+ |
+| Products Documented | 13 |
+| Expert Methods Extracted | 15+ |
 
 ---
 
@@ -279,5 +250,5 @@ For questions about this project or Super Patch sales enablement:
 
 ---
 
-*Built with Firecrawl Deep Research API and Cursor AI*
-*Last Updated: December 21, 2025*
+*Built with Firecrawl Deep Research API, Google Gemini 2.5, and Cursor AI*
+*Last Updated: December 22, 2025*
