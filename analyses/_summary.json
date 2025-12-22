@@ -1,20 +1,51 @@
 {
-  "processed_at": "2025-12-22T01:20:59.867929",
-  "total_analyzed": 2,
-  "total_errors": 0,
-  "total_skipped": 0,
+  "processed_at": "2025-12-22T02:43:59.110093",
+  "total_analyzed": 7,
+  "total_errors": 1,
+  "total_skipped": 2,
   "model": "gemini-2.5-flash",
   "videos": [
     {
-      "title": "The Secret to Direct Sales Success (It's not selling!)",
-      "category": "Direct Sales & Network Marketing",
-      "url": "https://www.youtube.com/watch?v=quAd1lzUgA0"
+      "title": "The BEST Tips for Professional Sales People - Grant Cardone",
+      "category": "Famous Sales Trainers",
+      "url": "https://www.youtube.com/watch?v=RXreDCyZe64"
     },
     {
-      "title": "Direct Selling Tips and Tricks",
-      "category": "Direct Sales & Network Marketing",
-      "url": "https://www.youtube.com/watch?v=rzdGWfpuOq4"
+      "title": "Grant Cardone Coaching His Sales Team LIVE!",
+      "category": "Famous Sales Trainers",
+      "url": "https://www.youtube.com/watch?v=XEdsdikkVCo&vl=en"
+    },
+    {
+      "title": "Mastering Sales | Jordan Belfort Part One",
+      "category": "Famous Sales Trainers",
+      "url": "https://www.youtube.com/watch?v=G_Dw1wHtfE0"
+    },
+    {
+      "title": "Jordan Belfort Reveals How To Sell Anything To Anyone At Anytime",
+      "category": "Famous Sales Trainers",
+      "url": "https://www.youtube.com/watch?v=3ZHQFacAzRU"
+    },
+    {
+      "title": "How to Persist, Be Patient and Succeed | Jordan Belfort | Goalcast",
+      "category": "Famous Sales Trainers",
+      "url": "https://www.youtube.com/watch?v=PtJXC4EvLTM"
+    },
+    {
+      "title": "Brian Tracy: Self Confidence is Key | 5 Minute Sales Training",
+      "category": "Famous Sales Trainers",
+      "url": "https://www.youtube.com/watch?v=grSnCHhKhLE"
+    },
+    {
+      "title": "Brian Tracy on Sales - Nordic Business Forum 2012",
+      "category": "Famous Sales Trainers",
+      "url": "https://www.youtube.com/watch?v=Ph6H915jijM"
     }
   ],
-  "errors": []
+  "errors": [
+    {
+      "title": "Advanced Selling In Action, Brian Tracy",
+      "url": "https://www.youtube.com/watch?v=A_faq9svxXE",
+      "error": "400 INVALID_ARGUMENT. {'error': {'code': 400, 'message': 'The input token count exceeds the maximum number of tokens allowed 1048576.', 'status': 'INVALID_ARGUMENT'}}"
+    }
+  ]
 }
