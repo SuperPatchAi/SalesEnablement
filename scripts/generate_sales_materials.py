@@ -37,7 +37,7 @@ import base64
 
 
 # Configuration
-GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', 'AIzaSyCg5Q8EYqYy54xmFq31Dv1iGmbXixsBb4w')
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 OUTPUT_DIR = Path('/workspace/sales_materials')
 PRODUCTS_FILE = Path('/workspace/products/superpatch_products.json')
 FRAMEWORKS_DIR = Path('/workspace/frameworks')

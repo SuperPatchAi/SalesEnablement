@@ -24,7 +24,7 @@ from google import genai
 from google.genai import types
 
 # Configuration
-GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', 'AIzaSyCg5Q8EYqYy54xmFq31Dv1iGmbXixsBb4w')
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 OUTPUT_DIR = Path('/workspace/sales_materials/roadmaps')
 SPECS_DIR = Path('/workspace/sales_materials/roadmap_specs')
 PRODUCTS_FILE = Path('/workspace/products/superpatch_products.json')

@@ -1,0 +1,269 @@
+{
+  "metadata": {
+    "product": "Boost",
+    "category": "Energy",
+    "tagline": "Power up with clean energy. No sugar or caffeine",
+    "benefits": [
+      "Clean energy",
+      "No caffeine crash",
+      "Sustained vitality"
+    ],
+    "type": "comprehensive_sales_roadmap_v2",
+    "purpose": "Detailed visual dashboard with FULL scripts and guidance",
+    "generated": "2025-12-22T09:41:05.570289"
+  },
+  "sections": {
+    "1_customer_profile": {
+      "title": "\ud83c\udfaf TARGET CUSTOMER",
+      "description": "Know your ideal prospect",
+      "content": {
+        "demographics": [
+          "Age: 25-65+",
+          "Professionals & Parents",
+          "Active lifestyle seekers",
+          "Health-conscious"
+        ],
+        "psychographics": [],
+        "pain_points": [
+          "Afternoon energy slump",
+          "Caffeine jitters & crash",
+          "Need sustained focus",
+          "Tired of stimulants"
+        ],
+        "tried_before": []
+      }
+    },
+    "2_opening_approaches": {
+      "title": "\ud83d\ude80 5 OPENING APPROACHES",
+      "description": "Choose based on context",
+      "approaches": [
+        {
+          "type": "COLD APPROACH",
+          "context": "Stranger at coffee shop",
+          "script": " (Smile genuinely, make eye contact) \"Hi there! I couldn't help but notice you look like you're in need of a little pick-me-up. Happens to the best of us! I'm [Your Name]. What's typically your go-to when you're feeling that afternoon slump?\" "
+        },
+        {
+          "type": "WARM INTRO",
+          "context": "Friend/family member",
+          "script": " \"Hey [Friend's Name]! You know how you're always talking about feeling drained by mid-afternoon? I've actually been using something really interesting that's made a huge difference for my energy without any caffeine. Have you ever looked into natural ways to boost your vitality without stimulants?\"..."
+        },
+        {
+          "type": "SOCIAL MEDIA DM",
+          "context": "Instagram/Facebook",
+          "script": " \"Hi [Name]! I saw your post about struggling with energy lately, and I can totally relate \u2013 it's a common challenge these days. I've found a game-changer for clean, sustained energy that's completely drug-free. Would you be open to hearing about a unique approach that's helping a lot of people ditc..."
+        },
+        {
+          "type": "REFERRAL",
+          "context": "Mutual connection",
+          "script": " \"Hi [Prospect Name], this is [Your Name]. [Referral Name] mentioned you recently, and knowing how much you value natural health solutions, they thought you might be interested in what I do. They shared that you've been looking for ways to get more sustained energy without relying on coffee or energ..."
+        },
+        {
+          "type": "EVENT/PARTY",
+          "context": "Casual networking",
+          "script": " (Listen actively to their comment about fatigue) \"Oh, I hear you on that! It seems like everyone is looking for ways to keep their energy up these days. I actually work with a really cool, innovative technology that helps the body naturally produce its own clean energy. It's completely drug-free. H..."
+        }
+      ]
+    },
+    "3_discovery_questions": {
+      "title": "\ud83d\udd0d DISCOVERY QUESTIONS",
+      "description": "Uncover needs & pain points (ask 3-5)",
+      "questions": [
+        {
+          "type": "Opening Question",
+          "question": "Tell me a little about your typical day. What are your biggest energy challenges or goals right now?"
+        },
+        {
+          "type": "Pain Point Question",
+          "question": "When do you typically feel your energy dip, and how does that impact your productivity or mood?"
+        },
+        {
+          "type": "Impact Question",
+          "question": "How does feeling tired or relying on stimulants affect your daily life, your family, or your ability to do the things you love?"
+        },
+        {
+          "type": "Solution Question",
+          "question": "If you could wave a magic wand, what would your ideal energy levels feel like throughout the day, without any negative side effects?"
+        },
+        {
+          "type": "Pain Point Question",
+          "question": "What have you tried in the past to boost your energy, and what did you like or dislike about those solutions?"
+        },
+        {
+          "type": "Impact Question",
+          "question": "Are you concerned about the long-term effects of caffeine or energy drinks on your health?"
+        },
+        {
+          "type": "Solution Question",
+          "question": "Beyond just 'more energy,' what specific improvements are you hoping to see in your focus, clarity, or overall well-being?"
+        },
+        {
+          "type": "Opening Question",
+          "question": "On a scale of 1 to 10, how satisfied are you with your current energy levels and how you manage them?"
+        },
+        {
+          "type": "Pain Point Question",
+          "question": "What's the biggest frustration you have with your current energy routine?"
+        },
+        {
+          "type": "Solution Question",
+          "question": "If you found a way to get sustained, clean energy without any stimulants, what difference would that make for you?"
+        }
+      ]
+    },
+    "4_presentation": {
+      "title": "\ud83c\udfa4 PRESENT THE SOLUTION",
+      "framework": "Problem \u2192 Agitate \u2192 Solve",
+      "content": {
+        "problem": "Many people struggle with energy challenges - feeling frustrated by temporary solutions that don't address the root cause.",
+        "agitate": "This isn't just a minor inconvenience - it impacts your productivity, relationships, mood, and overall quality of life. The costs add up over time.",
+        "solve": "That's why Boost uses Vibrotactile Technology - specialized patterns that work with your body's natural neural responses. Drug-free, non-invasive, effective.",
+        "key_benefits": [
+          "Clean energy",
+          "No caffeine crash",
+          "Sustained vitality"
+        ],
+        "differentiator": "100% Drug-Free \u2022 Non-Invasive \u2022 Vibrotactile Technology"
+      }
+    },
+    "5_objection_handling": {
+      "title": "\ud83d\udee1\ufe0f HANDLE 8 OBJECTIONS",
+      "technique": "Conversation Aikido: 'I understand... [Open Question]'",
+      "objections": [
+        {
+          "objection": "TOO EXPENSIVE",
+          "trigger": "Price concern",
+          "response": "I understand cost is important. What other criteria matter most to you beyond price?",
+          "psychology": "Shift focus to value"
+        },
+        {
+          "objection": "NEED TO THINK",
+          "trigger": "Stalling",
+          "response": "Of course! What specific questions would help you make this decision?",
+          "psychology": "Identify real concern"
+        },
+        {
+          "objection": "ASK MY SPOUSE",
+          "trigger": "Shared decision",
+          "response": "Great idea! What concerns might they have that we could address now?",
+          "psychology": "Surface objections early"
+        },
+        {
+          "objection": "DOES IT WORK?",
+          "trigger": "Skepticism",
+          "response": "I understand the skepticism. What would you need to see or experience to feel confident?",
+          "psychology": "Let them define proof"
+        },
+        {
+          "objection": "TRIED BEFORE",
+          "trigger": "Past failure",
+          "response": "What did you like or dislike about those solutions? What was missing?",
+          "psychology": "Learn what was missing"
+        },
+        {
+          "objection": "NOT INTERESTED",
+          "trigger": "Rejection",
+          "response": "That's fine. What specifically doesn't align with what you're looking for?",
+          "psychology": "Uncover hidden needs"
+        },
+        {
+          "objection": "NO TIME",
+          "trigger": "Busy excuse",
+          "response": "If you could solve this challenge easily, how would that help your time and energy?",
+          "psychology": "Reframe to benefit"
+        },
+        {
+          "objection": "VS COMPETITOR",
+          "trigger": "Comparison",
+          "response": "What appeals to you about that option? (Then explain VTT difference)",
+          "psychology": "Highlight VTT difference"
+        }
+      ]
+    },
+    "6_closing": {
+      "title": "\ud83c\udfc6 5 CLOSING TECHNIQUES",
+      "pre_close": "Always ask: 'Do you have any questions?' + 'Does this make sense?'",
+      "techniques": [
+        {
+          "name": "ASSUMPTIVE",
+          "script": "Great! Boost is exactly what you need. What's the best shipping address for your order?",
+          "when": "Strong buying signals, nodding, engaged",
+          "icon": "[A]"
+        },
+        {
+          "name": "ALTERNATIVE",
+          "script": "Would you prefer the 30-day supply, or the 90-day pack for better value?",
+          "when": "Need gentle push, considering options",
+          "icon": "[B]"
+        },
+        {
+          "name": "URGENCY",
+          "script": "We have a special promotion ending this week. Want to lock that in today?",
+          "when": "They're hesitating, need reason to act",
+          "icon": "[!]"
+        },
+        {
+          "name": "SUMMARY",
+          "script": "So you want [goal], drug-free, easy to use. Boost does exactly that. Ready?",
+          "when": "Complex conversation, recap benefits",
+          "icon": "[S]"
+        },
+        {
+          "name": "REFERRAL",
+          "script": "Who else do you know dealing with similar challenges who could benefit?",
+          "when": "After close, leverage enthusiasm",
+          "icon": "[R]"
+        }
+      ]
+    },
+    "7_followup": {
+      "title": "\ud83d\udcc5 FOLLOW-UP SEQUENCE",
+      "goal": "Build relationship \u2192 Get testimonials \u2192 Generate referrals",
+      "sequence": [
+        {
+          "day": "DAY 1",
+          "action": "Thank You + Tips",
+          "template": "Great connecting! Here's a quick guide to get the most from your patch. Let me know if questions pop up!",
+          "channel": "Text"
+        },
+        {
+          "day": "DAY 3",
+          "action": "Check-In",
+          "template": "How are you feeling with your patches? Noticed any difference yet? I'd love to hear!",
+          "channel": "Text"
+        },
+        {
+          "day": "DAY 7",
+          "action": "Results + Testimonial",
+          "template": "One week in! Are you feeling the benefits? Would you be open to sharing your experience?",
+          "channel": "Call/Text"
+        },
+        {
+          "day": "DAY 14",
+          "action": "Reorder + Referral",
+          "template": "Hope you're loving the results! Time to reorder soon. Who else might benefit from this?",
+          "channel": "Call"
+        }
+      ]
+    }
+  },
+  "visual_design": {
+    "layout": "Multi-panel dashboard infographic",
+    "dimensions": "Portrait, 3:4 aspect ratio, high detail",
+    "color_scheme": {
+      "header": "#1a1a2e (dark navy)",
+      "customer_profile": "#4a90d9 (blue - trust)",
+      "openings": "#5b8fb9 (sky blue)",
+      "discovery": "#7c4dff (purple - exploration)",
+      "presentation": "#00c853 (green - solution)",
+      "objections": "#ff6d00 (orange - handle with care)",
+      "closing": "#d50000 (red - action/urgency)",
+      "followup": "#00bfa5 (teal - relationship)"
+    },
+    "typography": {
+      "title": "Bold, 48pt",
+      "section_headers": "Bold, 24pt",
+      "body_text": "Regular, 12-14pt",
+      "script_text": "Italic, 11pt"
+    }
+  }
+}

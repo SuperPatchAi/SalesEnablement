@@ -1,0 +1,250 @@
+{
+  "meta": {
+    "source_file": "brand_styling_reference.md",
+    "description": "Configuration for SuperPatch Brand Styling & UI Reference",
+    "last_updated": "November 20, 2024",
+    "version": "1.0"
+  },
+  "brand_colors": {
+    "primary": {
+      "name": "Super Patch Red",
+      "hex": "#DD0604",
+      "rgb": [221, 6, 4],
+      "pms": "186 c",
+      "internal_name": "SP Red 500",
+      "usage": ["Emphasis", "Call-to-Actions", "Stand out"]
+    },
+    "neutrals": {
+      "grey_900": { "hex": "#101010", "rgb": [16, 16, 16], "pms": "Black c", "usage": ["Headlines", "Primary Buttons", "Value Text"] },
+      "grey_700": { "hex": "#4D4D4D", "rgb": [77, 77, 77], "pms": "Cool Gray 11 c", "usage": ["Body Text", "Secondary Button Stroke", "Input Borders"] },
+      "grey_500": { "hex": "#888888", "rgb": [136, 136, 136], "pms": "Cool Gray 8 c", "usage": ["Placeholders", "Low contrast text"] },
+      "grey_300": { "hex": "#C8C8C8", "rgb": [200, 200, 200], "pms": "Cool Gray 3 c", "usage": ["Labels (light)"] },
+      "grey_100": { "hex": "#DCDCDC", "rgb": [220, 220, 220], "pms": "Cool Gray 1 c", "usage": ["Backgrounds (light)"] },
+      "grey_25": { "hex": "#F7F7F7", "rgb": [247, 247, 247], "usage": ["Backgrounds (very light)"] },
+      "white": { "hex": "#FFFFFF", "rgb": [255, 255, 255], "pms": "White", "usage": ["Backgrounds", "Text on Dark"] }
+    },
+    "product_palette": [
+      { "name": "Red (Bright)", "hex": "#F32735", "pms": "1788 c" },
+      { "name": "Purple (Dark)", "hex": "#624B78", "pms": "668 c" },
+      { "name": "Teal", "hex": "#66C9BA", "pms": "570 c" },
+      { "name": "Purple", "hex": "#652F6C", "pms": "520 c" },
+      { "name": "Cyan", "hex": "#009ADE", "pms": "2925 c" },
+      { "name": "Light Blue", "hex": "#87D1E6", "pms": "636 c" },
+      { "name": "Blue (Dark)", "hex": "#0055B8", "pms": "2935 c" },
+      { "name": "Yellow/Gold", "hex": "#FFC629", "pms": "123 c" },
+      { "name": "Red/Orange", "hex": "#FF4D00", "pms": "324 c label mismatch" },
+      { "name": "Teal (Light)", "hex": "#99D9D9", "pms": "1655 c label mismatch" },
+      { "name": "Purple (Vibrant)", "hex": "#9D1D96", "pms": "254 c" },
+      { "name": "Yellow (Bright)", "hex": "#FFCD00", "pms": "116 c" },
+      { "name": "Red (Deep)", "hex": "#CE0E2D", "pms": "186 c" },
+      { "name": "Orange", "hex": "#FFA400", "pms": "137 c" },
+      { "name": "Gold Metallic", "hex": "#D59042", "pms": "871 c" },
+      { "name": "Grey (Metallic)", "hex": "#E2E2E2" },
+      { "name": "Blue (Deep)", "hex": "#0855A3", "pms": "2728 c" },
+      { "name": "Light Blue (Pale)", "hex": "#B8E3EC", "pms": "317 c" },
+      { "name": "Teal (Dark)", "hex": "#008F89", "pms": "7717 c" },
+      { "name": "Orange (Vibrant)", "hex": "#FF671D", "pms": "165 c" },
+      { "name": "Yellow (Pale)", "hex": "#FFDF4F", "pms": "129 c" },
+      { "name": "Lime Green", "hex": "#D7DF23", "pms": "389 c" },
+      { "name": "Grey (Dark Metallic)", "hex": "#979899" }
+    ]
+  },
+  "logo_usage": {
+    "clear_space_unit": "width of the logo symbol",
+    "min_size": {
+      "primary_horizontal": "32px height",
+      "stacked_corporate": "111px width",
+      "stacked_brand_product": "147px width"
+    },
+    "backgrounds": {
+      "symbol_on_bg": "Grey 900 (#101010) at 8% opacity OR White (#FFFFFF) at 16% opacity"
+    },
+    "rotation": "0° or 15°-45°",
+    "prohibitions": [
+      "Do not change size relationship",
+      "Do not place on low-contrast backgrounds",
+      "Do not add effects",
+      "Do not create lockups with text in close proximity",
+      "Do not stretch or compress",
+      "Do not place over 'busy' photographic backgrounds",
+      "Do not alter color specs",
+      "Do not attach text to the symbol"
+    ]
+  },
+  "typography": {
+    "fonts": {
+      "primary": "Avenir Next",
+      "web": "Montserrat",
+      "fallbacks": ["Helvetica", "Arial", "sans-serif"]
+    },
+    "weights": {
+      "headline": 900,
+      "subtitle_button": 700,
+      "body": 500
+    },
+    "styles": {
+      "h1": { "weight": 900, "size": "96pt", "lineHeight": "100%", "usage": "Hero Headlines" },
+      "h2": { "weight": 900, "size": "60pt", "lineHeight": "100%", "usage": "Section Headers" },
+      "h3": { "weight": 900, "size": "48pt", "lineHeight": "100%" },
+      "h4": { "weight": 900, "size": "36pt", "lineHeight": "100%" },
+      "h5": { "weight": 700, "size": "28pt", "lineHeight": "100%" },
+      "h6": { "weight": 700, "size": "24pt", "lineHeight": "100%" },
+      "subtitle_1": { "weight": 700, "size": "40pt", "lineHeight": "150%" },
+      "subtitle_2": { "weight": 700, "size": "36pt", "lineHeight": "150%" },
+      "subtitle_3": { "weight": 700, "size": "24pt", "lineHeight": "150%" },
+      "subtitle_4": { "weight": 700, "size": "21pt", "lineHeight": "150%" },
+      "body_1": { "weight": 500, "size": "24pt", "lineHeight": "150%", "usage": "Lead Text" },
+      "body_2": { "weight": 500, "size": "21pt", "lineHeight": "150%" },
+      "body_3": { "weight": 500, "size": "18pt", "lineHeight": "150%", "usage": "Standard Body" },
+      "body_4": { "weight": 500, "size": "14pt", "lineHeight": "150%", "usage": "Small Text" }
+    },
+    "text_rules": {
+      "headlines": "UPPERCASE",
+      "body": "Sentence case, Grey 700",
+      "buttons": "UPPERCASE & Bold",
+      "hyperlinks": "Bold & Sentence case",
+      "quotes": "Italics"
+    }
+  },
+  "iconography": {
+    "style": "Line-based, rounded (Material Design Icons Rounded)",
+    "weight": 500,
+    "size": "24dp optical",
+    "usage": "Functional only",
+    "format": "SVG preferred",
+    "product_icons": "Must remain in circle shape, unaltered"
+  },
+  "visual_media": {
+    "photo_style": {
+      "mood": ["Active", "Empowered", "Intense", "Determination", "Grit", "Resilience"],
+      "lighting": ["Sharp", "High contrast", "Dramatic shadows", "Golden Hour"],
+      "backgrounds": ["Minimalist", "Monochromatic", "Urban", "Serene natural"],
+      "subjects": ["Diverse", "Attractive", "Fit", "Active lifestyle"],
+      "filters": ["High contrast", "Clean", "Vibrant colors"]
+    },
+    "video_style": {
+      "tone": ["Bold", "Uplifting", "Inspiring", "Motivational"],
+      "composition": ["Powerful close-ups", "Wide-angle hero shots", "Movement"],
+      "themes": ["Pushing limits", "Athletic grit", "Wellness/mindfulness"]
+    }
+  },
+  "components": {
+    "buttons": {
+      "shape": "Pill (fully rounded corners)",
+      "variants": {
+        "large": { "height": "43px", "textSize": "18pt" },
+        "medium": { "height": "37px", "textSize": "14pt" },
+        "small": { "height": "29px", "textSize": "14pt" }
+      },
+      "types": {
+        "primary": { "bg": "#101010", "text": "#FFFFFF", "stroke": "1px White" },
+        "secondary": { "bg": "#FFFFFF", "text": "#101010", "stroke": "1px Grey" },
+        "tertiary": { "bg": "Ghost", "text": "Dark" },
+        "profile": { "bg": "Semi-transparent dark", "text": "White", "avatar": "Left" },
+        "link": { "padding": "None" }
+      },
+      "interaction": "Primary fills left-to-right on focus"
+    },
+    "forms": {
+      "border": "#4D4D4D",
+      "label": "#C8C8C8",
+      "placeholder": "#888888",
+      "value": "#101010",
+      "radius": "Rounded",
+      "checkbox_radio": {
+        "large": { "icon": "32px", "text": "18pt" },
+        "medium": { "icon": "24px", "text": "14pt" }
+      }
+    },
+    "layout_grid": {
+      "spacing_scale": [0, 8, 16, 24, 32, 48, 64, 96],
+      "breakpoints": {
+        "mobile": { "width": 490, "cols": 2 },
+        "tablet_portrait": { "width": 768, "cols": 4 },
+        "tablet_landscape": { "width": 1024, "cols": 8 },
+        "laptop": { "width": 1440, "cols": 10 },
+        "desktop": { "width": 1920, "cols": 12 }
+      }
+    },
+    "cards": {
+      "general": "Flexible, sharp corners, transparent bg (mostly)",
+      "variants": ["Patches", "Profiles", "Stats", "Reviews", "Research"]
+    },
+    "navigation": {
+      "header_primary": "64px height, White bg",
+      "header_secondary": "56px height, Semi-transparent bg",
+      "sticky_header": "48px height",
+      "footer": "Large dark bg, white text"
+    },
+    "sections": {
+      "hero_banners": "3300x1600px, Full width",
+      "product_banners": "Full or Half width",
+      "carousels": ["Products (576x1024px)", "Stats (3300x1600px bg)"],
+      "gallery": "How to examples",
+      "testimonials": "Carousel format",
+      "faqs": "Accordions"
+    }
+  },
+  "animations": {
+    "defaults": {
+      "direction": ["Forward (Left to Right)", "Upward (Bottom to Top)"],
+      "duration": "300ms",
+      "easing": "Ease-out"
+    },
+    "specifics": {
+      "slide_ins": "Menu drawer (Left-to-Right)",
+      "modals": "Popup (Bottom-to-Top)",
+      "scroll_triggers": "Fade/Slide up (Bottom-to-Top)",
+      "micro_interactions": ["Button hover fill (L-to-R)", "Menu icon line extension", "Input focus underline"]
+    }
+  },
+  "social_media": {
+    "image_sizes": {
+      "profile": {
+        "instagram": "320x320px",
+        "linkedin": "400x400px",
+        "youtube": "800x800px",
+        "facebook": "180x180px",
+        "twitter": "400x400px",
+        "tiktok": "200x200px"
+      },
+      "cover": {
+        "linkedin": "1128x191px",
+        "youtube": "2560x1440px",
+        "facebook": "851x315px",
+        "twitter": "1500x500px"
+      }
+    },
+    "strategy": {
+      "youtube": "Shorts preferred",
+      "instagram": "High-quality images/Reels",
+      "linkedin": "Professional, educational",
+      "tiktok": "Creative, short trends"
+    }
+  },
+  "email_specs": {
+    "width": "600px",
+    "font": "Montserrat (fallback Helvetica/Arial)",
+    "layout": "1-2 column",
+    "images": { "max_width": "600px", "max_size": "100KB" },
+    "types": ["Promotional", "Transactional", "Educational"]
+  },
+  "voice_tone_brief": {
+    "voice": ["Confident", "Supportive", "Informative", "Friendly"],
+    "tone": "Professional (never pushy or zany)",
+    "copy_rules": [
+      "Simple, conversational language",
+      "Avoid 'Super' as adjective",
+      "Never double up 'patch'",
+      "Never use product name as noun/adjective"
+    ]
+  },
+  "accessibility": {
+    "contrast_ratio": {
+      "large_text": "3:1 (AA)",
+      "normal_text": "4.5:1 (AA)"
+    },
+    "images": "Must have Alt Text",
+    "compliance": ["ADA", "GDPR", "CASL"]
+  }
+}

@@ -1,0 +1,269 @@
+{
+  "metadata": {
+    "product": "Focus",
+    "category": "Focus & Attention",
+    "tagline": "Bolster your mind's concentration and attention",
+    "benefits": [
+      "Better concentration",
+      "Improved attention",
+      "Mental clarity"
+    ],
+    "type": "comprehensive_sales_roadmap_v2",
+    "purpose": "Detailed visual dashboard with FULL scripts and guidance",
+    "generated": "2025-12-22T09:41:05.557025"
+  },
+  "sections": {
+    "1_customer_profile": {
+      "title": "\ud83c\udfaf TARGET CUSTOMER",
+      "description": "Know your ideal prospect",
+      "content": {
+        "demographics": [
+          "Age: 18-60",
+          "Students & professionals",
+          "Parents juggling tasks",
+          "Knowledge workers"
+        ],
+        "psychographics": [],
+        "pain_points": [
+          "Can't concentrate",
+          "Mind keeps wandering",
+          "Need mental clarity",
+          "Avoid stimulants"
+        ],
+        "tried_before": []
+      }
+    },
+    "2_opening_approaches": {
+      "title": "\ud83d\ude80 5 OPENING APPROACHES",
+      "description": "Choose based on context",
+      "approaches": [
+        {
+          "type": "COLD APPROACH",
+          "context": "Stranger at coffee shop",
+          "script": "[See full word track for COLD APPROACH script]"
+        },
+        {
+          "type": "WARM INTRO",
+          "context": "Friend/family member",
+          "script": "[See full word track for WARM INTRO script]"
+        },
+        {
+          "type": "SOCIAL MEDIA DM",
+          "context": "Instagram/Facebook",
+          "script": "[See full word track for SOCIAL MEDIA DM script]"
+        },
+        {
+          "type": "REFERRAL",
+          "context": "Mutual connection",
+          "script": "[See full word track for REFERRAL script]"
+        },
+        {
+          "type": "EVENT/PARTY",
+          "context": "Casual networking",
+          "script": "[See full word track for EVENT/PARTY script]"
+        }
+      ]
+    },
+    "3_discovery_questions": {
+      "title": "\ud83d\udd0d DISCOVERY QUESTIONS",
+      "description": "Uncover needs & pain points (ask 3-5)",
+      "questions": [
+        {
+          "type": "Opening Question",
+          "question": "What does a typical productive day look like for you, and what helps you get into that 'flow state'?"
+        },
+        {
+          "type": "Pain Point Question",
+          "question": "What are some of the biggest challenges you face when it comes to staying focused, maintaining concentration, or achieving mental clarity, especially when you need it most?"
+        },
+        {
+          "type": "Impact Question",
+          "question": "When you're not able to focus as well as you'd like, how does that impact your work, studies, or even your personal life?"
+        },
+        {
+          "type": "Solution Question",
+          "question": "What have you tried in the past to improve your concentration or mental performance, and what were your experiences with those solutions?"
+        },
+        {
+          "type": "Future Vision Question",
+          "question": "If you could snap your fingers and have perfect, sustained focus, what would that enable you to achieve or change in your daily life?"
+        },
+        {
+          "type": "Priorities Question",
+          "question": "When it comes to your cognitive performance and mental well-being, what's most important for you to improve right now?"
+        },
+        {
+          "type": "Current Routine Question",
+          "question": "What's your current routine or 'go-to' when you really need to buckle down and concentrate on a task?"
+        },
+        {
+          "type": "Energy Levels Question",
+          "question": "How do your energy levels typically affect your ability to focus throughout the day, and do you experience any mid-day slumps?"
+        },
+        {
+          "type": "Ideal Solution Question",
+          "question": "If you were to imagine an ideal solution for consistent focus and mental clarity, what would it look like or feel like for you?"
+        },
+        {
+          "type": "Decision Criteria Question",
+          "question": "As you consider solutions for improving your focus, what criteria are most important to you in making that decision?"
+        }
+      ]
+    },
+    "4_presentation": {
+      "title": "\ud83c\udfa4 PRESENT THE SOLUTION",
+      "framework": "Problem \u2192 Agitate \u2192 Solve",
+      "content": {
+        "problem": "Do you ever find yourself struggling to concentrate, feeling that frustrating brain fog, or getting easily sidetracked when you really need to be sharp and productive?",
+        "agitate": "It's incredibly frustrating, isn't it? That feeling when deadlines loom, or you're trying to study for an important exam, and your mind just won't cooperate. You end up wasting precious time, feeling less accomplished, and sometimes even a bit overwhelmed by the sheer volume of things demanding your attention. And often, the solutions out there either involve caffeine jitters and energy crashes, o",
+        "solve": "That's why Focus uses Vibrotactile Technology - specialized patterns that work with your body's natural neural responses. Drug-free, non-invasive, effective.",
+        "key_benefits": [
+          "Better concentration",
+          "Improved attention",
+          "Mental clarity"
+        ],
+        "differentiator": "100% Drug-Free \u2022 Non-Invasive \u2022 Vibrotactile Technology"
+      }
+    },
+    "5_objection_handling": {
+      "title": "\ud83d\udee1\ufe0f HANDLE 8 OBJECTIONS",
+      "technique": "Conversation Aikido: 'I understand... [Open Question]'",
+      "objections": [
+        {
+          "objection": "TOO EXPENSIVE",
+          "trigger": "Price concern",
+          "response": "I understand cost is important. What other criteria matter most to you beyond price?",
+          "psychology": "Shift focus to value"
+        },
+        {
+          "objection": "NEED TO THINK",
+          "trigger": "Stalling",
+          "response": "Of course! What specific questions would help you make this decision?",
+          "psychology": "Identify real concern"
+        },
+        {
+          "objection": "ASK MY SPOUSE",
+          "trigger": "Shared decision",
+          "response": "Great idea! What concerns might they have that we could address now?",
+          "psychology": "Surface objections early"
+        },
+        {
+          "objection": "DOES IT WORK?",
+          "trigger": "Skepticism",
+          "response": "I understand the skepticism. What would you need to see or experience to feel confident?",
+          "psychology": "Let them define proof"
+        },
+        {
+          "objection": "TRIED BEFORE",
+          "trigger": "Past failure",
+          "response": "What did you like or dislike about those solutions? What was missing?",
+          "psychology": "Learn what was missing"
+        },
+        {
+          "objection": "NOT INTERESTED",
+          "trigger": "Rejection",
+          "response": "That's fine. What specifically doesn't align with what you're looking for?",
+          "psychology": "Uncover hidden needs"
+        },
+        {
+          "objection": "NO TIME",
+          "trigger": "Busy excuse",
+          "response": "If you could solve this challenge easily, how would that help your time and energy?",
+          "psychology": "Reframe to benefit"
+        },
+        {
+          "objection": "VS COMPETITOR",
+          "trigger": "Comparison",
+          "response": "What appeals to you about that option? (Then explain VTT difference)",
+          "psychology": "Highlight VTT difference"
+        }
+      ]
+    },
+    "6_closing": {
+      "title": "\ud83c\udfc6 5 CLOSING TECHNIQUES",
+      "pre_close": "Always ask: 'Do you have any questions?' + 'Does this make sense?'",
+      "techniques": [
+        {
+          "name": "ASSUMPTIVE",
+          "script": "Great! Focus is exactly what you need. What's the best shipping address for your order?",
+          "when": "Strong buying signals, nodding, engaged",
+          "icon": "[A]"
+        },
+        {
+          "name": "ALTERNATIVE",
+          "script": "Would you prefer the 30-day supply, or the 90-day pack for better value?",
+          "when": "Need gentle push, considering options",
+          "icon": "[B]"
+        },
+        {
+          "name": "URGENCY",
+          "script": "We have a special promotion ending this week. Want to lock that in today?",
+          "when": "They're hesitating, need reason to act",
+          "icon": "[!]"
+        },
+        {
+          "name": "SUMMARY",
+          "script": "So you want [goal], drug-free, easy to use. Focus does exactly that. Ready?",
+          "when": "Complex conversation, recap benefits",
+          "icon": "[S]"
+        },
+        {
+          "name": "REFERRAL",
+          "script": "Who else do you know dealing with similar challenges who could benefit?",
+          "when": "After close, leverage enthusiasm",
+          "icon": "[R]"
+        }
+      ]
+    },
+    "7_followup": {
+      "title": "\ud83d\udcc5 FOLLOW-UP SEQUENCE",
+      "goal": "Build relationship \u2192 Get testimonials \u2192 Generate referrals",
+      "sequence": [
+        {
+          "day": "DAY 1",
+          "action": "Thank You + Tips",
+          "template": "Great connecting! Here's a quick guide to get the most from your patch. Let me know if questions pop up!",
+          "channel": "Text"
+        },
+        {
+          "day": "DAY 3",
+          "action": "Check-In",
+          "template": "How are you feeling with your patches? Noticed any difference yet? I'd love to hear!",
+          "channel": "Text"
+        },
+        {
+          "day": "DAY 7",
+          "action": "Results + Testimonial",
+          "template": "One week in! Are you feeling the benefits? Would you be open to sharing your experience?",
+          "channel": "Call/Text"
+        },
+        {
+          "day": "DAY 14",
+          "action": "Reorder + Referral",
+          "template": "Hope you're loving the results! Time to reorder soon. Who else might benefit from this?",
+          "channel": "Call"
+        }
+      ]
+    }
+  },
+  "visual_design": {
+    "layout": "Multi-panel dashboard infographic",
+    "dimensions": "Portrait, 3:4 aspect ratio, high detail",
+    "color_scheme": {
+      "header": "#1a1a2e (dark navy)",
+      "customer_profile": "#4a90d9 (blue - trust)",
+      "openings": "#5b8fb9 (sky blue)",
+      "discovery": "#7c4dff (purple - exploration)",
+      "presentation": "#00c853 (green - solution)",
+      "objections": "#ff6d00 (orange - handle with care)",
+      "closing": "#d50000 (red - action/urgency)",
+      "followup": "#00bfa5 (teal - relationship)"
+    },
+    "typography": {
+      "title": "Bold, 48pt",
+      "section_headers": "Bold, 24pt",
+      "body_text": "Regular, 12-14pt",
+      "script_text": "Italic, 11pt"
+    }
+  }
+}

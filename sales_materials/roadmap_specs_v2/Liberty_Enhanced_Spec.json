@@ -1,0 +1,269 @@
+{
+  "metadata": {
+    "product": "Liberty",
+    "category": "Mobility",
+    "tagline": "Healthy living relies on better balance and mobility",
+    "benefits": [
+      "Improved balance",
+      "Better mobility",
+      "Enhanced stability"
+    ],
+    "type": "comprehensive_sales_roadmap_v2",
+    "purpose": "Detailed visual dashboard with FULL scripts and guidance",
+    "generated": "2025-12-22T09:41:05.553159"
+  },
+  "sections": {
+    "1_customer_profile": {
+      "title": "\ud83c\udfaf TARGET CUSTOMER",
+      "description": "Know your ideal prospect",
+      "content": {
+        "demographics": [
+          "Age: 45-75+",
+          "Seniors concerned about balance",
+          "Active aging adults",
+          "Post-injury recovery"
+        ],
+        "psychographics": [],
+        "pain_points": [
+          "Balance concerns",
+          "Fear of falling",
+          "Reduced mobility",
+          "Want to stay active"
+        ],
+        "tried_before": []
+      }
+    },
+    "2_opening_approaches": {
+      "title": "\ud83d\ude80 5 OPENING APPROACHES",
+      "description": "Choose based on context",
+      "approaches": [
+        {
+          "type": "COLD APPROACH",
+          "context": "Stranger at coffee shop",
+          "script": " \"Hi [Prospect Name], this is [Your Name] from Super Patch. I'm calling because I really enjoyed our conversation on [Date/Topic, e.g., how the Liberty patch could enhance your balance and mobility], and I wanted to see if any new questions have come up for you since we last spoke. I'm here to help ..."
+        },
+        {
+          "type": "WARM INTRO",
+          "context": "Friend/family member",
+          "script": " \"Hi [Prospect Name], this is [Your Name] from Super Patch. I'm calling because I really enjoyed our conversation on [Date/Topic, e.g., how the Liberty patch could enhance your balance and mobility], and I wanted to see if any new questions have come up for you since we last spoke. I'm here to help ..."
+        },
+        {
+          "type": "SOCIAL MEDIA DM",
+          "context": "Instagram/Facebook",
+          "script": " \"Hi [Prospect Name], this is [Your Name] from Super Patch. I'm calling because I really enjoyed our conversation on [Date/Topic, e.g., how the Liberty patch could enhance your balance and mobility], and I wanted to see if any new questions have come up for you since we last spoke. I'm here to help ..."
+        },
+        {
+          "type": "REFERRAL",
+          "context": "Mutual connection",
+          "script": " \"Hi [Prospect Name], this is [Your Name] from Super Patch. I'm calling because I really enjoyed our conversation on [Date/Topic, e.g., how the Liberty patch could enhance your balance and mobility], and I wanted to see if any new questions have come up for you since we last spoke. I'm here to help ..."
+        },
+        {
+          "type": "EVENT/PARTY",
+          "context": "Casual networking",
+          "script": " \"Hi [Prospect Name], this is [Your Name] from Super Patch. I'm calling because I really enjoyed our conversation on [Date/Topic, e.g., how the Liberty patch could enhance your balance and mobility], and I wanted to see if any new questions have come up for you since we last spoke. I'm here to help ..."
+        }
+      ]
+    },
+    "3_discovery_questions": {
+      "title": "\ud83d\udd0d DISCOVERY QUESTIONS",
+      "description": "Uncover needs & pain points (ask 3-5)",
+      "questions": [
+        {
+          "type": "Opening",
+          "question": "How would you describe your typical day and energy levels?"
+        },
+        {
+          "type": "Opening",
+          "question": "What does feeling your best look like for you?"
+        },
+        {
+          "type": "Pain Point",
+          "question": "When do you typically experience challenges with this?"
+        },
+        {
+          "type": "Pain Point",
+          "question": "On a scale of 1-10, how much does this impact your daily life?"
+        },
+        {
+          "type": "Pain Point",
+          "question": "What frustrates you most about your current situation?"
+        },
+        {
+          "type": "Impact",
+          "question": "What activities are you holding back on because of this?"
+        },
+        {
+          "type": "Impact",
+          "question": "How does this affect your mood, relationships, or work?"
+        },
+        {
+          "type": "Impact",
+          "question": "If this was solved tomorrow, what would you do first?"
+        },
+        {
+          "type": "Solution",
+          "question": "What have you tried before and what worked or didn't?"
+        },
+        {
+          "type": "Solution",
+          "question": "What's most important to you - speed, natural, or ease of use?"
+        }
+      ]
+    },
+    "4_presentation": {
+      "title": "\ud83c\udfa4 PRESENT THE SOLUTION",
+      "framework": "Problem \u2192 Agitate \u2192 Solve",
+      "content": {
+        "problem": "Many people struggle with mobility challenges - feeling frustrated by temporary solutions that don't address the root cause.",
+        "agitate": "This isn't just a minor inconvenience - it impacts your productivity, relationships, mood, and overall quality of life. The costs add up over time.",
+        "solve": "That's why Liberty uses Vibrotactile Technology - specialized patterns that work with your body's natural neural responses. Drug-free, non-invasive, effective.",
+        "key_benefits": [
+          "Improved balance",
+          "Better mobility",
+          "Enhanced stability"
+        ],
+        "differentiator": "100% Drug-Free \u2022 Non-Invasive \u2022 Vibrotactile Technology"
+      }
+    },
+    "5_objection_handling": {
+      "title": "\ud83d\udee1\ufe0f HANDLE 8 OBJECTIONS",
+      "technique": "Conversation Aikido: 'I understand... [Open Question]'",
+      "objections": [
+        {
+          "objection": "TOO EXPENSIVE",
+          "trigger": "Price concern",
+          "response": "I understand cost is important. What other criteria matter most to you beyond price?",
+          "psychology": "Shift focus to value"
+        },
+        {
+          "objection": "NEED TO THINK",
+          "trigger": "Stalling",
+          "response": "Of course! What specific questions would help you make this decision?",
+          "psychology": "Identify real concern"
+        },
+        {
+          "objection": "ASK MY SPOUSE",
+          "trigger": "Shared decision",
+          "response": "Great idea! What concerns might they have that we could address now?",
+          "psychology": "Surface objections early"
+        },
+        {
+          "objection": "DOES IT WORK?",
+          "trigger": "Skepticism",
+          "response": "I understand the skepticism. What would you need to see or experience to feel confident?",
+          "psychology": "Let them define proof"
+        },
+        {
+          "objection": "TRIED BEFORE",
+          "trigger": "Past failure",
+          "response": "What did you like or dislike about those solutions? What was missing?",
+          "psychology": "Learn what was missing"
+        },
+        {
+          "objection": "NOT INTERESTED",
+          "trigger": "Rejection",
+          "response": "That's fine. What specifically doesn't align with what you're looking for?",
+          "psychology": "Uncover hidden needs"
+        },
+        {
+          "objection": "NO TIME",
+          "trigger": "Busy excuse",
+          "response": "If you could solve this challenge easily, how would that help your time and energy?",
+          "psychology": "Reframe to benefit"
+        },
+        {
+          "objection": "VS COMPETITOR",
+          "trigger": "Comparison",
+          "response": "What appeals to you about that option? (Then explain VTT difference)",
+          "psychology": "Highlight VTT difference"
+        }
+      ]
+    },
+    "6_closing": {
+      "title": "\ud83c\udfc6 5 CLOSING TECHNIQUES",
+      "pre_close": "Always ask: 'Do you have any questions?' + 'Does this make sense?'",
+      "techniques": [
+        {
+          "name": "ASSUMPTIVE",
+          "script": "Great! Liberty is exactly what you need. What's the best shipping address for your order?",
+          "when": "Strong buying signals, nodding, engaged",
+          "icon": "[A]"
+        },
+        {
+          "name": "ALTERNATIVE",
+          "script": "Would you prefer the 30-day supply, or the 90-day pack for better value?",
+          "when": "Need gentle push, considering options",
+          "icon": "[B]"
+        },
+        {
+          "name": "URGENCY",
+          "script": "We have a special promotion ending this week. Want to lock that in today?",
+          "when": "They're hesitating, need reason to act",
+          "icon": "[!]"
+        },
+        {
+          "name": "SUMMARY",
+          "script": "So you want [goal], drug-free, easy to use. Liberty does exactly that. Ready?",
+          "when": "Complex conversation, recap benefits",
+          "icon": "[S]"
+        },
+        {
+          "name": "REFERRAL",
+          "script": "Who else do you know dealing with similar challenges who could benefit?",
+          "when": "After close, leverage enthusiasm",
+          "icon": "[R]"
+        }
+      ]
+    },
+    "7_followup": {
+      "title": "\ud83d\udcc5 FOLLOW-UP SEQUENCE",
+      "goal": "Build relationship \u2192 Get testimonials \u2192 Generate referrals",
+      "sequence": [
+        {
+          "day": "DAY 1",
+          "action": "Thank You + Tips",
+          "template": "Great connecting! Here's a quick guide to get the most from your patch. Let me know if questions pop up!",
+          "channel": "Text"
+        },
+        {
+          "day": "DAY 3",
+          "action": "Check-In",
+          "template": "How are you feeling with your patches? Noticed any difference yet? I'd love to hear!",
+          "channel": "Text"
+        },
+        {
+          "day": "DAY 7",
+          "action": "Results + Testimonial",
+          "template": "One week in! Are you feeling the benefits? Would you be open to sharing your experience?",
+          "channel": "Call/Text"
+        },
+        {
+          "day": "DAY 14",
+          "action": "Reorder + Referral",
+          "template": "Hope you're loving the results! Time to reorder soon. Who else might benefit from this?",
+          "channel": "Call"
+        }
+      ]
+    }
+  },
+  "visual_design": {
+    "layout": "Multi-panel dashboard infographic",
+    "dimensions": "Portrait, 3:4 aspect ratio, high detail",
+    "color_scheme": {
+      "header": "#1a1a2e (dark navy)",
+      "customer_profile": "#4a90d9 (blue - trust)",
+      "openings": "#5b8fb9 (sky blue)",
+      "discovery": "#7c4dff (purple - exploration)",
+      "presentation": "#00c853 (green - solution)",
+      "objections": "#ff6d00 (orange - handle with care)",
+      "closing": "#d50000 (red - action/urgency)",
+      "followup": "#00bfa5 (teal - relationship)"
+    },
+    "typography": {
+      "title": "Bold, 48pt",
+      "section_headers": "Bold, 24pt",
+      "body_text": "Regular, 12-14pt",
+      "script_text": "Italic, 11pt"
+    }
+  }
+}
