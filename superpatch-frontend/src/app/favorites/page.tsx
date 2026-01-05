@@ -1,156 +1,290 @@
 "use client";
 
-import * as React from "react";
+import { useState } from "react";
 import { AppShell } from "@/components/layout/app-shell";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star, Trash2, Copy, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Heart, Trash2, Copy, ExternalLink } from "lucide-react";
 import Link from "next/link";
 
-// Placeholder favorites - in real implementation, this would come from localStorage
-const sampleFavorites = [
+type FavoriteItem = {
+  id: string;
+  type: "script" | "objection" | "product";
+  title: string;
+  content: string;
+  productName?: string;
+  productEmoji?: string;
+  market?: string;
+  addedAt: Date;
+};
+
+// Demo data - in real app, this would come from localStorage or a database
+const demoFavorites: FavoriteItem[] = [
   {
     id: "1",
     type: "script",
-    productId: "freedom",
+    title: "Freedom Cold Call Opening",
+    content:
+      "Hi [Name], I'm calling because many of my clients have been dealing with chronic pain that impacts their daily life. Our Freedom patch offers a clinically-proven, drug-free solution. Do you have 2 minutes to hear how it works?",
     productName: "Freedom",
     productEmoji: "🔵",
     market: "d2c",
-    title: "Cold Call Opening",
-    content:
-      "Hi [Name], this is [Your Name] from Super Patch. I'm reaching out because we've developed an innovative drug-free solution for pain relief...",
-    addedAt: "2025-01-03",
+    addedAt: new Date("2024-01-15"),
   },
   {
     id: "2",
     type: "objection",
-    productId: "rem",
+    title: "Price Objection Response",
+    content:
+      "I understand cost is a concern. At about $3 per day, many customers find SuperPatch replaces multiple products they were using. Plus, with our 30-day guarantee, you can try it completely risk-free.",
+    productName: "All Products",
+    productEmoji: "⭐",
+    addedAt: new Date("2024-01-14"),
+  },
+  {
+    id: "3",
+    type: "script",
+    title: "REM Sleep Study Talking Point",
+    content:
+      "In our HARMONI study, 80% of participants stopped using their sleep medications during the 14-day trial. They saw sleep onset times drop from 69 minutes to just 37 minutes - that's 46% faster.",
     productName: "REM",
     productEmoji: "🟣",
-    market: "b2b",
-    title: '"I\'ve tried everything for sleep"',
+    market: "d2c",
+    addedAt: new Date("2024-01-13"),
+  },
+  {
+    id: "4",
+    type: "product",
+    title: "Liberty Quick Reference",
     content:
-      "I hear that a lot. The difference is, this isn't a pill or supplement—it's a completely different technology. In the HARMONI study, 80% of participants stopped their sleep medications...",
-    addedAt: "2025-01-02",
+      "Drug-free balance support. Key stat: 31% improvement in balance scores (p<0.05). Best for seniors, athletes recovering from injury, or anyone concerned about stability.",
+    productName: "Liberty",
+    productEmoji: "🟢",
+    market: "d2c",
+    addedAt: new Date("2024-01-12"),
   },
 ];
 
 export default function FavoritesPage() {
-  const [favorites, setFavorites] = React.useState(sampleFavorites);
+  const [favorites, setFavorites] = useState<FavoriteItem[]>(demoFavorites);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const scripts = favorites.filter((f) => f.type === "script");
+  const objections = favorites.filter((f) => f.type === "objection");
+  const products = favorites.filter((f) => f.type === "product");
+
+  const handleCopy = async (content: string, id: string) => {
+    await navigator.clipboard.writeText(content);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
 
   const handleRemove = (id: string) => {
     setFavorites((prev) => prev.filter((f) => f.id !== id));
   };
 
-  const handleCopy = async (content: string) => {
-    await navigator.clipboard.writeText(content);
-    // In real implementation, show toast notification
-  };
+  const FavoriteCard = ({ item }: { item: FavoriteItem }) => (
+    <Card className="group">
+      <CardHeader className="pb-2">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            {item.productEmoji && (
+              <span className="text-lg shrink-0">{item.productEmoji}</span>
+            )}
+            <CardTitle className="text-sm font-medium truncate">
+              {item.title}
+            </CardTitle>
+          </div>
+          <Badge variant="outline" className="text-[10px] shrink-0">
+            {item.type}
+          </Badge>
+        </div>
+        {item.productName && (
+          <CardDescription className="text-xs">
+            {item.productName}
+          </CardDescription>
+        )}
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm text-muted-foreground line-clamp-3 mb-3">
+          {item.content}
+        </p>
+        <div className="flex items-center justify-between">
+          <div className="flex gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 px-2"
+              onClick={() => handleCopy(item.content, item.id)}
+            >
+              <Copy className="size-3 mr-1" />
+              {copiedId === item.id ? "Copied!" : "Copy"}
+            </Button>
+            {item.market && (
+              <Button variant="ghost" size="sm" className="h-7 px-2" asChild>
+                <Link href={`/${item.market}/products/${item.productName?.toLowerCase()}`}>
+                  <ExternalLink className="size-3 mr-1" />
+                  View
+                </Link>
+              </Button>
+            )}
+          </div>
+
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 px-2 text-muted-foreground hover:text-destructive"
+              >
+                <Trash2 className="size-3" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Remove from favorites?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will remove "{item.title}" from your favorites. You can
+                  always add it back later.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={() => handleRemove(item.id)}>
+                  Remove
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  const EmptyState = ({ type }: { type: string }) => (
+    <div className="flex flex-col items-center justify-center py-12 text-center">
+      <Heart className="size-12 text-muted-foreground/30 mb-3" />
+      <p className="text-sm text-muted-foreground">
+        No favorite {type} yet.
+      </p>
+      <p className="text-xs text-muted-foreground mt-1">
+        Click the heart icon on any {type} to save it here.
+      </p>
+    </div>
+  );
 
   return (
     <AppShell>
-      <div className="flex flex-col gap-6 p-6 md:p-8">
+      <div className="flex flex-1 flex-col gap-4 p-4 md:p-6">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
-            Favorites
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Your saved scripts and objection handlers
-          </p>
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-1">
+            <h1 className="text-2xl font-semibold tracking-tight">Favorites</h1>
+            <p className="text-sm text-muted-foreground">
+              Your saved scripts, objections, and quick references.
+            </p>
+          </div>
+          <Badge variant="secondary" className="text-sm">
+            {favorites.length} saved
+          </Badge>
         </div>
 
         {favorites.length === 0 ? (
-          /* Empty State */
-          <Card className="py-16">
-            <CardContent className="flex flex-col items-center justify-center text-center">
-              <Star className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No favorites yet</h3>
-              <p className="text-muted-foreground mb-4 max-w-md">
-                Save your most-used scripts and objection responses for quick
-                access. Click the star icon on any content to add it here.
+          <Card className="flex flex-1 items-center justify-center">
+            <CardContent className="text-center py-12">
+              <Heart className="size-16 text-muted-foreground/30 mx-auto mb-4" />
+              <h3 className="text-lg font-medium mb-1">No favorites yet</h3>
+              <p className="text-sm text-muted-foreground max-w-sm">
+                Click the heart icon on any script, objection, or product to
+                save it here for quick access.
               </p>
-              <Button asChild>
-                <Link href="/d2c/products">
-                  Browse Products
-                  <ArrowRight className="h-4 w-4 ml-2" />
-                </Link>
+              <Button asChild className="mt-4">
+                <Link href="/d2c/products">Browse Products</Link>
               </Button>
             </CardContent>
           </Card>
         ) : (
-          /* Favorites List */
-          <div className="space-y-4">
-            {favorites.map((favorite) => (
-              <Card key={favorite.id}>
-                <CardContent className="pt-6">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-2 flex-wrap">
-                        <Badge variant="secondary">
-                          {favorite.productEmoji} {favorite.productName}
-                        </Badge>
-                        <Badge variant="outline">
-                          {favorite.type === "script" ? "📝 Script" : "💬 Objection"}
-                        </Badge>
-                        <Badge variant="outline">{favorite.market.toUpperCase()}</Badge>
-                      </div>
-                      <h3 className="font-semibold mb-2">{favorite.title}</h3>
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {favorite.content}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-2">
-                        Added {favorite.addedAt}
-                      </p>
-                    </div>
+          <Tabs defaultValue="all" className="flex-1">
+            <TabsList>
+              <TabsTrigger value="all">
+                All ({favorites.length})
+              </TabsTrigger>
+              <TabsTrigger value="scripts">
+                Scripts ({scripts.length})
+              </TabsTrigger>
+              <TabsTrigger value="objections">
+                Objections ({objections.length})
+              </TabsTrigger>
+              <TabsTrigger value="products">
+                Products ({products.length})
+              </TabsTrigger>
+            </TabsList>
 
-                    <div className="flex gap-2 shrink-0">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={() => handleCopy(favorite.content)}
-                      >
-                        <Copy className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-destructive hover:text-destructive"
-                        onClick={() => handleRemove(favorite.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
+            <TabsContent value="all" className="mt-4">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {favorites.map((item) => (
+                  <FavoriteCard key={item.id} item={item} />
+                ))}
+              </div>
+            </TabsContent>
 
-                  <div className="flex items-center justify-between mt-4 pt-4 border-t">
-                    <Link
-                      href={`/${favorite.market}/products/${favorite.productId}`}
-                      className="text-sm text-primary hover:underline"
-                    >
-                      View full word track →
-                    </Link>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+            <TabsContent value="scripts" className="mt-4">
+              {scripts.length > 0 ? (
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {scripts.map((item) => (
+                    <FavoriteCard key={item.id} item={item} />
+                  ))}
+                </div>
+              ) : (
+                <EmptyState type="scripts" />
+              )}
+            </TabsContent>
+
+            <TabsContent value="objections" className="mt-4">
+              {objections.length > 0 ? (
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {objections.map((item) => (
+                    <FavoriteCard key={item.id} item={item} />
+                  ))}
+                </div>
+              ) : (
+                <EmptyState type="objections" />
+              )}
+            </TabsContent>
+
+            <TabsContent value="products" className="mt-4">
+              {products.length > 0 ? (
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {products.map((item) => (
+                    <FavoriteCard key={item.id} item={item} />
+                  ))}
+                </div>
+              ) : (
+                <EmptyState type="products" />
+              )}
+            </TabsContent>
+          </Tabs>
         )}
-
-        {/* Info Card */}
-        <Card className="bg-muted/50">
-          <CardContent className="py-4 text-center text-sm text-muted-foreground">
-            <p>
-              💡 <strong>Tip:</strong> Your favorites are stored locally on this
-              device. They'll persist even if you close the browser, but won't
-              sync across devices.
-            </p>
-          </CardContent>
-        </Card>
       </div>
     </AppShell>
   );
 }
-

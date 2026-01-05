@@ -1,8 +1,25 @@
 import { AppShell } from "@/components/layout/app-shell";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { User, Building, MapPin, ArrowRight, Package, Map, FlaskConical, GraduationCap } from "lucide-react";
+import {
+  User,
+  Building,
+  MapPin,
+  ArrowRight,
+  Package,
+  Map,
+  FlaskConical,
+  GraduationCap,
+  Sparkles,
+} from "lucide-react";
 import Link from "next/link";
 import { markets } from "@/data/markets";
 import { products } from "@/data/products";
@@ -16,31 +33,27 @@ const marketIcons = {
 const quickLinks = [
   {
     title: "Browse Products",
-    description: "View all 13 SuperPatch products",
+    description: "All 13 SuperPatch products",
     href: "/d2c/products",
     icon: Package,
-    color: "bg-primary",
   },
   {
     title: "Sales Roadmaps",
-    description: "Visual sales process guides",
+    description: "Visual process guides",
     href: "/d2c/roadmaps",
     icon: Map,
-    color: "bg-sp-teal",
   },
   {
     title: "Clinical Evidence",
-    description: "Study results and talking points",
+    description: "Study results & talking points",
     href: "/evidence",
     icon: FlaskConical,
-    color: "bg-sp-purple",
   },
   {
     title: "Practice Mode",
     description: "Train objection handling",
     href: "/practice",
     icon: GraduationCap,
-    color: "bg-sp-gold",
   },
 ];
 
@@ -49,15 +62,14 @@ export default function Home() {
 
   return (
     <AppShell>
-      <div className="flex flex-col gap-8 p-6 md:p-8 lg:p-10">
+      <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
         {/* Hero Section */}
-        <div className="flex flex-col gap-4">
-          <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tight">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-semibold tracking-tight">
             Sales Enablement
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl">
-            Your comprehensive reference for SuperPatch word tracks, objection
-            handling, and sales roadmaps. Choose a market to get started.
+          <p className="text-sm text-muted-foreground">
+            Word tracks, roadmaps, and clinical evidence for your sales conversations.
           </p>
         </div>
 
@@ -67,54 +79,51 @@ export default function Home() {
             const Icon = marketIcons[market.id as keyof typeof marketIcons];
             return (
               <Link key={market.id} href={`/${market.id}/products`}>
-                <Card className="group cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-primary/50">
-                  <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-                        <Icon className="h-6 w-6" />
+                <Card className="h-full transition-colors hover:bg-muted/50">
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10">
+                        <Icon className="size-5 text-primary" />
                       </div>
-                      <div>
-                        <CardTitle className="text-xl">{market.shortName}</CardTitle>
-                        <CardDescription>{market.name}</CardDescription>
-                      </div>
+                      <ArrowRight className="size-4 text-muted-foreground" />
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">
+                  <CardContent className="pb-2">
+                    <CardTitle className="text-base">{market.shortName}</CardTitle>
+                    <CardDescription className="text-xs mt-1">
                       {market.description}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <Badge variant="secondary">
-                        {market.productCount} products
-                      </Badge>
-                      <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                    </div>
+                    </CardDescription>
                   </CardContent>
+                  <CardFooter>
+                    <Badge variant="secondary" className="text-xs">
+                      {market.productCount} products
+                    </Badge>
+                  </CardFooter>
                 </Card>
               </Link>
             );
           })}
         </div>
 
-        {/* Quick Links */}
-        <div>
-          <h2 className="text-2xl font-bold mb-4">Quick Access</h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Quick Access */}
+        <div className="space-y-3">
+          <h2 className="text-sm font-medium text-muted-foreground">Quick Access</h2>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {quickLinks.map((link) => {
               const Icon = link.icon;
               return (
                 <Link key={link.title} href={link.href}>
-                  <Card className="h-full group cursor-pointer transition-all duration-300 hover:shadow-md hover:border-primary/30">
-                    <CardContent className="pt-6">
-                      <div
-                        className={`flex h-10 w-10 items-center justify-center rounded-lg ${link.color} text-white mb-3`}
-                      >
-                        <Icon className="h-5 w-5" />
+                  <Card className="h-full transition-colors hover:bg-muted/50">
+                    <CardContent className="flex items-center gap-3 p-4">
+                      <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted">
+                        <Icon className="size-4 text-muted-foreground" />
                       </div>
-                      <h3 className="font-semibold mb-1">{link.title}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {link.description}
-                      </p>
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium truncate">{link.title}</p>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {link.description}
+                        </p>
+                      </div>
                     </CardContent>
                   </Card>
                 </Link>
@@ -123,27 +132,32 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Products with Clinical Studies */}
-        <div>
-          <h2 className="text-2xl font-bold mb-4">Products with Clinical Evidence</h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Products with Studies */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Sparkles className="size-4 text-muted-foreground" />
+            <h2 className="text-sm font-medium text-muted-foreground">
+              Products with Clinical Evidence
+            </h2>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {productsWithStudies.map((product) => (
               <Link key={product.id} href={`/d2c/products/${product.id}`}>
-                <Card className="group cursor-pointer transition-all duration-300 hover:shadow-md">
-                  <CardContent className="pt-6">
+                <Card className="transition-colors hover:bg-muted/50">
+                  <CardContent className="p-4">
                     <div className="flex items-start gap-3">
-                      <span className="text-3xl">{product.emoji}</span>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold">{product.name}</h3>
+                      <span className="text-2xl">{product.emoji}</span>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-medium">{product.name}</p>
                           <Badge
                             variant="outline"
-                            className="text-xs bg-green-50 text-green-700 border-green-200"
+                            className="text-[10px] px-1.5 py-0 h-5 bg-green-50 text-green-700 border-green-200 dark:bg-green-950 dark:text-green-400 dark:border-green-800"
                           >
-                            📊 {product.studyName}
+                            {product.studyName}
                           </Badge>
                         </div>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-xs text-muted-foreground mt-0.5">
                           {product.tagline}
                         </p>
                       </div>
@@ -155,9 +169,9 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Keyboard Shortcut Hint */}
-        <div className="flex items-center justify-center py-4">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        {/* Keyboard Shortcut */}
+        <div className="flex items-center justify-center py-2">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span>Press</span>
             <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium">
               <span className="text-xs">⌘</span>K

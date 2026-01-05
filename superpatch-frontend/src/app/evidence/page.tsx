@@ -1,10 +1,15 @@
 import { AppShell } from "@/components/layout/app-shell";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { FlaskConical, FileText, TrendingUp, Users, Clock, CheckCircle } from "lucide-react";
+import { TrendingUp, CheckCircle, FileText } from "lucide-react";
 import Link from "next/link";
-import { getProductsWithStudies } from "@/data/products";
 
 const clinicalStudies = [
   {
@@ -20,14 +25,23 @@ const clinicalStudies = [
     participants: 118,
     duration: "14 days",
     results: [
-      { metric: "Pain Severity", result: "Significantly greater improvement in active group" },
-      { metric: "Pain Interference", result: "Significantly greater reduction in active group" },
-      { metric: "Range of Motion", result: "Greater improvement at Day 7 and Day 14" },
+      {
+        metric: "Pain Severity",
+        result: "Significantly greater improvement in active group",
+      },
+      {
+        metric: "Pain Interference",
+        result: "Significantly greater reduction in active group",
+      },
+      {
+        metric: "Range of Motion",
+        result: "Greater improvement at Day 7 and Day 14",
+      },
     ],
     keyStats: [
       { value: "118", label: "Participants" },
       { value: "14", label: "Days" },
-      { value: "Double-Blind", label: "Study Type" },
+      { value: "RCT", label: "Study Type" },
     ],
     talkingPoints: [
       "Double-blind, placebo-controlled RCT",
@@ -48,10 +62,22 @@ const clinicalStudies = [
     participants: 113,
     duration: "14 days",
     results: [
-      { metric: "Time to Fall Asleep", result: "Reduced from 69 min to 37 min (46% faster)" },
-      { metric: "Total Sleep Duration", result: "Increased from 5 to 6.5 hours (+1.5 hrs)" },
-      { metric: "Night Waking", result: "Reduced from 83% to 22% (74% reduction)" },
-      { metric: "Sleep Medication Use", result: "80% stopped medications during study" },
+      {
+        metric: "Time to Fall Asleep",
+        result: "Reduced from 69 min to 37 min (46% faster)",
+      },
+      {
+        metric: "Total Sleep Duration",
+        result: "Increased from 5 to 6.5 hours (+1.5 hrs)",
+      },
+      {
+        metric: "Night Waking",
+        result: "Reduced from 83% to 22% (74% reduction)",
+      },
+      {
+        metric: "Sleep Medication Use",
+        result: "80% stopped medications during study",
+      },
     ],
     keyStats: [
       { value: "46%", label: "Faster Sleep" },
@@ -77,7 +103,10 @@ const clinicalStudies = [
     participants: 69,
     duration: "Single assessment",
     results: [
-      { metric: "Balance Score", result: "31% improvement (statistically significant p<0.05)" },
+      {
+        metric: "Balance Score",
+        result: "31% improvement (statistically significant p<0.05)",
+      },
     ],
     keyStats: [
       { value: "31%", label: "Improvement" },
@@ -96,56 +125,52 @@ const clinicalStudies = [
 export default function EvidencePage() {
   return (
     <AppShell>
-      <div className="flex flex-col gap-6 p-6 md:p-8">
+      <div className="flex flex-1 flex-col gap-4 p-4 md:p-6">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-semibold tracking-tight">
             Clinical Evidence
           </h1>
-          <p className="text-muted-foreground mt-1">
-            Peer-reviewed studies supporting SuperPatch products
+          <p className="text-sm text-muted-foreground">
+            Peer-reviewed studies supporting SuperPatch products.
           </p>
         </div>
 
         {/* Study Cards */}
-        <div className="space-y-6">
+        <div className="space-y-4">
           {clinicalStudies.map((study) => (
             <Card key={study.id}>
-              <CardHeader>
-                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                  <div className="flex items-start gap-4">
-                    <span className="text-4xl">{study.productEmoji}</span>
+              <CardHeader className="pb-3">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="flex items-start gap-3">
+                    <span className="text-3xl">{study.productEmoji}</span>
                     <div>
-                      <CardTitle className="text-xl flex items-center gap-2">
-                        {study.name}
-                        <Badge variant="outline">{study.productName}</Badge>
-                      </CardTitle>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {study.journal}, {study.year}
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <CardTitle className="text-lg">{study.name}</CardTitle>
+                        <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5">
+                          {study.productName}
+                        </Badge>
+                      </div>
+                      <CardDescription className="mt-0.5">
+                        {study.journal}, {study.year} • {study.type}
+                      </CardDescription>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {study.participants} participants • {study.duration}
                       </p>
-                      <p className="text-sm text-muted-foreground">
-                        {study.type} • {study.participants} participants •{" "}
-                        {study.duration}
-                      </p>
-                      {study.registration && (
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {study.registration}
-                        </p>
-                      )}
                     </div>
                   </div>
 
                   {/* Key Stats */}
-                  <div className="flex gap-4">
+                  <div className="flex gap-2">
                     {study.keyStats.map((stat, i) => (
                       <div
                         key={i}
-                        className="text-center px-4 py-2 bg-muted rounded-lg"
+                        className="text-center px-3 py-2 bg-muted rounded-lg"
                       >
-                        <p className="text-2xl font-bold text-primary">
+                        <p className="text-lg font-semibold text-primary">
                           {stat.value}
                         </p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-[10px] text-muted-foreground">
                           {stat.label}
                         </p>
                       </div>
@@ -155,20 +180,17 @@ export default function EvidencePage() {
               </CardHeader>
 
               <CardContent>
-                <div className="grid gap-6 lg:grid-cols-2">
+                <div className="grid gap-4 lg:grid-cols-2">
                   {/* Results */}
                   <div>
-                    <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
-                      <TrendingUp className="h-4 w-4" />
-                      KEY RESULTS
-                    </h4>
-                    <div className="space-y-2">
+                    <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1">
+                      <TrendingUp className="size-3" />
+                      Key Results
+                    </p>
+                    <div className="space-y-1.5">
                       {study.results.map((result, i) => (
-                        <div
-                          key={i}
-                          className="flex items-start gap-2 text-sm"
-                        >
-                          <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 shrink-0" />
+                        <div key={i} className="flex items-start gap-2 text-sm">
+                          <CheckCircle className="size-4 text-green-600 mt-0.5 shrink-0" />
                           <div>
                             <span className="font-medium">{result.metric}:</span>{" "}
                             <span className="text-muted-foreground">
@@ -182,15 +204,15 @@ export default function EvidencePage() {
 
                   {/* Talking Points */}
                   <div>
-                    <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
-                      <FileText className="h-4 w-4" />
-                      TALKING POINTS
-                    </h4>
-                    <ul className="space-y-2 text-sm">
+                    <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1">
+                      <FileText className="size-3" />
+                      Talking Points
+                    </p>
+                    <ul className="space-y-1.5 text-sm">
                       {study.talkingPoints.map((point, i) => (
                         <li key={i} className="flex items-start gap-2">
-                          <span className="text-primary font-bold">•</span>
-                          {point}
+                          <span className="text-primary font-medium">•</span>
+                          <span className="text-muted-foreground">{point}</span>
                         </li>
                       ))}
                     </ul>
@@ -199,49 +221,44 @@ export default function EvidencePage() {
 
                 <Separator className="my-4" />
 
-                <div className="flex items-center justify-between">
-                  <Link
-                    href={`/d2c/products/${study.productId}`}
-                    className="text-sm text-primary hover:underline"
-                  >
-                    View {study.productName} Word Track →
-                  </Link>
-                </div>
+                <Link
+                  href={`/d2c/products/${study.productId}`}
+                  className="text-sm text-primary hover:underline"
+                >
+                  View {study.productName} Word Track →
+                </Link>
               </CardContent>
             </Card>
           ))}
         </div>
 
         {/* Usage Tips */}
-        <Card className="bg-muted/50">
-          <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
-              💡 How to Use Clinical Evidence in Sales
+        <Card className="bg-muted/30">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">
+              💡 Using Clinical Evidence in Sales
             </CardTitle>
           </CardHeader>
-          <CardContent className="text-sm text-muted-foreground">
-            <ul className="space-y-2">
-              <li>
-                <strong>Build Credibility:</strong> Mention studies early to
-                establish trust with skeptical prospects.
-              </li>
-              <li>
-                <strong>Handle Objections:</strong> Use specific stats when
-                prospects question effectiveness.
-              </li>
-              <li>
-                <strong>B2B Conversations:</strong> Healthcare practitioners
-                especially value clinical data.
-              </li>
-              <li>
-                <strong>Don't Overwhelm:</strong> Lead with 1-2 key stats, have
-                details ready if asked.
-              </li>
-            </ul>
+          <CardContent className="text-sm text-muted-foreground space-y-1.5">
+            <p>
+              <strong>Build Credibility:</strong> Mention studies early to
+              establish trust with skeptical prospects.
+            </p>
+            <p>
+              <strong>Handle Objections:</strong> Use specific stats when
+              prospects question effectiveness.
+            </p>
+            <p>
+              <strong>B2B Conversations:</strong> Healthcare practitioners
+              especially value clinical data.
+            </p>
+            <p>
+              <strong>Don't Overwhelm:</strong> Lead with 1-2 key stats, have
+              details ready if asked.
+            </p>
           </CardContent>
         </Card>
       </div>
     </AppShell>
   );
 }
-

@@ -1,0 +1,157 @@
+🗑️ Removed old: Freedom_B2B_Roadmap.png
+============================================================
+🏥 B2B PRACTITIONER SALES ROADMAP GENERATOR v2
+============================================================
+📷 Image: gemini-3-pro-image-preview
+🔍 Judge: gemini-2.5-flash
+📋 Detailed step-by-step format (matching D2C)
+📁 Template: Boost_4K_Roadmap.png
+============================================================
+
+============================================================
+🏥 Freedom - B2B Practitioner Roadmap
+============================================================
+  📝 Prompt: 6544 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 5/10 ❌ FAIL
+     🏆 New best! (score: 5)
+  🔄 Retrying for better text...
+  🎨 Attempt 2/3...
+  🔍 Judging text quality...
+     Score: 9/10 ✅ PASS
+     🏆 New best! (score: 9)
+  ✅ PASSED - Saved: Freedom_B2B_Roadmap.png
+
+============================================================
+🏥 REM - B2B Practitioner Roadmap
+============================================================
+  📝 Prompt: 6458 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 9/10 ✅ PASS
+     🏆 New best! (score: 9)
+  ✅ PASSED - Saved: REM_B2B_Roadmap.png
+
+============================================================
+🏥 Liberty - B2B Practitioner Roadmap
+============================================================
+  📝 Prompt: 6556 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 5/10 ❌ FAIL
+     🏆 New best! (score: 5)
+  🔄 Retrying for better text...
+  🎨 Attempt 2/3...
+  🔍 Judging text quality...
+     Score: 7/10 ✅ PASS
+     🏆 New best! (score: 7)
+  ✅ PASSED - Saved: Liberty_B2B_Roadmap.png
+
+============================================================
+🏥 Boost - B2B Practitioner Roadmap
+============================================================
+  📝 Prompt: 6477 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 9/10 ✅ PASS
+     🏆 New best! (score: 9)
+  ✅ PASSED - Saved: Boost_B2B_Roadmap.png
+
+============================================================
+🏥 Victory - B2B Practitioner Roadmap
+============================================================
+  📝 Prompt: 6505 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 8/10 ✅ PASS
+     🏆 New best! (score: 8)
+  ✅ PASSED - Saved: Victory_B2B_Roadmap.png
+
+============================================================
+🏥 Focus - B2B Practitioner Roadmap
+============================================================
+  📝 Prompt: 6506 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 8/10 ✅ PASS
+     🏆 New best! (score: 8)
+  ✅ PASSED - Saved: Focus_B2B_Roadmap.png
+
+============================================================
+🏥 Peace - B2B Practitioner Roadmap
+============================================================
+  📝 Prompt: 6481 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 9/10 ✅ PASS
+     🏆 New best! (score: 9)
+  ✅ PASSED - Saved: Peace_B2B_Roadmap.png
+
+============================================================
+🏥 Defend - B2B Practitioner Roadmap
+============================================================
+  📝 Prompt: 6465 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 7/10 ✅ PASS
+     🏆 New best! (score: 7)
+  ✅ PASSED - Saved: Defend_B2B_Roadmap.png
+
+============================================================
+🏥 Ignite - B2B Practitioner Roadmap
+============================================================
+  📝 Prompt: 6497 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 9/10 ✅ PASS
+     🏆 New best! (score: 9)
+  ✅ PASSED - Saved: Ignite_B2B_Roadmap.png
+
+============================================================
+🏥 Kick It - B2B Practitioner Roadmap
+============================================================
+  📝 Prompt: 6500 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 9/10 ✅ PASS
+     🏆 New best! (score: 9)
+  ✅ PASSED - Saved: Kick It_B2B_Roadmap.png
+
+============================================================
+🏥 Joy - B2B Practitioner Roadmap
+============================================================
+  📝 Prompt: 6452 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 8/10 ✅ PASS
+     🏆 New best! (score: 8)
+  ✅ PASSED - Saved: Joy_B2B_Roadmap.png
+
+============================================================
+🏥 Lumi - B2B Practitioner Roadmap
+============================================================
+  📝 Prompt: 6466 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 10/10 ✅ PASS
+     🏆 New best! (score: 10)
+  ✅ PASSED - Saved: Lumi_B2B_Roadmap.png
+
+============================================================
+🏥 Rocket - B2B Practitioner Roadmap
+============================================================
+  📝 Prompt: 6495 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 5/10 ❌ FAIL
+     🏆 New best! (score: 5)
+  🔄 Retrying for better text...
+  🎨 Attempt 2/3...
+  🔍 Judging text quality...
+     Score: 9/10 ✅ PASS
+     🏆 New best! (score: 9)
+  ✅ PASSED - Saved: Rocket_B2B_Roadmap.png
+
+✅ Complete: 13 B2B roadmaps generated
+📁 Location: /Users/cbsuperpatch/Desktop/SalesEnablement/b2b_sales_enablement/roadmaps_branded

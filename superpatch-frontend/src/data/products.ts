@@ -152,3 +152,6 @@ export const getProductsWithStudies = (): Product[] => {
   return products.filter((p) => p.hasClinicalStudy);
 };
 
+// Alias for compatibility
+export const PRODUCTS = products;
+

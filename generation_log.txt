@@ -1,0 +1,155 @@
+============================================================
+🎨 DETAILED + OPTIMIZED + JUDGED ROADMAP GENERATOR
+============================================================
+📷 Image: gemini-3-pro-image-preview
+🔍 Judge: gemini-2.5-flash
+📋 Full detail + text optimization + quality check
+============================================================
+
+============================================================
+🎨 Boost - Full Detail + Judge
+============================================================
+  📝 Prompt: 5386 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 10/10 ✅ PASS
+     🏆 New best! (score: 10)
+  ✅ PASSED - Saved: Boost_4K_Roadmap.png
+
+============================================================
+🎨 Freedom - Full Detail + Judge
+============================================================
+  📝 Prompt: 5389 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 8/10 ✅ PASS
+     🏆 New best! (score: 8)
+  ✅ PASSED - Saved: Freedom_4K_Roadmap.png
+
+============================================================
+🎨 Liberty - Full Detail + Judge
+============================================================
+  📝 Prompt: 5407 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 8/10 ✅ PASS
+     🏆 New best! (score: 8)
+  ✅ PASSED - Saved: Liberty_4K_Roadmap.png
+
+============================================================
+🎨 REM - Full Detail + Judge
+============================================================
+  📝 Prompt: 5343 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 5/10 ❌ FAIL
+     🏆 New best! (score: 5)
+  🔄 Retrying for better text...
+  🎨 Attempt 2/3...
+  🔍 Judging text quality...
+     Score: 10/10 ✅ PASS
+     🏆 New best! (score: 10)
+  ✅ PASSED - Saved: REM_4K_Roadmap.png
+
+============================================================
+🎨 Victory - Full Detail + Judge
+============================================================
+  📝 Prompt: 5409 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 5/10 ❌ FAIL
+     🏆 New best! (score: 5)
+  🔄 Retrying for better text...
+  🎨 Attempt 2/3...
+  🔍 Judging text quality...
+     Score: 8/10 ✅ PASS
+     🏆 New best! (score: 8)
+  ✅ PASSED - Saved: Victory_4K_Roadmap.png
+
+============================================================
+🎨 Focus - Full Detail + Judge
+============================================================
+  📝 Prompt: 5383 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 10/10 ✅ PASS
+     🏆 New best! (score: 10)
+  ✅ PASSED - Saved: Focus_4K_Roadmap.png
+
+============================================================
+🎨 Defend - Full Detail + Judge
+============================================================
+  📝 Prompt: 5383 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 10/10 ✅ PASS
+     🏆 New best! (score: 10)
+  ✅ PASSED - Saved: Defend_4K_Roadmap.png
+
+============================================================
+🎨 Ignite - Full Detail + Judge
+============================================================
+  📝 Prompt: 5371 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 9/10 ✅ PASS
+     🏆 New best! (score: 9)
+  ✅ PASSED - Saved: Ignite_4K_Roadmap.png
+
+============================================================
+🎨 Kick It - Full Detail + Judge
+============================================================
+  📝 Prompt: 5394 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 10/10 ✅ PASS
+     🏆 New best! (score: 10)
+  ✅ PASSED - Saved: Kick It_4K_Roadmap.png
+
+============================================================
+🎨 Peace - Full Detail + Judge
+============================================================
+  📝 Prompt: 5380 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 10/10 ✅ PASS
+     🏆 New best! (score: 10)
+  ✅ PASSED - Saved: Peace_4K_Roadmap.png
+
+============================================================
+🎨 Jet Lag - Full Detail + Judge
+============================================================
+  📝 Prompt: 5348 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 5/10 ❌ FAIL
+     🏆 New best! (score: 5)
+  🔄 Retrying for better text...
+  🎨 Attempt 2/3...
+  🔍 Judging text quality...
+     Score: 10/10 ✅ PASS
+     🏆 New best! (score: 10)
+  ✅ PASSED - Saved: Jet Lag_4K_Roadmap.png
+
+============================================================
+🎨 Joy - Full Detail + Judge
+============================================================
+  📝 Prompt: 5351 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+     Score: 9/10 ✅ PASS
+     🏆 New best! (score: 9)
+  ✅ PASSED - Saved: Joy_4K_Roadmap.png
+
+============================================================
+🎨 Launch - Full Detail + Judge
+============================================================
+  📝 Prompt: 5358 chars
+  🎨 Attempt 1/3...
+  🔍 Judging text quality...
+    Judge error: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'The model is overloaded. Please try again later.', 'status': 'UNAVAILABLE'}}
+     Score: 7/10 ✅ PASS
+     🏆 New best! (score: 7)
+  ✅ PASSED - Saved: Launch_4K_Roadmap.png
+
+✅ Complete: 13 generated

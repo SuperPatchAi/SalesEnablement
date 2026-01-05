@@ -35,3 +35,6 @@ export const isValidMarket = (id: string): id is MarketId => {
   return ["d2c", "b2b", "canadian"].includes(id);
 };
 
+// Alias for compatibility
+export const MARKETS = markets;
+

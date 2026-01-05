@@ -1,274 +1,305 @@
 "use client";
 
-import * as React from "react";
+import { useState, useMemo } from "react";
 import { AppShell } from "@/components/layout/app-shell";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import {
-  ChevronLeft,
-  ChevronRight,
-  RotateCcw,
-  Shuffle,
-  Check,
-  X,
-} from "lucide-react";
-import { products } from "@/data/products";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Progress } from "@/components/ui/progress";
+import { ChevronLeft, ChevronRight, RotateCcw, Shuffle } from "lucide-react";
+import { PRODUCTS } from "@/data/products";
 
-// Sample objections for practice
-const practiceObjections = [
+type Flashcard = {
+  id: string;
+  objection: string;
+  response: string;
+  productId: string;
+  category: string;
+};
+
+// Sample flashcards data
+const flashcards: Flashcard[] = [
   {
     id: "1",
-    productId: "freedom",
     objection: "It's too expensive.",
     response:
-      "I understand cost is a consideration. What are you currently spending on pain solutions? When you factor in effectiveness and being completely drug-free with no side effects, most people find it's quite economical.",
-    psychology:
-      "Validates concern, then shifts focus to value and total cost comparison.",
+      "I understand cost is important. Consider this: many customers find that one patch can replace multiple products they're currently using - supplements, creams, or medications. At about $3 per day, it's often less than their morning coffee. Plus, with our 30-day guarantee, there's zero risk to try it.",
+    productId: "all",
+    category: "Price",
   },
   {
     id: "2",
-    productId: "freedom",
-    objection: "Does it really work?",
+    objection: "Does it really work? It sounds too good to be true.",
     response:
-      "I appreciate your skepticism. Yes, it works, and we have the RESTORE clinical study published in Pain Therapeutics to back it up. Would you like to try it risk-free?",
-    psychology:
-      "Compliments skepticism, provides clinical evidence, offers risk-free trial.",
+      "That's a fair question! Our Freedom patch is backed by the RESTORE study - a double-blind, placebo-controlled clinical trial with 118 participants. It showed statistically significant improvements in pain and range of motion. Would you like me to share the specifics?",
+    productId: "freedom",
+    category: "Skepticism",
   },
   {
     id: "3",
-    productId: "rem",
-    objection: "I've tried everything for sleep.",
+    objection: "I've tried patches before and they didn't work.",
     response:
-      "I hear that a lot. The difference is, this isn't a pill or supplement—it's a completely different technology. In the HARMONI study, 80% of participants stopped their sleep medications. What have you tried that didn't work?",
-    psychology:
-      "Differentiates the product, uses clinical data, opens discovery.",
+      "I hear that often. Traditional patches use drugs or chemicals that absorb through skin. SuperPatch is completely different - it uses Vibrotactile Technology that works with your nervous system through touch receptors. No drugs enter your body. It's a whole new category of wellness.",
+    productId: "all",
+    category: "Skepticism",
   },
   {
     id: "4",
-    productId: "all",
     objection: "I need to think about it.",
     response:
-      "Absolutely, it's an important decision. What specific questions do you want to think through? I'd love to address them now so you have all the information you need.",
-    psychology: "Respects their process while uncovering hidden objections.",
+      "Absolutely, take your time. While you're thinking, consider this: we have a 30-day money-back guarantee. So you can try it risk-free for a month. If it doesn't work for you, just send it back. What questions can I answer to help with your decision?",
+    productId: "all",
+    category: "Stall",
   },
   {
     id: "5",
-    productId: "all",
-    objection: "Let me talk to my spouse first.",
+    objection: "My doctor hasn't recommended this.",
     response:
-      "That makes sense—it's great that you make decisions together. Would it help if I sent you some information you could share with them? Or better yet, is there a time we could all connect briefly?",
-    psychology: "Validates family decision-making, offers to facilitate.",
+      "That makes sense - many doctors aren't yet familiar with VTT technology. The great news is SuperPatch is 100% drug-free and has zero interactions with medications. Many of our customers share their results with their doctors afterwards. Would clinical study information help?",
+    productId: "all",
+    category: "Authority",
+  },
+  {
+    id: "6",
+    objection: "I already take medication for sleep.",
+    response:
+      "Many of our REM patch users started in the same situation. In our HARMONI study, 80% of participants actually stopped using their sleep medications during the trial. REM works differently - it supports your body's natural sleep patterns without any drugs. It can be used alongside medications while you transition.",
+    productId: "rem",
+    category: "Competition",
+  },
+  {
+    id: "7",
+    objection: "My patients won't believe in patches.",
+    response:
+      "I understand that concern. What we've found is that results speak louder than explanations. Many practitioners start by trying it themselves, then with a few open-minded patients. Once they see results - like 46% faster sleep onset or significant pain reduction - the conversations become much easier.",
+    productId: "all",
+    category: "B2B",
+  },
+  {
+    id: "8",
+    objection: "We don't have budget for new wellness initiatives right now.",
+    response:
+      "I completely understand budget constraints. Here's what's interesting: studies show poor sleep and chronic pain cost employers $1,967 per employee annually in lost productivity. A pilot program with SuperPatch typically costs a fraction of that, with measurable ROI within 90 days.",
+    productId: "all",
+    category: "Budget",
   },
 ];
 
 export default function PracticePage() {
-  const [currentIndex, setCurrentIndex] = React.useState(0);
-  const [isFlipped, setIsFlipped] = React.useState(false);
-  const [shuffled, setShuffled] = React.useState(practiceObjections);
-  const [score, setScore] = React.useState({ correct: 0, incorrect: 0 });
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [productFilter, setProductFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [masteredCards, setMasteredCards] = useState<Set<string>>(new Set());
 
-  const currentCard = shuffled[currentIndex];
-  const progress = ((currentIndex + 1) / shuffled.length) * 100;
-  const product = products.find((p) => p.id === currentCard.productId);
+  const filteredCards = useMemo(() => {
+    return flashcards.filter((card) => {
+      const matchesProduct =
+        productFilter === "all" || card.productId === productFilter || card.productId === "all";
+      const matchesCategory =
+        categoryFilter === "all" || card.category === categoryFilter;
+      return matchesProduct && matchesCategory;
+    });
+  }, [productFilter, categoryFilter]);
 
-  const handleNext = () => {
-    if (currentIndex < shuffled.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-      setIsFlipped(false);
-    }
-  };
+  const currentCard = filteredCards[currentIndex];
+  const categories = Array.from(new Set(flashcards.map((c) => c.category)));
 
-  const handlePrevious = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-      setIsFlipped(false);
-    }
-  };
-
-  const handleShuffle = () => {
-    const newShuffled = [...shuffled].sort(() => Math.random() - 0.5);
-    setShuffled(newShuffled);
-    setCurrentIndex(0);
+  const goNext = () => {
     setIsFlipped(false);
-    setScore({ correct: 0, incorrect: 0 });
+    setCurrentIndex((prev) => (prev + 1) % filteredCards.length);
   };
 
-  const handleReset = () => {
-    setShuffled(practiceObjections);
-    setCurrentIndex(0);
+  const goPrev = () => {
     setIsFlipped(false);
-    setScore({ correct: 0, incorrect: 0 });
+    setCurrentIndex((prev) =>
+      prev === 0 ? filteredCards.length - 1 : prev - 1
+    );
   };
 
-  const handleMark = (correct: boolean) => {
-    if (correct) {
-      setScore((prev) => ({ ...prev, correct: prev.correct + 1 }));
+  const shuffle = () => {
+    setIsFlipped(false);
+    setCurrentIndex(Math.floor(Math.random() * filteredCards.length));
+  };
+
+  const toggleMastered = () => {
+    if (!currentCard) return;
+    const newMastered = new Set(masteredCards);
+    if (newMastered.has(currentCard.id)) {
+      newMastered.delete(currentCard.id);
     } else {
-      setScore((prev) => ({ ...prev, incorrect: prev.incorrect + 1 }));
+      newMastered.add(currentCard.id);
     }
-    handleNext();
+    setMasteredCards(newMastered);
   };
+
+  const masteredCount = filteredCards.filter((c) =>
+    masteredCards.has(c.id)
+  ).length;
+  const progress =
+    filteredCards.length > 0 ? (masteredCount / filteredCards.length) * 100 : 0;
 
   return (
     <AppShell>
-      <div className="flex flex-col gap-6 p-6 md:p-8 max-w-3xl mx-auto">
+      <div className="flex flex-1 flex-col gap-4 p-4 md:p-6">
         {/* Header */}
-        <div className="text-center">
-          <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-semibold tracking-tight">
             Practice Mode
           </h1>
-          <p className="text-muted-foreground mt-1">
-            Master objection handling with flashcards
+          <p className="text-sm text-muted-foreground">
+            Master objection handling with interactive flashcards.
           </p>
         </div>
 
+        {/* Filters */}
+        <div className="flex flex-wrap gap-3">
+          <Select value={productFilter} onValueChange={setProductFilter}>
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="Product" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Products</SelectItem>
+              {PRODUCTS.map((p) => (
+                <SelectItem key={p.id} value={p.id}>
+                  {p.emoji} {p.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="Category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              {categories.map((cat) => (
+                <SelectItem key={cat} value={cat}>
+                  {cat}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Button variant="outline" size="icon" onClick={shuffle}>
+            <Shuffle className="size-4" />
+          </Button>
+        </div>
+
         {/* Progress */}
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <span>
-              Card {currentIndex + 1} of {shuffled.length}
-            </span>
-            <span className="flex gap-4">
-              <span className="text-green-600">✓ {score.correct}</span>
-              <span className="text-red-600">✗ {score.incorrect}</span>
-            </span>
-          </div>
-          <Progress value={progress} className="h-2" />
+        <div className="flex items-center gap-3">
+          <Progress value={progress} className="flex-1" />
+          <span className="text-sm text-muted-foreground">
+            {masteredCount}/{filteredCards.length} mastered
+          </span>
         </div>
 
         {/* Flashcard */}
-        <div
-          className="relative h-[400px] cursor-pointer perspective-1000"
-          onClick={() => setIsFlipped(!isFlipped)}
-        >
-          <div
-            className={`relative w-full h-full transition-transform duration-500 transform-style-preserve-3d ${
-              isFlipped ? "rotate-y-180" : ""
-            }`}
-            style={{
-              transformStyle: "preserve-3d",
-              transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
-            }}
-          >
-            {/* Front - Objection */}
+        {currentCard ? (
+          <div className="flex flex-1 flex-col items-center justify-center gap-4">
             <Card
-              className="absolute inset-0 backface-hidden flex flex-col"
-              style={{ backfaceVisibility: "hidden" }}
+              className="w-full max-w-xl cursor-pointer transition-all hover:shadow-lg min-h-[280px] flex flex-col"
+              onClick={() => setIsFlipped(!isFlipped)}
             >
-              <CardContent className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-                <div className="mb-4">
-                  {product ? (
-                    <Badge
-                      style={{ backgroundColor: product.color, color: "white" }}
-                    >
-                      {product.emoji} {product.name}
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <Badge
+                    variant={isFlipped ? "default" : "secondary"}
+                    className="text-xs"
+                  >
+                    {isFlipped ? "Response" : "Objection"}
+                  </Badge>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="text-xs">
+                      {currentCard.category}
                     </Badge>
+                    {masteredCards.has(currentCard.id) && (
+                      <Badge className="bg-green-600 text-xs">Mastered</Badge>
+                    )}
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="flex flex-1 items-center justify-center py-6">
+                <p className="text-center text-lg leading-relaxed">
+                  {isFlipped ? (
+                    <span className="text-muted-foreground">
+                      {currentCard.response}
+                    </span>
                   ) : (
-                    <Badge variant="secondary">All Products</Badge>
+                    <span className="font-medium">
+                      "{currentCard.objection}"
+                    </span>
                   )}
-                </div>
-                <p className="text-sm text-muted-foreground mb-4">
-                  OBJECTION:
-                </p>
-                <p className="text-2xl font-bold">
-                  "{currentCard.objection}"
-                </p>
-                <p className="text-sm text-muted-foreground mt-8">
-                  Tap to reveal response
                 </p>
               </CardContent>
             </Card>
 
-            {/* Back - Response */}
-            <Card
-              className="absolute inset-0 backface-hidden flex flex-col"
-              style={{
-                backfaceVisibility: "hidden",
-                transform: "rotateY(180deg)",
-              }}
-            >
-              <CardContent className="flex-1 flex flex-col p-8 overflow-auto">
-                <p className="text-sm text-muted-foreground mb-2">RESPONSE:</p>
-                <p className="text-lg mb-6">"{currentCard.response}"</p>
-                <div className="mt-auto pt-4 border-t">
-                  <p className="text-sm text-muted-foreground mb-1">
-                    💡 Psychology:
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {currentCard.psychology}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+            {/* Controls */}
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="icon" onClick={goPrev}>
+                <ChevronLeft className="size-4" />
+              </Button>
 
-        {/* Controls */}
-        <div className="flex items-center justify-between">
-          <Button
-            variant="outline"
-            onClick={handlePrevious}
-            disabled={currentIndex === 0}
-          >
-            <ChevronLeft className="h-4 w-4 mr-2" />
-            Previous
-          </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsFlipped(!isFlipped)}
+              >
+                <RotateCcw className="mr-2 size-4" />
+                Flip
+              </Button>
 
-          <div className="flex gap-2">
-            <Button variant="outline" size="icon" onClick={handleShuffle}>
-              <Shuffle className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" size="icon" onClick={handleReset}>
-              <RotateCcw className="h-4 w-4" />
-            </Button>
-          </div>
+              <Button
+                variant={masteredCards.has(currentCard.id) ? "default" : "outline"}
+                size="sm"
+                onClick={toggleMastered}
+              >
+                {masteredCards.has(currentCard.id) ? "✓ Mastered" : "Mark Mastered"}
+              </Button>
 
-          <Button
-            variant="outline"
-            onClick={handleNext}
-            disabled={currentIndex === shuffled.length - 1}
-          >
-            Next
-            <ChevronRight className="h-4 w-4 ml-2" />
-          </Button>
-        </div>
+              <Button variant="outline" size="icon" onClick={goNext}>
+                <ChevronRight className="size-4" />
+              </Button>
+            </div>
 
-        {/* Self-Assessment */}
-        {isFlipped && (
-          <div className="flex justify-center gap-4">
-            <Button
-              variant="outline"
-              className="border-red-200 hover:bg-red-50"
-              onClick={() => handleMark(false)}
-            >
-              <X className="h-4 w-4 mr-2 text-red-600" />
-              Need Practice
-            </Button>
-            <Button
-              variant="outline"
-              className="border-green-200 hover:bg-green-50"
-              onClick={() => handleMark(true)}
-            >
-              <Check className="h-4 w-4 mr-2 text-green-600" />
-              Got It!
-            </Button>
-          </div>
-        )}
-
-        {/* Tips */}
-        <Card className="bg-muted/50">
-          <CardContent className="py-4 text-center text-sm text-muted-foreground">
-            <p>
-              💡 <strong>Tip:</strong> Practice saying the response out loud
-              before revealing the answer. This helps build muscle memory for
-              real conversations.
+            <p className="text-xs text-muted-foreground">
+              Card {currentIndex + 1} of {filteredCards.length} • Click card to
+              flip
             </p>
-          </CardContent>
-        </Card>
+          </div>
+        ) : (
+          <Card className="flex flex-1 items-center justify-center">
+            <CardContent className="text-center py-12">
+              <p className="text-muted-foreground">
+                No flashcards match your filters.
+              </p>
+              <Button
+                variant="link"
+                onClick={() => {
+                  setProductFilter("all");
+                  setCategoryFilter("all");
+                }}
+              >
+                Reset filters
+              </Button>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </AppShell>
   );
 }
-
