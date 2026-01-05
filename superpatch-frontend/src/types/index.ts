@@ -110,6 +110,55 @@ export interface Favorite {
   addedAt: string;
 }
 
+// Word Track Section Types
+export interface WordTrackSection {
+  id: string;
+  title: string;
+  content: string;
+  copyable: boolean;
+}
+
+export interface WordTrack {
+  id: string;
+  productId?: string;
+  practitionerId?: string;
+  market: MarketId;
+  title: string;
+  subtitle: string;
+  overview: string;
+  idealCustomer?: string;
+  idealPractitioner?: string;
+  openingScripts: Script[];
+  discoveryQuestions: DiscoveryQuestion[];
+  productPresentation: string;
+  objections: Objection[];
+  closingScripts: Script[];
+  followUpSequences: FollowUpSequence[];
+  testimonialPrompts?: string[];
+  quickReference: QuickReference;
+}
+
+// Practitioner Types (B2B)
+export type PractitionerId =
+  | "chiropractors"
+  | "naturopaths"
+  | "acupuncturists"
+  | "massage-therapists"
+  | "functional-medicine"
+  | "integrative-medicine";
+
+export interface Practitioner {
+  id: PractitionerId;
+  name: string;
+  shortName: string;
+  description: string;
+  icon: string;
+  philosophy: string;
+  whyIdeal: string[];
+  painPoints: string[];
+  patientDemographics: string[];
+}
+
 // Navigation Types
 export interface NavItem {
   title: string;
