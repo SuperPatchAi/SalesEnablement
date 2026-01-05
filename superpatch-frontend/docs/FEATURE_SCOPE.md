@@ -13,19 +13,42 @@
 
 ### Brand Colors (from brand_styling_reference_config.json)
 ```css
---primary: #E31937 (SuperPatch Red)
---neutrals-900: #1A1A1A (Dark)
---neutrals-100: #F5F5F5 (Light Grey)
---secondary-teal: #20C997
---secondary-blue: #007BFF
---secondary-green: #28A745
---secondary-orange: #FD7E14
+/* Primary */
+--primary: #DD0604           /* SuperPatch Red */
+--primary-bright: #F32735    /* Red Bright */
+
+/* Neutrals */
+--grey-900: #101010          /* Headlines, Primary Buttons */
+--grey-700: #4D4D4D          /* Body Text, Input Borders */
+--grey-500: #888888          /* Placeholders */
+--grey-300: #C8C8C8          /* Labels (light) */
+--grey-100: #DCDCDC          /* Backgrounds (light) */
+--grey-25: #F7F7F7           /* Very light backgrounds */
+--white: #FFFFFF             /* Backgrounds, Text on Dark */
+
+/* Product Palette */
+--teal: #66C9BA              /* 570 c */
+--purple: #652F6C            /* 520 c */
+--cyan: #009ADE              /* 2925 c */
+--blue-dark: #0055B8         /* 2935 c */
+--yellow-gold: #FFC629       /* 123 c */
+--orange: #FFA400            /* 137 c */
 ```
 
 ### Typography
-- Headers: Work Sans Bold
-- Body: Work Sans Regular
-- Code/Scripts: JetBrains Mono (for copy-friendly text)
+- **Font Family:** Montserrat (web), Avenir Next (print)
+- **Fallbacks:** Helvetica, Arial, sans-serif
+- **Weights:**
+  - Headlines: 900 (Black) - UPPERCASE
+  - Buttons/Subtitles: 700 (Bold) - UPPERCASE
+  - Body: 500 (Medium) - Sentence case
+- **Code/Scripts:** JetBrains Mono (for copy-friendly text)
+
+### Button Style
+- **Shape:** Pill (fully rounded corners)
+- **Primary:** Dark bg (#101010), White text
+- **Secondary:** White bg, Dark text, Grey stroke
+- **Animation:** Fill left-to-right on hover (300ms ease-out)
 
 ---
 
@@ -169,6 +192,28 @@
 
 ---
 
+## 📱 Mobile-Specific Features
+
+### Bottom Navigation (Mobile Only)
+Fixed bottom nav bar with 5 items:
+1. **Home** - Landing page
+2. **Products** - Product grid
+3. **Search** - Opens search palette
+4. **Practice** - Flashcard mode
+5. **Favorites** - Saved items
+
+### Sharing & Deep Links
+- **Share Script:** Native share API (text/email)
+- **Deep Links:** `/b2b/products/freedom#objections` links directly to section
+- **Copy Link:** Copy shareable URL to specific content
+
+### Personal Notes
+- Add personal notes to any script/objection
+- LocalStorage persistence
+- Quick access from content cards
+
+---
+
 ## 🧩 Custom Component Library
 
 ### Core Components (shadcn base)
@@ -200,6 +245,10 @@
 | `Flashcard` | Flip card for practice | Card |
 | `QuickRefCard` | Cheat sheet display | Card |
 | `SearchPalette` | Global search overlay | Command |
+| `BottomNav` | Mobile navigation bar | Custom |
+| `ShareButton` | Native share API trigger | Button |
+| `NotesPopover` | Personal notes editor | Popover |
+| `DeepLink` | Shareable URL generator | Utility |
 
 ---
 
