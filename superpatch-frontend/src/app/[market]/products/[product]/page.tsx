@@ -73,6 +73,33 @@ export default async function ProductDetailPage({
   // Get word track data if available
   const wordTrack = getWordTrackByProductAndMarket(productId, market as "d2c" | "b2b" | "canadian");
   const hasWordTrackData = wordTrack !== null;
+  
+  // Helper functions to safely access wordtrack data (supports both naming conventions)
+  const getOverviewText = () => {
+    if (!wordTrack) return "";
+    return wordTrack.overview || wordTrack.productOverview || "";
+  };
+  const overviewText = getOverviewText();
+  
+  const getOpeningScripts = () => wordTrack?.openingScripts || [];
+  const getDiscoveryQuestions = () => wordTrack?.discoveryQuestions || [];
+  const getProductPresentation = () => {
+    if (!wordTrack) return "";
+    if (typeof wordTrack.productPresentation === 'string') {
+      return wordTrack.productPresentation;
+    }
+    if (wordTrack.productPresentation) {
+      return wordTrack.productPresentation.fullScript || 
+             `<p><strong>Problem:</strong> ${wordTrack.productPresentation.problem || ''}</p>
+              <p><strong>Agitate:</strong> ${wordTrack.productPresentation.agitate || ''}</p>
+              <p><strong>Solve:</strong> ${wordTrack.productPresentation.solve || ''}</p>`;
+    }
+    return "";
+  };
+  const getObjections = () => wordTrack?.objections || wordTrack?.objectionHandling || [];
+  const getClosingScripts = () => wordTrack?.closingScripts || [];
+  const getFollowUpSequence = () => wordTrack?.followUpSequence || wordTrack?.followUpSequences || [];
+  const getQuickReference = () => wordTrack?.quickReference;
 
   return (
     <AppShell defaultMarket={market as MarketId}>
@@ -170,10 +197,10 @@ export default async function ProductDetailPage({
                   <CardTitle className="text-base">Product Overview</CardTitle>
                 </CardHeader>
                 <CardContent className="text-sm space-y-3">
-                  {hasWordTrackData ? (
+                  {hasWordTrackData && overviewText ? (
                     <div className="prose prose-sm max-w-none">
-                      {wordTrack.overview.split('\n\n').map((paragraph, i) => (
-                        <p key={i} className="text-muted-foreground">{paragraph}</p>
+                      {overviewText.split('\n\n').map((paragraph, i) => (
+                        <p key={i} className="text-muted-foreground" dangerouslySetInnerHTML={{ __html: paragraph }} />
                       ))}
                     </div>
                   ) : (
@@ -295,9 +322,9 @@ export default async function ProductDetailPage({
 
           {/* Opening Scripts Tab */}
           <TabsContent value="opening" className="mt-4 space-y-3">
-            {hasWordTrackData && wordTrack.openingScripts.length > 0 ? (
-              wordTrack.openingScripts.map((script) => (
-                <Card key={script.id}>
+            {hasWordTrackData && getOpeningScripts().length > 0 ? (
+              getOpeningScripts().map((script, idx) => (
+                <Card key={script.id || idx}>
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-base">{script.title}</CardTitle>
@@ -305,11 +332,11 @@ export default async function ProductDetailPage({
                         <Copy className="size-4" />
                       </Button>
                     </div>
-                    <CardDescription>{script.scenario}</CardDescription>
+                    {script.scenario && <CardDescription>{script.scenario}</CardDescription>}
                   </CardHeader>
                   <CardContent>
                     <div className="bg-muted rounded-lg p-3 font-mono text-sm whitespace-pre-wrap">
-                      {script.script}
+                      {script.script || script.content}
                     </div>
                   </CardContent>
                 </Card>
@@ -368,10 +395,10 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {hasWordTrackData && wordTrack.discoveryQuestions.length > 0 ? (
+                {hasWordTrackData && getDiscoveryQuestions().length > 0 ? (
                   <Accordion type="single" collapsible className="w-full">
-                    {['opening', 'pain_point', 'impact', 'solution'].map((category) => {
-                      const questions = wordTrack.discoveryQuestions.filter(q => q.category === category);
+                    {['opening', 'pain_point', 'pain', 'impact', 'solution'].map((category) => {
+                      const questions = getDiscoveryQuestions().filter(q => q.category === category);
                       if (questions.length === 0) return null;
                       const categoryLabel = category.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
                       return (
@@ -382,7 +409,7 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
                           <AccordionContent>
                             <ul className="space-y-3">
                               {questions.map((q, i) => (
-                                <li key={q.id} className="flex items-start gap-3">
+                                <li key={q.id || i} className="flex items-start gap-3">
                                   <span className="flex items-center justify-center size-6 rounded-full bg-primary/10 text-primary text-xs font-medium shrink-0">
                                     {i + 1}
                                   </span>
@@ -433,51 +460,58 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {hasWordTrackData ? (
-                  <>
-                    <div>
-                      <Badge variant="outline" className="mb-2 text-red-600 border-red-200 bg-red-50">
-                        Problem
-                      </Badge>
-                      <p className="text-sm text-muted-foreground">
-                        {wordTrack.productPresentation.problem}
-                      </p>
-                    </div>
-                    <Separator />
-                    <div>
-                      <Badge variant="outline" className="mb-2 text-orange-600 border-orange-200 bg-orange-50">
-                        Agitate
-                      </Badge>
-                      <p className="text-sm text-muted-foreground">
-                        {wordTrack.productPresentation.agitate}
-                      </p>
-                    </div>
-                    <Separator />
-                    <div>
-                      <Badge variant="outline" className="mb-2 text-green-600 border-green-200 bg-green-50">
-                        Solve
-                      </Badge>
-                      <p className="text-sm text-muted-foreground">
-                        {wordTrack.productPresentation.solve}
-                      </p>
-                    </div>
-                    {wordTrack.productPresentation.fullScript && (
-                      <>
-                        <Separator />
-                        <div>
-                          <div className="flex items-center justify-between mb-2">
-                            <Badge variant="secondary">Full 2-Minute Script</Badge>
-                            <Button variant="ghost" size="icon" className="size-8">
-                              <Copy className="size-4" />
-                            </Button>
+                {hasWordTrackData && getProductPresentation() ? (
+                  typeof wordTrack?.productPresentation === 'string' ? (
+                    <div 
+                      className="prose prose-sm max-w-none text-muted-foreground"
+                      dangerouslySetInnerHTML={{ __html: wordTrack.productPresentation }}
+                    />
+                  ) : wordTrack?.productPresentation ? (
+                    <>
+                      <div>
+                        <Badge variant="outline" className="mb-2 text-red-600 border-red-200 bg-red-50">
+                          Problem
+                        </Badge>
+                        <p className="text-sm text-muted-foreground">
+                          {wordTrack.productPresentation.problem}
+                        </p>
+                      </div>
+                      <Separator />
+                      <div>
+                        <Badge variant="outline" className="mb-2 text-orange-600 border-orange-200 bg-orange-50">
+                          Agitate
+                        </Badge>
+                        <p className="text-sm text-muted-foreground">
+                          {wordTrack.productPresentation.agitate}
+                        </p>
+                      </div>
+                      <Separator />
+                      <div>
+                        <Badge variant="outline" className="mb-2 text-green-600 border-green-200 bg-green-50">
+                          Solve
+                        </Badge>
+                        <p className="text-sm text-muted-foreground">
+                          {wordTrack.productPresentation.solve}
+                        </p>
+                      </div>
+                      {wordTrack.productPresentation.fullScript && (
+                        <>
+                          <Separator />
+                          <div>
+                            <div className="flex items-center justify-between mb-2">
+                              <Badge variant="secondary">Full 2-Minute Script</Badge>
+                              <Button variant="ghost" size="icon" className="size-8">
+                                <Copy className="size-4" />
+                              </Button>
+                            </div>
+                            <div className="bg-muted rounded-lg p-4 font-mono text-sm whitespace-pre-wrap max-h-96 overflow-y-auto">
+                              {wordTrack.productPresentation.fullScript}
+                            </div>
                           </div>
-                          <div className="bg-muted rounded-lg p-4 font-mono text-sm whitespace-pre-wrap max-h-96 overflow-y-auto">
-                            {wordTrack.productPresentation.fullScript}
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </>
+                        </>
+                      )}
+                    </>
+                  ) : null
                 ) : (
                   <>
                     <div>
@@ -514,10 +548,10 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
 
           {/* Objections Tab */}
           <TabsContent value="objections" className="mt-4 space-y-3">
-            {hasWordTrackData && wordTrack.objections.length > 0 ? (
+            {hasWordTrackData && getObjections().length > 0 ? (
               <div className="grid gap-3 md:grid-cols-2">
-                {wordTrack.objections.map((obj) => (
-                  <Card key={obj.id}>
+                {getObjections().map((obj, idx) => (
+                  <Card key={obj.id || idx}>
                     <CardHeader className="pb-3">
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-base">
@@ -611,9 +645,9 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
 
           {/* Closing Tab */}
           <TabsContent value="closing" className="mt-4 space-y-3">
-            {hasWordTrackData && wordTrack.closingScripts.length > 0 ? (
-              wordTrack.closingScripts.map((script) => (
-                <Card key={script.id}>
+            {hasWordTrackData && getClosingScripts().length > 0 ? (
+              getClosingScripts().map((script, idx) => (
+                <Card key={script.id || idx}>
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-base">{script.title}</CardTitle>
@@ -621,13 +655,15 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
                         <Copy className="size-4" />
                       </Button>
                     </div>
-                    <Badge variant="outline" className="w-fit text-[10px]">
-                      {script.type.charAt(0).toUpperCase() + script.type.slice(1)}
-                    </Badge>
+                    {script.type && (
+                      <Badge variant="outline" className="w-fit text-[10px]">
+                        {script.type.charAt(0).toUpperCase() + script.type.slice(1)}
+                      </Badge>
+                    )}
                   </CardHeader>
                   <CardContent>
                     <div className="bg-muted rounded-lg p-3 font-mono text-sm whitespace-pre-wrap">
-                      {script.script}
+                      {script.script || script.content}
                     </div>
                   </CardContent>
                 </Card>
@@ -678,9 +714,9 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {hasWordTrackData && wordTrack.followUpSequence.length > 0 ? (
+                {hasWordTrackData && getFollowUpSequence().length > 0 ? (
                   <Accordion type="single" collapsible className="w-full">
-                    {wordTrack.followUpSequence.map((item, index) => (
+                    {getFollowUpSequence().map((item, index) => (
                       <AccordionItem key={index} value={item.day}>
                         <AccordionTrigger className="text-sm">
                           <div className="flex items-center gap-2">
@@ -780,8 +816,8 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2">
-                    {hasWordTrackData ? (
-                      wordTrack.quickReference.keyBenefits.map((benefit, i) => (
+                    {hasWordTrackData && getQuickReference()?.keyBenefits ? (
+                      getQuickReference()!.keyBenefits.map((benefit, i) => (
                         <li key={i} className="flex items-start gap-2 text-sm">
                           <CheckCircle className="size-4 text-green-600 mt-0.5 shrink-0" />
                           {benefit}
@@ -816,8 +852,8 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
                 </CardHeader>
                 <CardContent>
                   <ol className="space-y-2 list-decimal list-inside">
-                    {hasWordTrackData ? (
-                      wordTrack.quickReference.bestQuestions.map((question, i) => (
+                    {hasWordTrackData && getQuickReference()?.bestQuestions ? (
+                      getQuickReference()!.bestQuestions.map((question, i) => (
                         <li key={i} className="text-sm text-muted-foreground">
                           {question}
                         </li>
@@ -848,12 +884,12 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-3">
-                    {hasWordTrackData ? (
-                      wordTrack.quickReference.topObjections.map((obj, i) => (
+                    {hasWordTrackData && getQuickReference()?.topObjections ? (
+                      getQuickReference()!.topObjections.map((obj, i) => (
                         <li key={i} className="text-sm">
                           <p className="font-medium">&ldquo;{obj.objection}&rdquo;</p>
                           <p className="text-muted-foreground text-xs mt-1">
-                            → {obj.response}
+                            → {obj.response || obj.shortResponse}
                           </p>
                         </li>
                       ))
@@ -886,8 +922,8 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-3">
-                    {hasWordTrackData ? (
-                      wordTrack.quickReference.bestClosingLines.map((line, i) => (
+                    {hasWordTrackData && getQuickReference()?.bestClosingLines ? (
+                      getQuickReference()!.bestClosingLines.map((line, i) => (
                         <li key={i} className="text-sm bg-muted p-2 rounded-lg">
                           &ldquo;{line}&rdquo;
                         </li>
@@ -906,7 +942,7 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
                 </CardContent>
               </Card>
 
-              {hasWordTrackData && wordTrack.quickReference.keyStats && (
+              {hasWordTrackData && getQuickReference()?.keyStats && (
                 <Card className="lg:col-span-2">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-base flex items-center gap-2">
@@ -916,7 +952,7 @@ They thought our ${product.name} patch could be a great fit. Would you like to h
                   </CardHeader>
                   <CardContent>
                     <div className="flex flex-wrap gap-2">
-                      {wordTrack.quickReference.keyStats.map((stat, i) => (
+                      {getQuickReference()!.keyStats!.map((stat, i) => (
                         <Badge key={i} variant="secondary" className="text-xs">
                           {stat}
                         </Badge>

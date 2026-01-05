@@ -3,30 +3,39 @@
 
 import { WordTrack, WordTrackCollection } from "@/types/wordtrack";
 
-// D2C Word Tracks
+// D2C Word Tracks - All 13 products
 import { freedomD2CWordTrack } from "./d2c/freedom";
 import { remD2CWordTrack } from "./d2c/rem";
 import { libertyD2CWordTrack } from "./d2c/liberty";
+import { boostD2CWordTrack } from "./d2c/boost";
+import { victoryD2CWordTrack } from "./d2c/victory";
+import { focusD2CWordTrack } from "./d2c/focus";
+import { defendD2CWordTrack } from "./d2c/defend";
+import { igniteD2CWordTrack } from "./d2c/ignite";
+import { kickItD2CWordTrack } from "./d2c/kick-it";
+import { peaceD2CWordTrack } from "./d2c/peace";
+import { joyD2CWordTrack } from "./d2c/joy";
+import { lumiD2CWordTrack } from "./d2c/lumi";
+import { rocketD2CWordTrack } from "./d2c/rocket";
 
 // B2B Practitioner Word Tracks
 import { chiropractorB2BWordTrack } from "./b2b/chiropractor";
 
-// D2C Word Tracks by product ID
+// D2C Word Tracks by product ID - All 13 products loaded
 export const d2cWordTracks: { [productId: string]: WordTrack } = {
   freedom: freedomD2CWordTrack,
   rem: remD2CWordTrack,
   liberty: libertyD2CWordTrack,
-  // Add more D2C word tracks here as they are created
-  // boost: boostD2CWordTrack,
-  // victory: victoryD2CWordTrack,
-  // focus: focusD2CWordTrack,
-  // defend: defendD2CWordTrack,
-  // ignite: igniteD2CWordTrack,
-  // "kick-it": kickItD2CWordTrack,
-  // peace: peaceD2CWordTrack,
-  // joy: joyD2CWordTrack,
-  // lumi: lumiD2CWordTrack,
-  // rocket: rocketD2CWordTrack,
+  boost: boostD2CWordTrack,
+  victory: victoryD2CWordTrack,
+  focus: focusD2CWordTrack,
+  defend: defendD2CWordTrack,
+  ignite: igniteD2CWordTrack,
+  "kick-it": kickItD2CWordTrack,
+  peace: peaceD2CWordTrack,
+  joy: joyD2CWordTrack,
+  lumi: lumiD2CWordTrack,
+  rocket: rocketD2CWordTrack,
 };
 
 // B2B Word Tracks by practitioner type
@@ -103,13 +112,17 @@ export function hasWordTrack(
 // Get all loaded word track counts
 export function getWordTrackStats(): {
   d2cCount: number;
+  d2cLoaded: string[];
   b2bCount: number;
+  b2bLoaded: string[];
   hasCanadian: boolean;
   totalProducts: number;
 } {
   return {
     d2cCount: Object.keys(d2cWordTracks).length,
+    d2cLoaded: Object.keys(d2cWordTracks),
     b2bCount: Object.keys(b2bWordTracks).length,
+    b2bLoaded: Object.keys(b2bWordTracks),
     hasCanadian: canadianWordTrack !== null,
     totalProducts: 13, // Total SuperPatch products
   };

@@ -13,22 +13,23 @@ export type PractitionerType =
 
 // Opening Script
 export interface OpeningScript {
-  id: string;
+  id?: string;
   title: string;
-  scenario: string;
-  script: string;
+  scenario?: string;
+  script?: string;
+  content?: string; // Alternative to script
 }
 
 // Discovery Question
 export interface DiscoveryQuestion {
-  id: string;
-  category: "opening" | "pain_point" | "impact" | "solution" | "decision" | "future" | "practice" | "patient" | "current";
+  id?: string;
+  category?: "opening" | "pain_point" | "impact" | "solution" | "decision" | "future" | "practice" | "patient" | "current" | "pain";
   question: string;
 }
 
 // Objection and Response
 export interface ObjectionResponse {
-  id: string;
+  id?: string;
   objection: string;
   response: string;
   psychology?: string;
@@ -36,10 +37,12 @@ export interface ObjectionResponse {
 
 // Closing Script
 export interface ClosingScript {
-  id: string;
+  id?: string;
   title: string;
-  type: "assumptive" | "alternative" | "urgency" | "summary" | "trial" | "referral" | "business_model";
-  script: string;
+  type?: "assumptive" | "alternative" | "urgency" | "summary" | "trial" | "referral" | "business_model";
+  scenario?: string;
+  script?: string;
+  content?: string; // Alternative to script
 }
 
 // Follow-up Sequence
@@ -62,7 +65,7 @@ export interface TestimonialPrompt {
 export interface QuickReference {
   keyBenefits: string[];
   bestQuestions: string[];
-  topObjections: { objection: string; response: string }[];
+  topObjections: { objection: string; response?: string; shortResponse?: string }[];
   bestClosingLines: string[];
   keyStats?: string[];
 }
@@ -113,35 +116,48 @@ export interface ProductRecommendation {
   isPrimary: boolean;
 }
 
-// Complete Word Track
+// Ideal Customer Profile (simplified version)
+export interface IdealCustomerProfile {
+  demographics?: string;
+  psychographics?: string;
+  painPoints?: string[];
+  previousSolutions?: string[];
+}
+
+// Complete Word Track - Flexible interface supporting multiple formats
 export interface WordTrack {
   // Metadata
   id: string;
   productId?: string;
   productName?: string;
   practitionerType?: PractitionerType;
-  market: MarketType;
+  market?: MarketType;
+  marketId?: string; // Alternative to market
   tagline?: string;
   category?: string;
   benefits?: string[];
   
-  // Overview
-  overview: string;
+  // Overview - supports both naming conventions
+  overview?: string;
+  productOverview?: string; // Alternative to overview
   
-  // Target Profile
+  // Target Profile - supports both formats
   customerProfile?: CustomerProfile;
+  idealCustomerProfile?: IdealCustomerProfile; // Alternative simplified format
   practitionerProfile?: PractitionerProfile;
   productRecommendations?: ProductRecommendation[];
   
-  // Sales Content
-  openingScripts: OpeningScript[];
-  discoveryQuestions: DiscoveryQuestion[];
-  productPresentation: ProductPresentation;
-  objections: ObjectionResponse[];
-  closingScripts: ClosingScript[];
-  followUpSequence: FollowUpItem[];
+  // Sales Content - supports both naming conventions
+  openingScripts?: OpeningScript[];
+  discoveryQuestions?: DiscoveryQuestion[];
+  productPresentation?: ProductPresentation | string; // Can be object or HTML string
+  objections?: ObjectionResponse[];
+  objectionHandling?: ObjectionResponse[]; // Alternative name
+  closingScripts?: ClosingScript[];
+  followUpSequence?: FollowUpItem[];
+  followUpSequences?: FollowUpItem[]; // Alternative name
   testimonialPrompts?: TestimonialPrompt[];
-  quickReference: QuickReference;
+  quickReference?: QuickReference;
   
   // Additional B2B content
   businessModelOptions?: {
