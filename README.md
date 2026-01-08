@@ -1,276 +1,507 @@
-# Super Patch Sales Enablement
+# SuperPatch Sales Enablement Platform
 
-A comprehensive sales enablement resource library for the Super Patch direct sales team. This project captures proven sales techniques, frameworks, and methodologies from industry experts to create structured, actionable sales scripts and training materials.
+> **From 0 to AI-Powered Outbound Sales in 4 Phases**  
+> A comprehensive system that transforms world-class sales training into intelligent, context-aware voice agents.
 
 ---
 
-## 🎯 Project Purpose
+## 🎯 The Vision
 
-**Goal:** Build a complete sales enablement system for Super Patch direct sales representatives by:
+Build an end-to-end sales enablement platform that:
+1. **Extracts** proven sales frameworks from top trainers (Grant Cardone, Jordan Belfort, Brian Tracy)
+2. **Synthesizes** these techniques into practitioner-specific word tracks
+3. **Deploys** intelligent AI voice agents that can conduct real sales conversations
+4. **Schedules** in-person demo appointments directly into calendars
 
-1. **Researching** the best direct sales training content from industry experts
-2. **Extracting** proven sales techniques, frameworks, and methodologies
-3. **Structuring** the knowledge into actionable documents
-4. **Creating** product-specific sales scripts with objection handling
-5. **Enabling** our direct sales team to succeed with Super Patch products
+---
+
+## 📊 Project Overview
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                     SUPERPATCH SALES ENABLEMENT                         │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│   PHASE 1: Knowledge Extraction                                         │
+│   ┌─────────────┐    ┌─────────────┐    ┌─────────────────┐            │
+│   │  60 YouTube │───▶│   Gemini    │───▶│  44 Framework   │            │
+│   │   Videos    │    │  Analysis   │    │   Extractions   │            │
+│   └─────────────┘    └─────────────┘    └─────────────────┘            │
+│                                                                         │
+│   PHASE 2: Content Synthesis                                            │
+│   ┌─────────────┐    ┌─────────────┐    ┌─────────────────┐            │
+│   │  Frameworks │───▶│  SuperPatch │───▶│  6 Practitioner │            │
+│   │ + Products  │    │   Context   │    │   Word Tracks   │            │
+│   └─────────────┘    └─────────────┘    └─────────────────┘            │
+│                                                                         │
+│   PHASE 3: Voice Agent Development                                      │
+│   ┌─────────────┐    ┌─────────────┐    ┌─────────────────┐            │
+│   │ Word Tracks │───▶│  Bland.ai   │───▶│  34-Node Convo  │            │
+│   │  + Context  │    │  Pathways   │    │     Flows       │            │
+│   └─────────────┘    └─────────────┘    └─────────────────┘            │
+│                                                                         │
+│   PHASE 4: Scheduling Integration                                       │
+│   ┌─────────────┐    ┌─────────────┐    ┌─────────────────┐            │
+│   │   Cal.com   │───▶│   Custom    │───▶│   Automated     │            │
+│   │     API     │    │   Tools     │    │   Bookings      │            │
+│   └─────────────┘    └─────────────┘    └─────────────────┘            │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
 ## 📁 Project Structure
 
 ```
-/SalesEnablement
-├── README.md                              # Project overview (this file)
-├── YouTube videos.md                      # Curated list of 60 training videos
-├── youtube_videos.json                    # Structured video data
+SalesEnablement/
 │
-├── /analyses                              # 44 individual video analyses
-│   ├── [video_id].md                      # Detailed framework extractions
-│   └── [video_id].json                    # Raw analysis data
+├── 📺 PHASE 1: Knowledge Extraction
+│   ├── YouTube videos.md          # 60 curated training videos
+│   ├── youtube_videos.json        # Structured video metadata
+│   ├── scripts/
+│   │   ├── gemini_video_analyzer.py   # AI video analysis tool
+│   │   └── transcribe_video.py        # Audio transcription
+│   ├── analyses/                  # 44 video analyses (JSON + MD)
+│   │   ├── _summary.json
+│   │   └── [video_id].md          # Extracted frameworks per video
+│   └── frameworks/
+│       ├── all_frameworks.md      # 5,357 lines of extracted techniques
+│       ├── closing_techniques.md
+│       ├── objection_handling.md
+│       ├── cold_calling.md
+│       └── ...
 │
-├── /frameworks                            # Compiled sales frameworks (600KB+)
-│   ├── all_frameworks.md                  # Master document (537KB)
-│   ├── objection_handling.md              # Objection responses & scripts
-│   ├── closing_techniques.md              # Closing methods & frameworks
-│   ├── cold_calling.md                    # Cold call scripts & openers
-│   ├── sales_psychology_and_building_rapport.md
-│   ├── follow-up_strategies.md            # Follow-up sequences
-│   ├── famous_sales_trainers.md           # Cardone, Belfort, Tracy methods
-│   ├── direct_sales_and_network_marketing.md
-│   ├── general_sales_training.md
-│   └── playlists_and_full_courses.md
+├── 📝 PHASE 2: Content Synthesis
+│   ├── products/
+│   │   ├── SuperPatch_Product_Reference.md
+│   │   └── superpatch_products.json
+│   ├── b2b_sales_enablement/
+│   │   └── wordtracks/
+│   │       └── practitioners/     # 6 practitioner-specific guides
+│   │           ├── Chiropractors_WordTrack.md
+│   │           ├── Massage_Therapists_WordTrack.md
+│   │           ├── Naturopaths_WordTrack.md
+│   │           ├── Functional_Medicine_WordTrack.md
+│   │           ├── Integrative_Medicine_WordTrack.md
+│   │           └── Acupuncturists_WordTrack.md
+│   └── canadian_market/           # Canadian-specific content
 │
-├── /products                              # Super Patch product reference
-│   ├── SuperPatch_Product_Reference.md    # Complete product guide
-│   ├── SuperPatch_Research_Analysis.md    # Technology deep dive
-│   └── superpatch_products.json           # Structured product data
+├── 🤖 PHASE 3: Voice Agent Development
+│   └── b2b_sales_enablement/
+│       └── bland_ai_pathways/
+│           ├── [Practitioner]_contextual.json  # Live pathways
+│           ├── deploy_pathways.py
+│           ├── update_pathways_with_context.py
+│           ├── expanded_pathway_generator.py
+│           └── superpatch_knowledge_base.txt
 │
-├── /sales_materials                       # Phase 3: Product-specific sales aids
-│   ├── /docx                              # Word Track documents (13 products)
-│   │   ├── Freedom_WordTrack.docx         # Example: Pain relief patch
-│   │   ├── REM_WordTrack.docx             # Example: Sleep patch
-│   │   └── [ProductName]_WordTrack.docx   # One for each patch
-│   ├── /infographics                      # Visual sales aids (26 images)
-│   │   ├── [ProductName]_Overview.png     # Product benefit infographics
-│   │   └── [ProductName]_SalesProcess.png # 5-step sales process charts
-│   ├── /roadmaps                          # Original sales roadmaps (v1)
-│   └── /roadmaps_v3                       # 🆕 ENHANCED Sales Roadmaps (13 images)
-│       └── [ProductName]_Roadmap_v3.png   # Comprehensive at-a-glance dashboards
+├── 📅 PHASE 4: Scheduling Integration
+│   └── b2b_sales_enablement/
+│       └── appointment_webhook/
+│           ├── server.py              # Flask webhook server
+│           ├── sheets_integration.py  # Google Sheets logging
+│           └── update_bland_tools_calcom.py
 │
-├── /scripts                               # Analysis & automation tools
-│   ├── gemini_video_analyzer.py           # Gemini video analysis
-│   ├── generate_sales_materials.py        # DOCX + infographic generator
-│   ├── local_transcribe.py                # Local transcription fallback
-│   └── transcribe_video.py                # YouTube transcription
-│
-└── /.cursor
-    └── mcp.json                           # Firecrawl MCP configuration
+└── 🖥️ Frontend Application
+    └── superpatch-frontend/       # Next.js sales enablement app
+        ├── src/app/               # Pages by market (D2C, B2B, Canadian)
+        ├── src/data/wordtracks/   # TypeScript word track data
+        └── public/                # Patch images & roadmaps
 ```
 
 ---
 
-## ✅ Completed Work
+## 🔬 Phase 1: Knowledge Extraction
 
-### Phase 1: Research & Collection ✅
-- [x] Set up Firecrawl MCP for deep research
-- [x] Curate 60 YouTube training videos
-- [x] Organize videos by 9 categories
-- [x] Create structured JSON for processing
+### The Source Material
+We curated **60 YouTube videos** from the world's top sales trainers:
 
-### Phase 2: Framework Extraction ✅
-- [x] Analyze 44 videos using Google Gemini 2.5
-- [x] Extract step-by-step frameworks from each
-- [x] Document exact scripts and word tracks
-- [x] Compile into category-specific framework docs
-- [x] Create master frameworks document (537KB)
+| Trainer | Focus Area | Key Techniques |
+|---------|------------|----------------|
+| **Grant Cardone** | Closing, Persistence | 10X Rule, Assumptive Close |
+| **Jordan Belfort** | Persuasion, Tonality | Straight Line Selling, Certainty Transfer |
+| **Brian Tracy** | Psychology, Process | AIDA, Consultative Selling |
+| **Jeremy Miner** | NEPQ, Questions | Neuro-Emotional Persuasion Questions |
+| **Various** | Objection Handling | Feel-Felt-Found, Reframing |
 
-### Phase 2.5: Product Research ✅
-- [x] Scrape Super Patch website for all products
-- [x] Document all 13 patches with benefits
-- [x] Create target customer profiles
-- [x] Document pain points for each product
-- [x] Build objection response templates
+### The Extraction Process
 
----
+```python
+# scripts/gemini_video_analyzer.py
+# Uses Google Gemini to analyze videos and extract:
+# - Step-by-step frameworks
+# - Exact scripts and word tracks
+# - Objection handling responses
+# - SuperPatch-specific applications
 
-## 📚 Sales Frameworks Extracted
+ANALYSIS_PROMPT = """
+Analyze this sales training video and extract:
+1. Main technique and framework name
+2. Step-by-step process with psychology
+3. Exact scripts and word tracks (quotable)
+4. Objection handling with exact responses
+5. Key actionable takeaways
+6. How to apply to SuperPatch wellness products
+"""
+```
 
-### Videos Analyzed: 44
+### Output: 44 Framework Analyses
 
-| Category | Videos | Key Frameworks |
-|----------|--------|----------------|
-| Objection Handling | 3 | De-framing, Consequence Questioning, Identity Framing |
-| Closing Techniques | 5 | 5-Step Close, Assumptive Close, Value-Based Closing |
-| Cold Calling | 3 | Opening Lines, Pattern Interrupts, Cold Call Scripts |
-| Direct Sales & MLM | 6 | 3+3+3 Method, Relationship-First, Network Building |
-| Follow-Up Strategies | 8 | Follow-Up Blueprints, Personalization, Multi-Touch |
-| Sales Psychology | 8 | Rapport Building, Trust, Buyer Psychology |
-| Famous Trainers | 7 | Cardone 10X, Belfort Straight Line, Tracy Methods |
-| General Training | 2 | Prospecting, Motivation |
-| Courses | 2 | Full training programs |
+Each video analysis includes SuperPatch-specific applications:
 
-### Featured Expert Frameworks:
-- **Jeremy Miner** - NEPQ, De-framing, Consequence Questions
-- **Grant Cardone** - 10X Mindset, Massive Action
-- **Jordan Belfort** - Straight Line Persuasion, Tonality
-- **Brian Tracy** - Psychology of Selling, Self-Confidence
-- **Andy Elliott** - Rapport Building, Energy Matching
+```markdown
+## CLOSING Steps Framework (from VoUJ848UpWA)
 
----
+### The 5-Step Closing Framework:
+1. Proactively Overcome Objections
+2. Sprinkle "Do you have any questions?"
+3. The "Loop" Before Close
+4. The Close
+5. The Backup Close
 
-## 🏷️ Super Patch Products (13 Patches)
-
-| Category | Patch | Target Benefit |
-|----------|-------|----------------|
-| Aches & Pains | **Freedom** | Drug-free pain relief |
-| Mobility | **Liberty** | Balance & stability |
-| Sleep | **REM** | Deep, restful sleep |
-| Athletic Performance | **Victory** | Strength, speed, agility |
-| Focus & Attention | **Focus** | Concentration & clarity |
-| Max RMR | **Ignite** | Metabolism boost |
-| Will Power | **Kick It** | Habit breaking support |
-| Immune Support | **Defend** | Wellness maintenance |
-| Mood | **Joy** | Emotional well-being |
-| Beauty | **Lumi** | Skin appearance |
-| Men's Health | **Rocket** | Male vitality |
-| Stress | **Peace** | Calm & clarity |
-| Energy | **Boost** | Clean energy (no caffeine) |
+### SuperPatch Application:
+"Many people wonder how a small patch can make a big difference. 
+Our patches don't contain drugs—they use vibrotactile technology 
+to communicate with your brain. Let me show you how that works..."
+```
 
 ---
 
-## 🚀 Implementation Roadmap
+## 📋 Phase 2: Content Synthesis
 
-### Phase 1: Research & Collection ✅ COMPLETE
-- [x] Set up Firecrawl MCP for deep research
-- [x] Curate 60+ YouTube training videos
-- [x] Organize videos by category
-- [x] Create structured JSON for processing
+### Product Knowledge Base
 
-### Phase 2: Framework Extraction ✅ COMPLETE
-- [x] Analyze 44 videos with Gemini AI
-- [x] Document key frameworks and techniques
-- [x] Create 10 framework summary documents
-- [x] Extract exact scripts and word tracks
-- [x] Include Super Patch applications
+13 SuperPatch products with clinical evidence:
 
-### Phase 2.5: Product Research ✅ COMPLETE
-- [x] Research all Super Patch products
-- [x] Document 13 patches with full details
-- [x] Create target customer profiles
-- [x] Build objection response templates
+| Product | Target | Clinical Evidence |
+|---------|--------|-------------------|
+| **Freedom** | Pain Relief | RESTORE Study: RCT, 118 participants |
+| **REM** | Sleep | HARMONI Study: 80% stopped sleep meds |
+| **Liberty** | Balance | 31% improvement, p<0.05 |
+| **Peace** | Stress | Parasympathetic activation |
+| **Boost** | Energy | Drug-free energy support |
+| **Focus** | Clarity | Cognitive enhancement |
+| *+ 7 more* | Various | Supporting research |
 
-### Phase 3: Script Development ✅ COMPLETE
-- [x] Create product-specific sales scripts (13 patches)
-- [x] Develop opening scripts for each patch (5 per product)
-- [x] Write discovery question banks (10 per product)
-- [x] Build complete objection response library (8 per product)
-- [x] Create closing scripts per product (5 per product)
-- [x] Generate visual infographics with Imagen 4 (26 images)
-- [x] **🆕 Create Enhanced Sales Roadmaps (13 comprehensive dashboards)**
+### Practitioner-Specific Word Tracks
 
-### Phase 4: Training Materials
-- [ ] Create onboarding guide for new reps
-- [ ] Develop daily success routines
-- [ ] Build role-play scenarios
-- [ ] Design progress tracking system
+We created comprehensive sales guides for 6 practitioner types, each with:
 
-### Phase 5: Refinement & Optimization
-- [ ] Test scripts with sales team
-- [ ] Gather feedback and iterate
-- [ ] Track conversion metrics
-- [ ] Continuously improve based on results
+| Section | Content |
+|---------|---------|
+| **Understanding** | Practice philosophy, patient demographics, pain points |
+| **Product Recommendations** | Which patches fit which patient presentations |
+| **Opening Scripts** | 5 different approaches (cold call, referral, conference, etc.) |
+| **Discovery Questions** | 15+ practitioner-specific questions |
+| **Product Presentation** | P-A-S-E framework adapted to practice |
+| **Objection Handling** | 6-8 objections with exact responses |
+| **Closing Scripts** | 5 closing approaches |
+| **Follow-Up Sequences** | Day 1, 3, 7, 14 email/call scripts |
+| **Business Models** | Wholesale vs. Affiliate explanation |
+
+### Example: Unique Content Per Practitioner
+
+**Chiropractors:**
+```markdown
+Key Hook: "Support patients between adjustments so they don't lose progress"
+Unique Objection: "How is this different from Salonpas?"
+Response: "Salonpas delivers menthol through the skin. SuperPatch uses 
+Vibrotactile Technology—nothing enters the body. The ridge patterns 
+stimulate mechanoreceptors. Completely different mechanism."
+```
+
+**Naturopaths:**
+```markdown
+Key Hook: "Works WITH the body's innate healing, honors First Do No Harm"
+Philosophy: Vis Medicatrix Naturae, natural interventions
+Unique Objection: "My patients prefer supplements"
+Response: "Many do. This isn't meant to replace those. For patients with 
+GI sensitivities or supplement fatigue, this offers a non-oral option."
+```
+
+**Acupuncturists:**
+```markdown
+Key Hook: "Like acupuncture without needles for home use"
+Language: TCM terminology (Qi flow, Shen, Liver Qi stagnation)
+Unique Objection: "This isn't real acupuncture"
+Response: "Correct—it's a complementary technology. Think of it as a 
+take-home bridge between sessions, not a replacement."
+```
 
 ---
 
-## 🛠 Tools & Technologies
+## 🤖 Phase 3: Voice Agent Development
 
-| Tool | Purpose |
-|------|---------|
-| **Firecrawl** | Deep research and web scraping |
-| **Google Gemini 2.5** | Video analysis and framework extraction |
-| **Cursor AI** | Code and content generation |
-| **GitHub** | Version control and collaboration |
+### Bland.ai Conversational Pathways
 
-### Video Analysis Pipeline
+We programmatically generated **6 intelligent voice agents**—one for each practitioner type—with **34 nodes each**:
+
+```
+Conversation Flow (34 Nodes):
+┌─────────────┐
+│ Introduction │ ──▶ "Hi, this is Jennifer with SuperPatch..."
+└─────┬───────┘
+      │
+      ▼
+┌─────────────┐
+│  Discovery  │ ──▶ 5 practitioner-specific questions
+│  Questions  │
+└─────┬───────┘
+      │
+      ▼
+┌─────────────┐
+│  Product    │ ──▶ Freedom, REM, Peace, Liberty, Boost presentations
+│ Presentations│
+└─────┬───────┘
+      │
+      ▼
+┌─────────────┐
+│  Objection  │ ──▶ 7 individual objection handlers
+│  Handling   │
+└─────┬───────┘
+      │
+      ▼
+┌─────────────┐
+│  Business   │ ──▶ Wholesale, Affiliate, Hybrid models
+│   Model     │
+└─────┬───────┘
+      │
+      ▼
+┌─────────────┐
+│  Scheduling │ ──▶ Cal.com integration for in-person visits
+└─────┬───────┘
+      │
+      ▼
+┌─────────────┐
+│  End Call   │ ──▶ 5 ending variations (sale, callback, etc.)
+└─────────────┘
+```
+
+### Agent Personality: Jennifer
+
+```
+Persona: Jennifer, 32, SuperPatch sales representative
+Personality: Warm, professional, Midwest friendly ("Minnesota nice")
+Style: Conversational, not scripted; uses natural speech patterns
+Goal: Schedule in-person demo visits with practitioners
+
+Tone Guidelines:
+- Amiable, concise, cheerful
+- Apologetic when appropriate ("oh, sorry about that!")
+- Self-deprecating humor okay
+- Neighborly ("no worries, take your time!")
+- Down-to-earth and empathetic
+```
+
+### Context Injection
+
+Each pathway has practitioner-specific context embedded in every node:
+
+```python
+# update_pathways_with_context.py
+
+PRACTITIONER_CONTEXTS = {
+    "Chiropractors": {
+        "philosophy": "Focus on spine-nervous system relationship...",
+        "key_hook": "support between adjustments",
+        "patient_types": "back pain, neck pain, sports injuries...",
+        "pain_points": "patients relapse between visits...",
+        "top_products": {"Freedom": "RESTORE study...", ...},
+        "objection_responses": {"salonpas": "Transdermal vs VTT..."}
+    },
+    # ... 5 more practitioners
+}
+```
+
+---
+
+## 📅 Phase 4: Scheduling Integration
+
+### Cal.com + Google Sheets Integration
+
+The voice agent can:
+1. **Check availability** via Cal.com API
+2. **Book appointments** for in-person sales rep visits
+3. **Log all data** to Google Sheets for tracking
+
+### Custom Bland.ai Tools
+
+```python
+# Two custom tools configured in Bland.ai:
+
+Tool 1: check_cal_availability
+- Endpoint: Cal.com /v1/slots
+- Returns: Available time slots
+- Agent says: "Let me check my calendar..."
+
+Tool 2: book_cal_appointment
+- Endpoint: Cal.com /v1/bookings
+- Collects: Name, email, phone, practice address
+- Creates: Calendar event with video link
+```
+
+### What Gets Booked
+
+The appointment is for an **in-person sales visit**:
+- SuperPatch rep visits the practice
+- Brings product samples
+- Provides hands-on demonstration
+- Duration: 20-30 minutes
+
+```
+Agent Script:
+"Great! So what we'd like to do is have one of our reps stop by 
+your practice to drop off some samples and give you a quick demo. 
+It only takes about 20-30 minutes. What day works best for you?"
+```
+
+---
+
+## 🖥️ Frontend Application
+
+A Next.js sales enablement app for human sales reps:
+
+### Features
+- **Market Switcher**: D2C, B2B, Canadian views
+- **Word Track Viewer**: Full scripts with copy functionality
+- **Product Pages**: Each patch with clinical evidence
+- **Practitioner Pages**: All 6 word tracks accessible
+- **Roadmap Visualizations**: Sales journey infographics
+- **Practice Mode**: Objection handling flashcards
+
+### Tech Stack
+- Next.js 14 + TypeScript
+- Tailwind CSS + shadcn/ui
+- Responsive design
+
+---
+
+## 🚀 How to Use
+
+### Running the Voice Agent
 
 ```bash
-# Setup
-pip install google-genai
-export GEMINI_API_KEY="your-key"
+# Make a test call
+curl -X POST "https://api.bland.ai/v1/calls" \
+  -H "authorization: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "phone_number": "+1234567890",
+    "pathway_id": "PATHWAY_ID",
+    "voice": "78c8543e-e5fe-448e-8292-20a7b8c45247",
+    "first_sentence": "Hi, this is Jennifer with SuperPatch.",
+    "wait_for_greeting": true
+  }'
+```
 
-# Analyze single video
-python scripts/gemini_video_analyzer.py "https://youtube.com/watch?v=VIDEO_ID"
+### Available Pathway IDs
 
-# Analyze by category
-python scripts/gemini_video_analyzer.py --json youtube_videos.json --category objection-handling
+| Practitioner | Pathway ID |
+|--------------|------------|
+| Chiropractors | `cf2233ef-7fb2-49ff-af29-0eee47204e9f` |
+| Massage Therapists | `d202aad7-bcb6-478c-a211-b00877545e05` |
+| Naturopaths | `1d07d635-147e-4f69-a4cd-c124b33b073d` |
+| Integrative Medicine | `1c958dd7-e1ff-4f6d-b9a3-f80a369c26aa` |
+| Functional Medicine | `236dbd85-c74d-4774-a7af-4b5812015c68` |
+| Acupuncturists | `154f93f4-54a5-4900-92e8-0fa217508127` |
 
-# Compile all analyses into frameworks document
-python scripts/gemini_video_analyzer.py --compile
+### Running the Frontend
+
+```bash
+cd superpatch-frontend
+npm install
+npm run dev
+# Open http://localhost:3000
 ```
 
 ---
 
-## 📖 How to Use This Repository
+## 📈 Results & Metrics
 
-### For Sales Managers
-1. Review framework docs in `/frameworks` for training content
-2. Use `products/SuperPatch_Product_Reference.md` for product training
-3. Assign specific framework docs to team members
-4. Customize scripts for your team's style
+### Content Generated
 
-### For Sales Representatives
-1. **Start here:** `products/SuperPatch_Product_Reference.md`
-2. **Get your product scripts:** `sales_materials/docx/[YourProduct]_WordTrack.docx`
-3. **Print your infographics:** `sales_materials/infographics/[YourProduct]_SalesProcess.png`
-4. **Study frameworks:** `frameworks/all_frameworks.md`
-5. **Practice objections:** `frameworks/objection_handling.md`
-
-### Quick Reference:
-- **Need product scripts?** → `sales_materials/docx/[Product]_WordTrack.docx`
-- **Need visual aids?** → `sales_materials/infographics/`
-- **Need objection help?** → `frameworks/objection_handling.md`
-- **Need closing scripts?** → `frameworks/closing_techniques.md`
-- **Need product info?** → `products/SuperPatch_Product_Reference.md`
-- **Need rapport tips?** → `frameworks/sales_psychology_and_building_rapport.md`
-
----
-
-## 📊 Content Statistics
-
-| Content Type | Count/Size |
-|--------------|------------|
-| Training Videos Curated | 60 |
+| Asset | Quantity |
+|-------|----------|
 | Videos Analyzed | 44 |
-| Framework Documents | 10 |
-| Total Framework Content | 600KB+ |
-| Products Documented | 13 |
-| Expert Methods Extracted | 15+ |
-| **Word Track Documents** | **13 (.docx)** |
-| **Visual Infographics** | **26 (.png)** |
-| **Enhanced Sales Roadmaps** | **13 (.png)** |
-| **Total Sales Materials** | **25MB+** |
+| Framework Extractions | 5,357 lines |
+| Word Track Documents | 6 (1,500+ lines each) |
+| Conversation Nodes | 204 (34 per pathway × 6) |
+| Unique Objection Responses | 42+ |
+| Discovery Questions | 90+ |
+
+### Voice Agent Capabilities
+
+- ✅ Natural conversation flow
+- ✅ Practitioner-specific language
+- ✅ Real-time objection handling
+- ✅ Calendar integration
+- ✅ Appointment booking
+- ✅ Google Sheets logging
 
 ---
 
-## 🤝 Contributing
+## 🔧 Technical Details
 
-This is a living document. To contribute:
+### APIs & Services Used
 
-1. Identify a gap in our sales enablement materials
-2. Research best practices from our curated sources
-3. Create or update the relevant document
-4. Submit for review
+| Service | Purpose |
+|---------|---------|
+| **Google Gemini** | Video analysis and framework extraction |
+| **Bland.ai** | Voice agent platform |
+| **Cal.com** | Appointment scheduling |
+| **Google Sheets** | Data logging |
+| **Firecrawl** | Documentation research |
+
+### Key Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `gemini_video_analyzer.py` | Analyze YouTube videos for sales techniques |
+| `bland_ai_pathway_generator.py` | Generate conversation flows from word tracks |
+| `update_pathways_with_context.py` | Inject practitioner-specific content |
+| `expanded_pathway_generator.py` | Create 34-node detailed pathways |
+| `deploy_pathways.py` | Deploy pathways to Bland.ai API |
 
 ---
 
-## 📞 Contact
+## 🎓 Key Learnings
 
-For questions about this project or Super Patch sales enablement:
+### What Worked Well
+1. **Video-to-Framework Pipeline**: Gemini excels at extracting structured data from video
+2. **Context Injection**: Same conversation flow, different content per practitioner
+3. **Two-Step Bland.ai API**: Create pathway first, then update with full content
+4. **Prompt Engineering**: Using `prompt` (not `text`) for intelligent responses
 
-- **Project Owner:** Super Patch AI Team
-- **Repository:** [SalesEnablement](https://github.com/SuperPatchAi/SalesEnablement)
+### Challenges Overcome
+1. **Bland.ai UI Compatibility**: Stripped problematic fields from payloads
+2. **Static Text Toggle**: Ensured prompts weren't read verbatim
+3. **Knowledge Base Integration**: Embedded facts in prompts instead of separate nodes
+4. **Cal.com v1 vs v2 API**: Navigated endpoint differences
 
 ---
 
-*Built with Firecrawl Deep Research API, Google Gemini 2.5, and Cursor AI*
-*Last Updated: December 22, 2025*
+## 🔮 Future Enhancements
+
+- [ ] Add more practitioner types (Physical Therapists, Athletic Trainers)
+- [ ] Implement call analytics dashboard
+- [ ] Add SMS follow-up sequences
+- [ ] Integrate with CRM systems
+- [ ] A/B test different opening scripts
+- [ ] Add multilingual support
+
+---
+
+## 📄 License
+
+Proprietary - SuperPatch AI
+
+---
+
+## 👥 Contributors
+
+Built with AI assistance for SuperPatch sales enablement.
+
+---
+
+*Last Updated: January 2026*
