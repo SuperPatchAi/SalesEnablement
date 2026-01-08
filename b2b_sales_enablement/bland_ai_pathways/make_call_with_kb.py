@@ -45,7 +45,7 @@ def make_superpatch_call(phone_number: str, pathway_type: str, **kwargs) -> dict
         "phone_number": phone_number,
         "pathway_id": PATHWAYS[pathway_type],
         "knowledge_base": KB_ID,  # <-- This references our SuperPatch KB!
-        "voice": kwargs.get("voice", "maya"),
+        "voice": kwargs.get("voice", "78c8543e-e5fe-448e-8292-20a7b8c45247"),
         "first_sentence": kwargs.get("first_sentence", "Hi, this is Jennifer with SuperPatch."),
         "wait_for_greeting": kwargs.get("wait_for_greeting", True),
         "record": kwargs.get("record", True),
@@ -84,7 +84,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Make SuperPatch sales calls")
     parser.add_argument("--phone", required=True, help="Phone number (E.164 format)")
     parser.add_argument("--pathway", required=True, choices=PATHWAYS.keys(), help="Pathway type")
-    parser.add_argument("--voice", default="maya", help="Voice to use")
+    parser.add_argument("--voice", default=78c8543e-e5fe-448e-8292-20a7b8c45247, help="Voice to use")
     parser.add_argument("--no-record", action="store_true", help="Don't record call")
     
     args = parser.parse_args()

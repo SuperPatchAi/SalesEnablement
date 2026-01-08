@@ -35,7 +35,7 @@ curl -X POST "https://api.bland.ai/v1/calls" \
     "phone_number": "+15551234567",
     "pathway_id": "cf2233ef-7fb2-49ff-af29-0eee47204e9f",
     "knowledge_base": "b671527d-0c2d-4a21-9586-033dad3b0255",
-    "voice": "maya",
+    "voice": "78c8543e-e5fe-448e-8292-20a7b8c45247",
     "first_sentence": "Hi, this is Jennifer with SuperPatch.",
     "wait_for_greeting": true,
     "record": true
@@ -60,7 +60,7 @@ result = make_superpatch_call("+15551234567", "chiropractors")
 result = make_superpatch_call(
     "+15551234567", 
     "naturopaths",
-    voice="maya",
+    voice="78c8543e-e5fe-448e-8292-20a7b8c45247",
     record=True,
     max_duration=20
 )

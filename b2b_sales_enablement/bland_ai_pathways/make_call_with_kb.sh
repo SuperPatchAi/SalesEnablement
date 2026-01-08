@@ -35,7 +35,7 @@ curl -X POST "https://api.bland.ai/v1/calls" \
     \"phone_number\": \"$PHONE_NUMBER\",
     \"pathway_id\": \"$PATHWAY_ID\",
     \"knowledge_base\": \"$KB_ID\",
-    \"voice\": \"maya\",
+    \"voice\": \"78c8543e-e5fe-448e-8292-20a7b8c45247\",
     \"first_sentence\": \"Hi, this is Jennifer with SuperPatch.\",
     \"wait_for_greeting\": true,
     \"record\": true
