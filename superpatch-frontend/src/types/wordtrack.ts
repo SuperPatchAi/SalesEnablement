@@ -39,7 +39,7 @@ export interface ObjectionResponse {
 export interface ClosingScript {
   id?: string;
   title: string;
-  type?: "assumptive" | "alternative" | "urgency" | "summary" | "trial" | "referral" | "business_model";
+  type?: "assumptive" | "alternative" | "urgency" | "summary" | "trial" | "referral" | "business_model" | "solution";
   scenario?: string;
   script?: string;
   content?: string; // Alternative to script
@@ -133,6 +133,7 @@ export interface WordTrack {
   practitionerType?: PractitionerType;
   market?: MarketType;
   marketId?: string; // Alternative to market
+  title?: string; // Word track title
   tagline?: string;
   category?: string;
   benefits?: string[];

@@ -226,3 +226,7 @@ And because it's completely drug-free – no menthol, no lidocaine, no chemicals
 ### Simple Recommendation Script
 "Wear this Freedom patch for the next few days to maintain your progress between sessions. It's drug-free and extends the pain relief from your massage."
 
+
+
+
+

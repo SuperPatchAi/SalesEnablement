@@ -33,6 +33,7 @@ export interface Product {
   category: ProductCategory;
   emoji: string;
   color: string;
+  image: string; // Path to patch product image
   hasClinicalStudy: boolean;
   studyName?: string;
   markets: MarketId[];

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Image from "next/image";
 import { AppShell } from "@/components/layout/app-shell";
 import {
   Card,
@@ -175,7 +176,18 @@ export default function PracticePage() {
               <SelectItem value="all">All Products</SelectItem>
               {PRODUCTS.map((p) => (
                 <SelectItem key={p.id} value={p.id}>
-                  {p.emoji} {p.name}
+                  <div className="flex items-center gap-2">
+                    <div className="relative size-5 flex-shrink-0 rounded-full overflow-hidden">
+                      <Image
+                        src={p.image}
+                        alt={p.name}
+                        fill
+                        className="object-cover"
+                        sizes="20px"
+                      />
+                    </div>
+                    {p.name}
+                  </div>
                 </SelectItem>
               ))}
             </SelectContent>

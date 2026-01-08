@@ -8,6 +8,7 @@ export const products: Product[] = [
     category: "pain",
     emoji: "🔵",
     color: "#0055B8",
+    image: "/patches/freedom.png",
     hasClinicalStudy: true,
     studyName: "RESTORE Study",
     markets: ["d2c", "b2b"],
@@ -19,6 +20,7 @@ export const products: Product[] = [
     category: "sleep",
     emoji: "🟣",
     color: "#652F6C",
+    image: "/patches/rem.png",
     hasClinicalStudy: true,
     studyName: "HARMONI Study",
     markets: ["d2c", "b2b"],
@@ -30,6 +32,7 @@ export const products: Product[] = [
     category: "balance",
     emoji: "🟢",
     color: "#66C9BA",
+    image: "/patches/liberty.png",
     hasClinicalStudy: true,
     studyName: "Balance Study",
     markets: ["d2c", "b2b"],
@@ -41,6 +44,7 @@ export const products: Product[] = [
     category: "energy",
     emoji: "⚡",
     color: "#FFC629",
+    image: "/patches/boost.png",
     hasClinicalStudy: false,
     markets: ["d2c", "b2b"],
   },
@@ -51,6 +55,7 @@ export const products: Product[] = [
     category: "performance",
     emoji: "🏆",
     color: "#DD0604",
+    image: "/patches/victory.png",
     hasClinicalStudy: false,
     markets: ["d2c", "b2b"],
   },
@@ -61,6 +66,7 @@ export const products: Product[] = [
     category: "focus",
     emoji: "🎯",
     color: "#009ADE",
+    image: "/patches/focus.png",
     hasClinicalStudy: false,
     markets: ["d2c", "b2b"],
   },
@@ -71,6 +77,7 @@ export const products: Product[] = [
     category: "immunity",
     emoji: "🛡️",
     color: "#66C9BA",
+    image: "/patches/defend.png",
     hasClinicalStudy: false,
     markets: ["d2c", "b2b"],
   },
@@ -81,6 +88,7 @@ export const products: Product[] = [
     category: "metabolism",
     emoji: "🔥",
     color: "#FFA400",
+    image: "/patches/ignite.png",
     hasClinicalStudy: false,
     markets: ["d2c", "b2b"],
   },
@@ -91,6 +99,7 @@ export const products: Product[] = [
     category: "habits",
     emoji: "✊",
     color: "#4D4D4D",
+    image: "/patches/kick-it.png",
     hasClinicalStudy: false,
     markets: ["d2c", "b2b"],
   },
@@ -101,6 +110,7 @@ export const products: Product[] = [
     category: "stress",
     emoji: "☮️",
     color: "#652F6C",
+    image: "/patches/peace.png",
     hasClinicalStudy: false,
     markets: ["d2c", "b2b"],
   },
@@ -111,6 +121,7 @@ export const products: Product[] = [
     category: "mood",
     emoji: "😊",
     color: "#FFC629",
+    image: "/patches/joy.png",
     hasClinicalStudy: false,
     markets: ["d2c", "b2b"],
   },
@@ -121,6 +132,7 @@ export const products: Product[] = [
     category: "beauty",
     emoji: "✨",
     color: "#9D1D96",
+    image: "/patches/lumi.png",
     hasClinicalStudy: false,
     markets: ["d2c", "b2b"],
   },
@@ -131,6 +143,7 @@ export const products: Product[] = [
     category: "mens",
     emoji: "🚀",
     color: "#101010",
+    image: "/patches/rocket.png",
     hasClinicalStudy: false,
     markets: ["d2c", "b2b"],
   },
@@ -152,6 +165,11 @@ export const getProductsWithStudies = (): Product[] => {
   return products.filter((p) => p.hasClinicalStudy);
 };
 
+// Helper to get patch image path
+export const getPatchImage = (productId: string): string => {
+  const product = getProductById(productId);
+  return product?.image || `/patches/${productId}.png`;
+};
+
 // Alias for compatibility
 export const PRODUCTS = products;
-

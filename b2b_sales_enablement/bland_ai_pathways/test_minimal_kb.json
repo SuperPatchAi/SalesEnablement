@@ -1,0 +1,34 @@
+{
+  "name": "TEST - Minimal KB",
+  "nodes": [
+    {
+      "id": "1",
+      "type": "Default",
+      "data": {
+        "name": "Start",
+        "prompt": "Greet the user.",
+        "isStart": true
+      }
+    },
+    {
+      "id": "2",
+      "type": "Knowledge Base",
+      "data": {
+        "name": "Test KB",
+        "text": "SuperPatch is a wellness company. Freedom patch helps with pain. REM patch helps with sleep. Liberty patch helps with balance."
+      }
+    },
+    {
+      "id": "3",
+      "type": "End Call",
+      "data": {
+        "name": "End",
+        "prompt": "Goodbye."
+      }
+    }
+  ],
+  "edges": [
+    {"id": "e1", "source": "1", "target": "2"},
+    {"id": "e2", "source": "2", "target": "3"}
+  ]
+}

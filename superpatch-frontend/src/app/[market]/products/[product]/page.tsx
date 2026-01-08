@@ -34,6 +34,7 @@ import {
   Lightbulb,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { getProductById, products } from "@/data/products";
 import { isValidMarket } from "@/data/markets";
 import { MarketId } from "@/types";
@@ -106,8 +107,17 @@ export default async function ProductDetailPage({
       <div className="flex flex-1 flex-col gap-4 p-4 md:p-6">
         {/* Product Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="flex items-start gap-3">
-            <span className="text-4xl">{product.emoji}</span>
+          <div className="flex items-start gap-4">
+            <div className="relative size-16 flex-shrink-0 rounded-full overflow-hidden bg-muted shadow-lg">
+              <Image
+                src={product.image}
+                alt={`${product.name} patch`}
+                fill
+                className="object-cover"
+                sizes="64px"
+                priority
+              />
+            </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="text-2xl font-semibold tracking-tight">

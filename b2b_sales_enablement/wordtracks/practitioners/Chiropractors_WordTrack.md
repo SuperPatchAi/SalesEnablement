@@ -282,3 +282,7 @@ Wishing your practice continued success!"
 ### Closing Line
 "Most DCs start with the Practitioner Starter Kit to try with a few patients. Should I set you up so you can start offering drug-free support this week?"
 
+
+
+
+

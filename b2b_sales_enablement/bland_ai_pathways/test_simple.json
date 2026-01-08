@@ -1,0 +1,25 @@
+{
+  "name": "TEST - Simple",
+  "nodes": [
+    {
+      "id": "1",
+      "type": "Default",
+      "data": {
+        "name": "Start",
+        "prompt": "Greet the user and ask how you can help.",
+        "isStart": true
+      }
+    },
+    {
+      "id": "2",
+      "type": "End Call",
+      "data": {
+        "name": "End",
+        "prompt": "Thank them and say goodbye."
+      }
+    }
+  ],
+  "edges": [
+    {"id": "e1", "source": "1", "target": "2"}
+  ]
+}

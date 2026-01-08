@@ -1,0 +1,48 @@
+{
+  "generated_at": "/Users/cbsuperpatch/Desktop/SalesEnablement",
+  "total_pathways": 6,
+  "pathways": [
+    {
+      "practitioner_type": "Massage Therapists",
+      "pathway_file": "/Users/cbsuperpatch/Desktop/SalesEnablement/b2b_sales_enablement/bland_ai_pathways/Massage_Therapists_pathway.json",
+      "api_payload_file": "/Users/cbsuperpatch/Desktop/SalesEnablement/b2b_sales_enablement/bland_ai_pathways/Massage_Therapists_api_payload.json",
+      "node_count": 17,
+      "edge_count": 22
+    },
+    {
+      "practitioner_type": "Functional Medicine",
+      "pathway_file": "/Users/cbsuperpatch/Desktop/SalesEnablement/b2b_sales_enablement/bland_ai_pathways/Functional_Medicine_pathway.json",
+      "api_payload_file": "/Users/cbsuperpatch/Desktop/SalesEnablement/b2b_sales_enablement/bland_ai_pathways/Functional_Medicine_api_payload.json",
+      "node_count": 17,
+      "edge_count": 22
+    },
+    {
+      "practitioner_type": "Chiropractors",
+      "pathway_file": "/Users/cbsuperpatch/Desktop/SalesEnablement/b2b_sales_enablement/bland_ai_pathways/Chiropractors_pathway.json",
+      "api_payload_file": "/Users/cbsuperpatch/Desktop/SalesEnablement/b2b_sales_enablement/bland_ai_pathways/Chiropractors_api_payload.json",
+      "node_count": 17,
+      "edge_count": 22
+    },
+    {
+      "practitioner_type": "Integrative Medicine",
+      "pathway_file": "/Users/cbsuperpatch/Desktop/SalesEnablement/b2b_sales_enablement/bland_ai_pathways/Integrative_Medicine_pathway.json",
+      "api_payload_file": "/Users/cbsuperpatch/Desktop/SalesEnablement/b2b_sales_enablement/bland_ai_pathways/Integrative_Medicine_api_payload.json",
+      "node_count": 17,
+      "edge_count": 22
+    },
+    {
+      "practitioner_type": "Naturopaths",
+      "pathway_file": "/Users/cbsuperpatch/Desktop/SalesEnablement/b2b_sales_enablement/bland_ai_pathways/Naturopaths_pathway.json",
+      "api_payload_file": "/Users/cbsuperpatch/Desktop/SalesEnablement/b2b_sales_enablement/bland_ai_pathways/Naturopaths_api_payload.json",
+      "node_count": 17,
+      "edge_count": 22
+    },
+    {
+      "practitioner_type": "Acupuncturists",
+      "pathway_file": "/Users/cbsuperpatch/Desktop/SalesEnablement/b2b_sales_enablement/bland_ai_pathways/Acupuncturists_pathway.json",
+      "api_payload_file": "/Users/cbsuperpatch/Desktop/SalesEnablement/b2b_sales_enablement/bland_ai_pathways/Acupuncturists_api_payload.json",
+      "node_count": 17,
+      "edge_count": 22
+    }
+  ]
+}

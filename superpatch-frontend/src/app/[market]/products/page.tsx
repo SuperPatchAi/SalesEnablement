@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, FlaskConical } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { getProductsByMarket } from "@/data/products";
 import { getMarketById, isValidMarket } from "@/data/markets";
 import { MarketId } from "@/types";
@@ -53,7 +54,15 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
               <Card className="h-full transition-colors hover:bg-muted/50">
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">
-                    <span className="text-3xl">{product.emoji}</span>
+                    <div className="relative size-12 flex-shrink-0 rounded-full overflow-hidden bg-muted">
+                      <Image
+                        src={product.image}
+                        alt={`${product.name} patch`}
+                        fill
+                        className="object-cover"
+                        sizes="48px"
+                      />
+                    </div>
                     <div className="min-w-0 flex-1">
                       <p className="font-medium">{product.name}</p>
                       <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">

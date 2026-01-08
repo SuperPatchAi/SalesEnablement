@@ -261,3 +261,7 @@ Wishing you and your patients well!"
 ### Closing Line
 "This aligns with your naturopathic principles – works with the body, honors 'First Do No Harm.' Ready to try the Practitioner Kit?"
 
+
+
+
+

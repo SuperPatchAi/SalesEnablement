@@ -18,8 +18,24 @@ import { joyD2CWordTrack } from "./d2c/joy";
 import { lumiD2CWordTrack } from "./d2c/lumi";
 import { rocketD2CWordTrack } from "./d2c/rocket";
 
-// B2B Practitioner Word Tracks
-import { chiropractorB2BWordTrack } from "./b2b/chiropractor";
+// B2B Practitioner Word Tracks - All 6 practitioner types
+import {
+  b2bWordTracks as b2bWordTracksImport,
+  b2bPractitionerTypes,
+  getB2BWordTrackByPractitioner,
+} from "./b2b";
+
+// Canadian Market Word Tracks
+import {
+  canadianWordTrack as canadianWordTrackImport,
+  getCanadianWordTrack,
+} from "./canadian";
+
+// Re-export B2B utilities
+export { b2bPractitionerTypes, getB2BWordTrackByPractitioner };
+
+// Re-export Canadian utilities
+export { getCanadianWordTrack };
 
 // D2C Word Tracks by product ID - All 13 products loaded
 export const d2cWordTracks: { [productId: string]: WordTrack } = {
@@ -38,20 +54,11 @@ export const d2cWordTracks: { [productId: string]: WordTrack } = {
   rocket: rocketD2CWordTrack,
 };
 
-// B2B Word Tracks by practitioner type
-export const b2bWordTracks: { [practitionerType: string]: WordTrack } = {
-  chiropractor: chiropractorB2BWordTrack,
-  // Add more B2B practitioner word tracks here as they are created
-  // naturopath: naturopathWordTrack,
-  // acupuncturist: acupuncturistWordTrack,
-  // massage_therapist: massageTherapistWordTrack,
-  // functional_medicine: functionalMedicineWordTrack,
-  // integrative_medicine: integrativeMedicineWordTrack,
-};
+// B2B Word Tracks by practitioner type - All 6 practitioners loaded
+export const b2bWordTracks: { [practitionerType: string]: WordTrack } = b2bWordTracksImport;
 
-// Canadian market word track
-export const canadianWordTrack: WordTrack | null = null;
-// Will be populated when canadian word track is created
+// Canadian market word track - Loaded
+export const canadianWordTrack: WordTrack = canadianWordTrackImport;
 
 // Complete collection
 export const wordTrackCollection: WordTrackCollection = {
@@ -69,12 +76,12 @@ export function getWordTrackByProductAndMarket(
     return d2cWordTracks[productId] || null;
   }
   if (market === "b2b") {
-    // For B2B, the structure is by practitioner type, not product
-    // This function returns null for B2B - use getPractitionerWordTrack instead
-    return null;
+    // For B2B, productId is actually practitioner type
+    return b2bWordTracks[productId] || null;
   }
   if (market === "canadian") {
-    return canadianWordTrack;
+    // Canadian market has a single word track for the wellness program
+    return productId === "wellness-program" ? canadianWordTrack : null;
   }
   return null;
 }
@@ -104,7 +111,7 @@ export function hasWordTrack(
     return productId in b2bWordTracks;
   }
   if (market === "canadian") {
-    return canadianWordTrack !== null;
+    return productId === "wellness-program" || canadianWordTrack !== null;
   }
   return false;
 }

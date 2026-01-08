@@ -236,3 +236,7 @@ This is clinical-grade evidence for a drug-free technology. The mechanism is mec
 ### Closing Line
 "This gives you evidence-based medicine in a drug-free format – the best of both worlds for integrative practice. Ready to try it with your patients?"
 
+
+
+
+

@@ -216,3 +216,7 @@ Stabilizes and grounds. Supports Kidney essence for patients with balance or sta
 ### Closing Line
 "This gives your patients drug-free support between sessions. Ready to try the Practitioner Kit?"
 
+
+
+
+

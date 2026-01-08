@@ -196,3 +196,7 @@ VTT is based on Nobel Prize-winning research (2021) on mechanoreceptors and Piez
 *Document compiled for Super Patch Healthcare Practitioner Program*
 *Clinical evidence current as of 2025*
 
+
+
+
+

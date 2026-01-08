@@ -21,6 +21,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { markets } from "@/data/markets";
 import { products } from "@/data/products";
 
@@ -146,7 +147,15 @@ export default function Home() {
                 <Card className="transition-colors hover:bg-muted/50">
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3">
-                      <span className="text-2xl">{product.emoji}</span>
+                      <div className="relative size-10 flex-shrink-0 rounded-full overflow-hidden bg-muted">
+                        <Image
+                          src={product.image}
+                          alt={`${product.name} patch`}
+                          fill
+                          className="object-cover"
+                          sizes="40px"
+                        />
+                      </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
                           <p className="text-sm font-medium">{product.name}</p>

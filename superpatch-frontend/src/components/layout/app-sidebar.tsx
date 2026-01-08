@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   User,
@@ -15,6 +16,8 @@ import {
   Search,
   Home,
   ChevronDown,
+  Users,
+  Briefcase,
 } from "lucide-react";
 
 import {
@@ -40,6 +43,7 @@ import {
 } from "@/components/ui/collapsible";
 import { MarketSwitcher } from "./market-switcher";
 import { products } from "@/data/products";
+import { b2bPractitionerTypes } from "@/data/wordtracks";
 import { MarketId } from "@/types";
 
 // Icon mapping for markets
@@ -48,6 +52,30 @@ const marketIcons = {
   b2b: Building,
   canadian: MapPin,
 };
+
+// Practitioner icons/emojis
+const practitionerEmojis: Record<string, string> = {
+  chiropractors: "🦴",
+  naturopaths: "🌿",
+  acupuncturists: "📍",
+  "massage-therapists": "💆",
+  "functional-medicine": "🔬",
+  "integrative-medicine": "⚕️",
+};
+
+// Navigation item type
+interface NavSubItem {
+  title: string;
+  url: string;
+  image?: string;
+}
+
+interface NavItem {
+  title: string;
+  url: string;
+  icon: React.ComponentType<{ className?: string }>;
+  items?: NavSubItem[];
+}
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   currentMarket: MarketId;
@@ -61,27 +89,67 @@ export function AppSidebar({
 }: AppSidebarProps) {
   const pathname = usePathname();
 
-  // Filter products by current market
+  // Filter products by current market (for D2C)
   const marketProducts = products.filter((p) =>
     p.markets.includes(currentMarket)
   );
 
+  // Get navigation items based on market
+  const getNavigationItems = (): NavItem[] => {
+    if (currentMarket === "d2c") {
+      // D2C: Show products with images
+      return [
+        {
+          title: "Products",
+          url: `/${currentMarket}/products`,
+          icon: Package,
+          items: marketProducts.map((p) => ({
+            title: p.name,
+            url: `/${currentMarket}/products/${p.id}`,
+            image: p.image,
+          })),
+        },
+      ];
+    } else if (currentMarket === "b2b") {
+      // B2B: Show practitioners
+      return [
+        {
+          title: "Practitioners",
+          url: `/${currentMarket}/practitioners`,
+          icon: Users,
+          items: b2bPractitionerTypes.map((p) => ({
+            title: `${practitionerEmojis[p.id] || "👤"} ${p.name}`,
+            url: `/${currentMarket}/practitioners/${p.id}`,
+          })),
+        },
+      ];
+    } else if (currentMarket === "canadian") {
+      // Canadian: Show wellness program
+      return [
+        {
+          title: "Wellness Program",
+          url: `/${currentMarket}/wellness`,
+          icon: Briefcase,
+          items: [
+            {
+              title: "🏢 Corporate Wellness",
+              url: `/${currentMarket}/wellness/corporate`,
+            },
+          ],
+        },
+      ];
+    }
+    return [];
+  };
+
   // Navigation structure
-  const navigation = [
+  const navigation: NavItem[] = [
     {
       title: "Home",
       url: "/",
       icon: Home,
     },
-    {
-      title: "Products",
-      url: `/${currentMarket}/products`,
-      icon: Package,
-      items: marketProducts.map((p) => ({
-        title: `${p.emoji} ${p.name}`,
-        url: `/${currentMarket}/products/${p.id}`,
-      })),
-    },
+    ...getNavigationItems(),
     {
       title: "Roadmaps",
       url: `/${currentMarket}/roadmaps`,
@@ -185,7 +253,18 @@ export function AppSidebar({
                                   asChild
                                   isActive={pathname === subItem.url}
                                 >
-                                  <Link href={subItem.url}>
+                                  <Link href={subItem.url} className="flex items-center gap-2">
+                                    {subItem.image ? (
+                                      <div className="relative size-5 flex-shrink-0 rounded-full overflow-hidden">
+                                        <Image
+                                          src={subItem.image}
+                                          alt={subItem.title}
+                                          fill
+                                          className="object-cover"
+                                          sizes="20px"
+                                        />
+                                      </div>
+                                    ) : null}
                                     <span>{subItem.title}</span>
                                   </Link>
                                 </SidebarMenuSubButton>
@@ -233,4 +312,3 @@ export function AppSidebar({
     </Sidebar>
   );
 }
-
