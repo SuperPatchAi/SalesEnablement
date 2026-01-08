@@ -81,8 +81,8 @@ export default function VoiceAgentPage() {
           wait_for_greeting: true,
           record: true,
           max_duration: 15,
-          tools: [CHECK_AVAILABILITY_TOOL, BOOK_APPOINTMENT_TOOL],
-          knowledge_base: KB_ID,
+          // Note: tools cannot be passed with pathway_id - they're configured in the pathway
+          // knowledge_base is also typically configured in the pathway
         }),
       });
       const result = await response.json();

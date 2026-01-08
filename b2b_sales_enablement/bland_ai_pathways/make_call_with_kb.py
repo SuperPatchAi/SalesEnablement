@@ -48,13 +48,13 @@ def make_superpatch_call(phone_number: str, pathway_type: str, **kwargs) -> dict
     payload = {
         "phone_number": phone_number,
         "pathway_id": PATHWAYS[pathway_type],
-        "knowledge_base": KB_ID,  # <-- This references our SuperPatch KB!
         "voice": kwargs.get("voice", "78c8543e-e5fe-448e-8292-20a7b8c45247"),
         "first_sentence": kwargs.get("first_sentence", "Hi, this is Jennifer with SuperPatch."),
         "wait_for_greeting": kwargs.get("wait_for_greeting", True),
         "record": kwargs.get("record", True),
         "max_duration": kwargs.get("max_duration", 15),  # 15 minutes max
-        "tools": [CHECK_AVAILABILITY_TOOL, BOOK_APPOINTMENT_TOOL],  # Cal.com scheduling tools
+        # Note: tools and knowledge_base cannot be passed with pathway_id
+        # They should be configured in the pathway itself
     }
     
     # Add any extra parameters

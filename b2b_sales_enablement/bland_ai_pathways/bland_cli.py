@@ -79,8 +79,8 @@ def make_call(phone_number: str, pathway: str, **kwargs) -> dict:
         "wait_for_greeting": kwargs.get("wait_for_greeting", True),
         "record": kwargs.get("record", True),
         "max_duration": kwargs.get("max_duration", 15),  # 15 minutes
-        "tools": [CHECK_AVAILABILITY_TOOL, BOOK_APPOINTMENT_TOOL],  # Cal.com tools
-        "knowledge_base": KB_ID,
+        # Note: tools cannot be passed with pathway_id - configure tools in the pathway itself
+        # knowledge_base is also configured at pathway level
     }
     
     # Optional parameters

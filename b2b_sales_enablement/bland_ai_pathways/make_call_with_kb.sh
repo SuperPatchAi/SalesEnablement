@@ -38,13 +38,11 @@ curl -X POST "https://api.bland.ai/v1/calls" \
   -d "{
     \"phone_number\": \"$PHONE_NUMBER\",
     \"pathway_id\": \"$PATHWAY_ID\",
-    \"knowledge_base\": \"$KB_ID\",
     \"voice\": \"78c8543e-e5fe-448e-8292-20a7b8c45247\",
     \"first_sentence\": \"Hi, this is Jennifer with SuperPatch.\",
     \"wait_for_greeting\": true,
-    \"record\": true,
-    \"tools\": [\"$CHECK_AVAILABILITY_TOOL\", \"$BOOK_APPOINTMENT_TOOL\"]
+    \"record\": true
   }"
 
 echo ""
-echo "Call initiated with Cal.com scheduling tools enabled."
+echo "Call initiated using pathway (tools configured in pathway)."
