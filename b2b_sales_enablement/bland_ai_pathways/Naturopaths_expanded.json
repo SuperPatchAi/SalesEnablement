@@ -283,457 +283,400 @@
       "id": "e1",
       "source": "1",
       "target": "3",
-      "data": {
-        "label": "interested, continue"
-      }
+      "type": "custom",
+      "label": "interested, continue"
     },
     {
       "id": "e2",
       "source": "1",
       "target": "2",
-      "data": {
-        "label": "who is this"
-      }
+      "type": "custom",
+      "label": "who is this"
     },
     {
       "id": "e3",
       "source": "1",
       "target": "29",
-      "data": {
-        "label": "busy now"
-      }
+      "type": "custom",
+      "label": "busy now"
     },
     {
       "id": "e4",
       "source": "1",
       "target": "19",
-      "data": {
-        "label": "not interested"
-      }
+      "type": "custom",
+      "label": "not interested"
     },
     {
       "id": "e5",
       "source": "2",
       "target": "3",
-      "data": {
-        "label": "interested"
-      }
+      "type": "custom",
+      "label": "interested"
     },
     {
       "id": "e6",
       "source": "2",
       "target": "13",
-      "data": {
-        "label": "skeptical"
-      }
+      "type": "custom",
+      "label": "skeptical"
     },
     {
       "id": "e7",
       "source": "2",
       "target": "19",
-      "data": {
-        "label": "not for me"
-      }
+      "type": "custom",
+      "label": "not for me"
     },
     {
       "id": "e8",
       "source": "3",
       "target": "4",
-      "data": {
-        "label": "continue"
-      }
+      "type": "custom",
+      "label": "continue"
     },
     {
       "id": "e9",
       "source": "4",
       "target": "5",
-      "data": {
-        "label": "continue"
-      }
+      "type": "custom",
+      "label": "continue"
     },
     {
       "id": "e10",
       "source": "5",
       "target": "6",
-      "data": {
-        "label": "continue"
-      }
+      "type": "custom",
+      "label": "continue"
     },
     {
       "id": "e11",
       "source": "6",
       "target": "7",
-      "data": {
-        "label": "continue"
-      }
+      "type": "custom",
+      "label": "continue"
     },
     {
       "id": "e12",
       "source": "7",
       "target": "8",
-      "data": {
-        "label": "pain focus"
-      }
+      "type": "custom",
+      "label": "pain focus"
     },
     {
       "id": "e13",
       "source": "7",
       "target": "9",
-      "data": {
-        "label": "sleep focus"
-      }
+      "type": "custom",
+      "label": "sleep focus"
     },
     {
       "id": "e14",
       "source": "7",
       "target": "10",
-      "data": {
-        "label": "stress focus"
-      }
+      "type": "custom",
+      "label": "stress focus"
     },
     {
       "id": "e15",
       "source": "7",
       "target": "11",
-      "data": {
-        "label": "balance focus"
-      }
+      "type": "custom",
+      "label": "balance focus"
     },
     {
       "id": "e16",
       "source": "7",
       "target": "12",
-      "data": {
-        "label": "multiple/general"
-      }
+      "type": "custom",
+      "label": "multiple/general"
     },
     {
       "id": "e17",
       "source": "8",
       "target": "20",
-      "data": {
-        "label": "interested"
-      }
+      "type": "custom",
+      "label": "interested"
     },
     {
       "id": "e18",
       "source": "8",
       "target": "13",
-      "data": {
-        "label": "needs evidence"
-      }
+      "type": "custom",
+      "label": "needs evidence"
     },
     {
       "id": "e19",
       "source": "9",
       "target": "20",
-      "data": {
-        "label": "interested"
-      }
+      "type": "custom",
+      "label": "interested"
     },
     {
       "id": "e20",
       "source": "9",
       "target": "12",
-      "data": {
-        "label": "wants overview"
-      }
+      "type": "custom",
+      "label": "wants overview"
     },
     {
       "id": "e21",
       "source": "10",
       "target": "20",
-      "data": {
-        "label": "interested"
-      }
+      "type": "custom",
+      "label": "interested"
     },
     {
       "id": "e22",
       "source": "11",
       "target": "20",
-      "data": {
-        "label": "interested"
-      }
+      "type": "custom",
+      "label": "interested"
     },
     {
       "id": "e23",
       "source": "12",
       "target": "20",
-      "data": {
-        "label": "ready to proceed"
-      }
+      "type": "custom",
+      "label": "ready to proceed"
     },
     {
       "id": "e24",
       "source": "13",
       "target": "20",
-      "data": {
-        "label": "satisfied"
-      }
+      "type": "custom",
+      "label": "satisfied"
     },
     {
       "id": "e25",
       "source": "13",
       "target": "26",
-      "data": {
-        "label": "wants to try"
-      }
+      "type": "custom",
+      "label": "wants to try"
     },
     {
       "id": "e26",
       "source": "14",
       "target": "20",
-      "data": {
-        "label": "resolved"
-      }
+      "type": "custom",
+      "label": "resolved"
     },
     {
       "id": "e27",
       "source": "14",
       "target": "26",
-      "data": {
-        "label": "try first"
-      }
+      "type": "custom",
+      "label": "try first"
     },
     {
       "id": "e28",
       "source": "15",
       "target": "20",
-      "data": {
-        "label": "sees value"
-      }
+      "type": "custom",
+      "label": "sees value"
     },
     {
       "id": "e29",
       "source": "15",
       "target": "26",
-      "data": {
-        "label": "try first"
-      }
+      "type": "custom",
+      "label": "try first"
     },
     {
       "id": "e30",
       "source": "16",
       "target": "27",
-      "data": {
-        "label": "schedule follow-up"
-      }
+      "type": "custom",
+      "label": "schedule follow-up"
     },
     {
       "id": "e31",
       "source": "16",
       "target": "26",
-      "data": {
-        "label": "wants sample"
-      }
+      "type": "custom",
+      "label": "wants sample"
     },
     {
       "id": "e32",
       "source": "17",
       "target": "22",
-      "data": {
-        "label": "open to affiliate"
-      }
+      "type": "custom",
+      "label": "open to affiliate"
     },
     {
       "id": "e33",
       "source": "17",
       "target": "34",
-      "data": {
-        "label": "not interested"
-      }
+      "type": "custom",
+      "label": "not interested"
     },
     {
       "id": "e34",
       "source": "18",
       "target": "26",
-      "data": {
-        "label": "try first"
-      }
+      "type": "custom",
+      "label": "try first"
     },
     {
       "id": "e35",
       "source": "18",
       "target": "20",
-      "data": {
-        "label": "proceed"
-      }
+      "type": "custom",
+      "label": "proceed"
     },
     {
       "id": "e36",
       "source": "19",
       "target": "27",
-      "data": {
-        "label": "timing issue"
-      }
+      "type": "custom",
+      "label": "timing issue"
     },
     {
       "id": "e37",
       "source": "19",
       "target": "26",
-      "data": {
-        "label": "open to trying"
-      }
+      "type": "custom",
+      "label": "open to trying"
     },
     {
       "id": "e38",
       "source": "19",
       "target": "34",
-      "data": {
-        "label": "firm no"
-      }
+      "type": "custom",
+      "label": "firm no"
     },
     {
       "id": "e39",
       "source": "20",
       "target": "21",
-      "data": {
-        "label": "wholesale"
-      }
+      "type": "custom",
+      "label": "wholesale"
     },
     {
       "id": "e40",
       "source": "20",
       "target": "22",
-      "data": {
-        "label": "affiliate"
-      }
+      "type": "custom",
+      "label": "affiliate"
     },
     {
       "id": "e41",
       "source": "20",
       "target": "23",
-      "data": {
-        "label": "hybrid"
-      }
+      "type": "custom",
+      "label": "hybrid"
     },
     {
       "id": "e42",
       "source": "21",
       "target": "24",
-      "data": {
-        "label": "ready to order"
-      }
+      "type": "custom",
+      "label": "ready to order"
     },
     {
       "id": "e43",
       "source": "21",
       "target": "23",
-      "data": {
-        "label": "add affiliate"
-      }
+      "type": "custom",
+      "label": "add affiliate"
     },
     {
       "id": "e44",
       "source": "21",
       "target": "27",
-      "data": {
-        "label": "need time"
-      }
+      "type": "custom",
+      "label": "need time"
     },
     {
       "id": "e45",
       "source": "22",
       "target": "25",
-      "data": {
-        "label": "sign up"
-      }
+      "type": "custom",
+      "label": "sign up"
     },
     {
       "id": "e46",
       "source": "22",
       "target": "26",
-      "data": {
-        "label": "try first"
-      }
+      "type": "custom",
+      "label": "try first"
     },
     {
       "id": "e47",
       "source": "22",
       "target": "27",
-      "data": {
-        "label": "need time"
-      }
+      "type": "custom",
+      "label": "need time"
     },
     {
       "id": "e48",
       "source": "23",
       "target": "24",
-      "data": {
-        "label": "ready to start"
-      }
+      "type": "custom",
+      "label": "ready to start"
     },
     {
       "id": "e49",
       "source": "23",
       "target": "26",
-      "data": {
-        "label": "try first"
-      }
+      "type": "custom",
+      "label": "try first"
     },
     {
       "id": "e50",
       "source": "23",
       "target": "27",
-      "data": {
-        "label": "need time"
-      }
+      "type": "custom",
+      "label": "need time"
     },
     {
       "id": "e51",
       "source": "24",
       "target": "30",
-      "data": {
-        "label": "complete"
-      }
+      "type": "custom",
+      "label": "complete"
     },
     {
       "id": "e52",
       "source": "25",
       "target": "31",
-      "data": {
-        "label": "complete"
-      }
+      "type": "custom",
+      "label": "complete"
     },
     {
       "id": "e53",
       "source": "26",
       "target": "27",
-      "data": {
-        "label": "schedule follow-up"
-      }
+      "type": "custom",
+      "label": "schedule follow-up"
     },
     {
       "id": "e54",
       "source": "27",
       "target": "28",
-      "data": {
-        "label": "time selected"
-      }
+      "type": "custom",
+      "label": "time selected"
     },
     {
       "id": "e55",
       "source": "28",
       "target": "32",
-      "data": {
-        "label": "confirmed"
-      }
+      "type": "custom",
+      "label": "confirmed"
     },
     {
       "id": "e56",
       "source": "29",
       "target": "33",
-      "data": {
-        "label": "callback set"
-      }
+      "type": "custom",
+      "label": "callback set"
     },
     {
       "id": "e57",
       "source": "29",
       "target": "34",
-      "data": {
-        "label": "email only"
-      }
+      "type": "custom",
+      "label": "email only"
     }
   ]
 }
