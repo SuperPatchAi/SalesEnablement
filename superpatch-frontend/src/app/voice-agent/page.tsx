@@ -8,11 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Phone, PhoneCall, PhoneOff, Play, BarChart3, Clock, CheckCircle, XCircle, Loader2 } from "lucide-react";
+import { Phone, PhoneCall, PhoneOff, BarChart3, Clock, CheckCircle, XCircle, Loader2 } from "lucide-react";
 
-// Bland.ai Configuration
-const API_KEY = "org_8e83a10723c7ccbfa480b0d015920dddd0ae52af444a7691546e51f371dda789b471c727a9faf577ca2769";
-const BASE_URL = "https://api.bland.ai/v1";
+// Configuration
 const KB_ID = "b671527d-0c2d-4a21-9586-033dad3b0255";
 const CHECK_AVAILABILITY_TOOL = "TL-79a3c232-ca51-4244-b5d2-21f4e70fd872";
 const BOOK_APPOINTMENT_TOOL = "TL-bbaa7f38-1b6a-4f27-ad27-18fb7c6e1526";
@@ -39,23 +37,6 @@ interface Call {
   concatenated_transcript?: string;
 }
 
-async function apiRequest(method: string, endpoint: string, data?: any) {
-  const options: RequestInit = {
-    method,
-    headers: {
-      "authorization": API_KEY,
-      "Content-Type": "application/json",
-    },
-  };
-  
-  if (data) {
-    options.body = JSON.stringify(data);
-  }
-  
-  const response = await fetch(`${BASE_URL}/${endpoint}`, options);
-  return response.json();
-}
-
 export default function VoiceAgentPage() {
   const [calls, setCalls] = useState<Call[]>([]);
   const [selectedCall, setSelectedCall] = useState<Call | null>(null);
@@ -74,7 +55,8 @@ export default function VoiceAgentPage() {
   async function loadCalls() {
     setLoading(true);
     try {
-      const result = await apiRequest("GET", "calls?limit=20");
+      const response = await fetch("/api/bland/calls?limit=20");
+      const result = await response.json();
       setCalls(result.calls || []);
     } catch (error) {
       console.error("Failed to load calls:", error);
@@ -88,17 +70,22 @@ export default function VoiceAgentPage() {
     setMaking(true);
     try {
       const pathway = PATHWAYS[selectedPathway as keyof typeof PATHWAYS];
-      const result = await apiRequest("POST", "calls", {
-        phone_number: phoneNumber,
-        pathway_id: pathway.id,
-        voice: VOICE_ID,
-        first_sentence: "Hi, this is Jennifer with SuperPatch.",
-        wait_for_greeting: true,
-        record: true,
-        max_duration: 15,
-        tools: [CHECK_AVAILABILITY_TOOL, BOOK_APPOINTMENT_TOOL],
-        knowledge_base: KB_ID,
+      const response = await fetch("/api/bland/calls", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phone_number: phoneNumber,
+          pathway_id: pathway.id,
+          voice: VOICE_ID,
+          first_sentence: "Hi, this is Jennifer with SuperPatch.",
+          wait_for_greeting: true,
+          record: true,
+          max_duration: 15,
+          tools: [CHECK_AVAILABILITY_TOOL, BOOK_APPOINTMENT_TOOL],
+          knowledge_base: KB_ID,
+        }),
       });
+      const result = await response.json();
       
       if (result.status === "success") {
         alert(`Call started! ID: ${result.call_id}`);
@@ -117,7 +104,8 @@ export default function VoiceAgentPage() {
   async function viewCallDetails(callId: string) {
     setLoading(true);
     try {
-      const result = await apiRequest("GET", `calls/${callId}`);
+      const response = await fetch(`/api/bland/calls/${callId}`);
+      const result = await response.json();
       setSelectedCall(result);
       setAnalysis(null);
     } catch (error) {
@@ -129,16 +117,21 @@ export default function VoiceAgentPage() {
   async function analyzeCall(callId: string) {
     setAnalyzing(true);
     try {
-      const result = await apiRequest("POST", `calls/${callId}/analyze`, {
-        goal: "Determine if the practitioner is interested in scheduling a demo visit",
-        questions: [
-          ["Was the practitioner interested?", "boolean"],
-          ["Did they agree to schedule a demo?", "boolean"],
-          ["What products were they most interested in?", "string"],
-          ["What objections did they raise?", "string"],
-          ["Overall sentiment", "positive, neutral, negative"],
-        ],
+      const response = await fetch(`/api/bland/calls/${callId}/analyze`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          goal: "Determine if the practitioner is interested in scheduling a demo visit",
+          questions: [
+            ["Was the practitioner interested?", "boolean"],
+            ["Did they agree to schedule a demo?", "boolean"],
+            ["What products were they most interested in?", "string"],
+            ["What objections did they raise?", "string"],
+            ["Overall sentiment", "positive, neutral, negative"],
+          ],
+        }),
       });
+      const result = await response.json();
       setAnalysis(result);
     } catch (error) {
       console.error("Failed to analyze call:", error);
@@ -148,7 +141,7 @@ export default function VoiceAgentPage() {
 
   async function stopCall(callId: string) {
     try {
-      await apiRequest("POST", `calls/${callId}/stop`);
+      await fetch(`/api/bland/calls/${callId}/stop`, { method: "POST" });
       alert("Call stopped");
       loadCalls();
     } catch (error) {
