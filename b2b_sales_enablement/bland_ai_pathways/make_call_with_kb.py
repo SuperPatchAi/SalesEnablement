@@ -84,7 +84,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Make SuperPatch sales calls")
     parser.add_argument("--phone", required=True, help="Phone number (E.164 format)")
     parser.add_argument("--pathway", required=True, choices=PATHWAYS.keys(), help="Pathway type")
-    parser.add_argument("--voice", default=78c8543e-e5fe-448e-8292-20a7b8c45247, help="Voice to use")
+    parser.add_argument("--voice", default="78c8543e-e5fe-448e-8292-20a7b8c45247", help="Voice to use")
     parser.add_argument("--no-record", action="store_true", help="Don't record call")
     
     args = parser.parse_args()
