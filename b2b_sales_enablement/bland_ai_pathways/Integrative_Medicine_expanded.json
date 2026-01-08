@@ -216,8 +216,7 @@
       "type": "Webhook",
       "data": {
         "name": "Check Availability",
-        "prompt": "You're scheduling an IN-PERSON sales visit where a SuperPatch rep will come to their practice to drop off samples and provide a live demonstration.\n\n## What This Appointment Is For\n- A SuperPatch sales representative will visit their practice IN PERSON\n- They'll bring product samples for the practitioner to try\n- They'll provide a hands-on demonstration of how the patches work\n- The visit typically takes about 20-30 minutes\n\n## Before Checking Availability\nFrame it properly:\n\"Great! So what we'd like to do is have one of our reps stop by your practice to drop off some samples and give you a quick demo. It only takes about 20-30 minutes. What day works best for you?\"\n\nOr: \"Perfect - let me get a rep scheduled to come by with samples and show you how everything works. Would sometime next week work?\"\n\n## Calling the Tool\nWhen you call check_cal_availability, provide:\n- start_date: Start of date range in ISO format (e.g., \"2026-01-15T00:00:00Z\")\n- end_date: End of date range in ISO format (e.g., \"2026-01-22T23:59:59Z\")\n- timezone: Their timezone (default \"America/New_York\")\n\n## After Getting Available Times\nPresent 2-3 options naturally:\n\"Okay, I have a rep available on [Day] around [time], or [Day] at [time]. Which works better for your schedule?\"\n\nIf they ask about location:\n\"The rep will come directly to your practice. What's your address?\"\n\n## Getting Their Preference\nListen for:\n- Morning vs afternoon preference\n- Specific days that work/don't work\n- Any time constraints (\"before patients arrive\", \"during lunch\", etc.)\n\n## Once They Pick a Time\n\"Perfect! [Day] at [time] works great. Let me get that locked in...\"\n\nThen route to Schedule Appointment to complete the booking.\n\n## What NOT to Do\n- Don't make it sound like a phone call - it's an IN-PERSON visit\n- Don't offer too many options at once\n- Don't forget to mention they'll get samples and a demo",
-        "tool": "TL-79a3c232-ca51-4244-b5d2-21f4e70fd872"
+        "prompt": "You're scheduling an IN-PERSON sales visit where a SuperPatch rep will come to their practice to drop off samples and provide a live demonstration.\n\n## What This Appointment Is For\n- A SuperPatch sales representative will visit their practice IN PERSON\n- They'll bring product samples for the practitioner to try\n- They'll provide a hands-on demonstration of how the patches work\n- The visit typically takes about 20-30 minutes\n\n## Before Checking Availability\nFrame it properly:\n\"Great! So what we'd like to do is have one of our reps stop by your practice to drop off some samples and give you a quick demo. It only takes about 20-30 minutes. What day works best for you?\"\n\nOr: \"Perfect - let me get a rep scheduled to come by with samples and show you how everything works. Would sometime next week work?\"\n\n## Calling the Tool\nWhen you call check_cal_availability, provide:\n- start_date: Start of date range in ISO format (e.g., \"2026-01-15T00:00:00Z\")\n- end_date: End of date range in ISO format (e.g., \"2026-01-22T23:59:59Z\")\n- timezone: Their timezone (default \"America/New_York\")\n\n## After Getting Available Times\nPresent 2-3 options naturally:\n\"Okay, I have a rep available on [Day] around [time], or [Day] at [time]. Which works better for your schedule?\"\n\nIf they ask about location:\n\"The rep will come directly to your practice. What's your address?\"\n\n## Getting Their Preference\nListen for:\n- Morning vs afternoon preference\n- Specific days that work/don't work\n- Any time constraints (\"before patients arrive\", \"during lunch\", etc.)\n\n## Once They Pick a Time\n\"Perfect! [Day] at [time] works great. Let me get that locked in...\"\n\nThen route to Schedule Appointment to complete the booking.\n\n## What NOT to Do\n- Don't make it sound like a phone call - it's an IN-PERSON visit\n- Don't offer too many options at once\n- Don't forget to mention they'll get samples and a demo"
       }
     },
     {
@@ -225,8 +224,7 @@
       "type": "Webhook",
       "data": {
         "name": "Schedule Appointment",
-        "prompt": "You're booking the IN-PERSON sales visit where a SuperPatch rep will visit their practice with samples and provide a demonstration.\n\n## What You're Booking\n- In-person visit to their practice/clinic\n- Rep will bring product samples\n- Rep will demonstrate how the patches work\n- About 20-30 minutes\n\n## Information Needed\nBefore booking, collect:\n1. start_time - The time they chose (ISO format)\n2. name - Their name (you likely have this)\n3. email - For the calendar invite and confirmation\n4. phone - Their direct number\n5. IMPORTANT: Practice address (for the rep to know where to go)\n6. practice_name - Name of their clinic/practice\n7. practitioner_type - Type of practitioner\n8. products_interested - What products to bring samples of\n9. notes - Include the practice ADDRESS and any special instructions\n\n## Getting the Address\nThis is crucial for an in-person visit:\n\"And what's the address for your practice so we can have that ready for the rep?\"\n\nIf they've mentioned it earlier, confirm:\n\"Just to confirm, your practice is at [address], right?\"\n\n## Getting Their Email\n\"What's the best email for the calendar invite? That way you'll have all the details.\"\n\n## Calling the Tool\nWhen calling book_cal_appointment, include:\n- start_time: ISO format (e.g., \"2026-01-15T10:00:00-05:00\")\n- name: Their name\n- email: Their email\n- phone: Their phone number\n- timezone: \"America/New_York\" or their stated timezone\n- practice_name: Name of their practice\n- practitioner_type: chiropractor, massage therapist, etc.\n- products_interested: Products they want to see (Freedom, REM, Peace, etc.)\n- notes: MUST include practice ADDRESS and any special instructions like \"back entrance\" or \"ask for Dr. Smith\"\n\n## Confirming the Booking\nAfter booking succeeds, confirm everything:\n\n\"You're all set! I have a rep scheduled to visit [Practice Name] on [Day] at [Time]. They'll bring samples of [products] and give you a hands-on demo.\"\n\n\"You'll get a calendar invite at [email] with all the details.\"\n\n\"Is there anything specific you'd like the rep to focus on during the demo?\"\n\n## If They Have Questions\n\"How long will it take?\" - \"About 20-30 minutes. The rep will show you how the patches work and leave you with samples to try.\"\n\n\"What should I prepare?\" - \"Nothing at all! The rep brings everything. Just have a few minutes to chat and try the patches.\"\n\n\"Can my staff be there?\" - \"Absolutely! The more the merrier. It's great for your team to see how it works too.\"\n\n## What NOT to Do\n- Don't forget to get the ADDRESS - the rep needs to know where to go!\n- Don't make it sound like a phone call\n- Don't skip confirming the details back to them\n- Don't rush - they should feel good about the upcoming visit",
-        "tool": "TL-bbaa7f38-1b6a-4f27-ad27-18fb7c6e1526"
+        "prompt": "You're booking the IN-PERSON sales visit where a SuperPatch rep will visit their practice with samples and provide a demonstration.\n\n## What You're Booking\n- In-person visit to their practice/clinic\n- Rep will bring product samples\n- Rep will demonstrate how the patches work\n- About 20-30 minutes\n\n## Information Needed\nBefore booking, collect:\n1. start_time - The time they chose (ISO format)\n2. name - Their name (you likely have this)\n3. email - For the calendar invite and confirmation\n4. phone - Their direct number\n5. IMPORTANT: Practice address (for the rep to know where to go)\n6. practice_name - Name of their clinic/practice\n7. practitioner_type - Type of practitioner\n8. products_interested - What products to bring samples of\n9. notes - Include the practice ADDRESS and any special instructions\n\n## Getting the Address\nThis is crucial for an in-person visit:\n\"And what's the address for your practice so we can have that ready for the rep?\"\n\nIf they've mentioned it earlier, confirm:\n\"Just to confirm, your practice is at [address], right?\"\n\n## Getting Their Email\n\"What's the best email for the calendar invite? That way you'll have all the details.\"\n\n## Calling the Tool\nWhen calling book_cal_appointment, include:\n- start_time: ISO format (e.g., \"2026-01-15T10:00:00-05:00\")\n- name: Their name\n- email: Their email\n- phone: Their phone number\n- timezone: \"America/New_York\" or their stated timezone\n- practice_name: Name of their practice\n- practitioner_type: chiropractor, massage therapist, etc.\n- products_interested: Products they want to see (Freedom, REM, Peace, etc.)\n- notes: MUST include practice ADDRESS and any special instructions like \"back entrance\" or \"ask for Dr. Smith\"\n\n## Confirming the Booking\nAfter booking succeeds, confirm everything:\n\n\"You're all set! I have a rep scheduled to visit [Practice Name] on [Day] at [Time]. They'll bring samples of [products] and give you a hands-on demo.\"\n\n\"You'll get a calendar invite at [email] with all the details.\"\n\n\"Is there anything specific you'd like the rep to focus on during the demo?\"\n\n## If They Have Questions\n\"How long will it take?\" - \"About 20-30 minutes. The rep will show you how the patches work and leave you with samples to try.\"\n\n\"What should I prepare?\" - \"Nothing at all! The rep brings everything. Just have a few minutes to chat and try the patches.\"\n\n\"Can my staff be there?\" - \"Absolutely! The more the merrier. It's great for your team to see how it works too.\"\n\n## What NOT to Do\n- Don't forget to get the ADDRESS - the rep needs to know where to go!\n- Don't make it sound like a phone call\n- Don't skip confirming the details back to them\n- Don't rush - they should feel good about the upcoming visit"
       }
     },
     {
@@ -283,400 +281,457 @@
       "id": "e1",
       "source": "1",
       "target": "3",
-      "type": "custom",
-      "label": "interested, continue"
+      "data": {
+        "label": "interested, continue"
+      }
     },
     {
       "id": "e2",
       "source": "1",
       "target": "2",
-      "type": "custom",
-      "label": "who is this"
+      "data": {
+        "label": "who is this"
+      }
     },
     {
       "id": "e3",
       "source": "1",
       "target": "29",
-      "type": "custom",
-      "label": "busy now"
+      "data": {
+        "label": "busy now"
+      }
     },
     {
       "id": "e4",
       "source": "1",
       "target": "19",
-      "type": "custom",
-      "label": "not interested"
+      "data": {
+        "label": "not interested"
+      }
     },
     {
       "id": "e5",
       "source": "2",
       "target": "3",
-      "type": "custom",
-      "label": "interested"
+      "data": {
+        "label": "interested"
+      }
     },
     {
       "id": "e6",
       "source": "2",
       "target": "13",
-      "type": "custom",
-      "label": "skeptical"
+      "data": {
+        "label": "skeptical"
+      }
     },
     {
       "id": "e7",
       "source": "2",
       "target": "19",
-      "type": "custom",
-      "label": "not for me"
+      "data": {
+        "label": "not for me"
+      }
     },
     {
       "id": "e8",
       "source": "3",
       "target": "4",
-      "type": "custom",
-      "label": "continue"
+      "data": {
+        "label": "continue"
+      }
     },
     {
       "id": "e9",
       "source": "4",
       "target": "5",
-      "type": "custom",
-      "label": "continue"
+      "data": {
+        "label": "continue"
+      }
     },
     {
       "id": "e10",
       "source": "5",
       "target": "6",
-      "type": "custom",
-      "label": "continue"
+      "data": {
+        "label": "continue"
+      }
     },
     {
       "id": "e11",
       "source": "6",
       "target": "7",
-      "type": "custom",
-      "label": "continue"
+      "data": {
+        "label": "continue"
+      }
     },
     {
       "id": "e12",
       "source": "7",
       "target": "8",
-      "type": "custom",
-      "label": "pain focus"
+      "data": {
+        "label": "pain focus"
+      }
     },
     {
       "id": "e13",
       "source": "7",
       "target": "9",
-      "type": "custom",
-      "label": "sleep focus"
+      "data": {
+        "label": "sleep focus"
+      }
     },
     {
       "id": "e14",
       "source": "7",
       "target": "10",
-      "type": "custom",
-      "label": "stress focus"
+      "data": {
+        "label": "stress focus"
+      }
     },
     {
       "id": "e15",
       "source": "7",
       "target": "11",
-      "type": "custom",
-      "label": "balance focus"
+      "data": {
+        "label": "balance focus"
+      }
     },
     {
       "id": "e16",
       "source": "7",
       "target": "12",
-      "type": "custom",
-      "label": "multiple/general"
+      "data": {
+        "label": "multiple/general"
+      }
     },
     {
       "id": "e17",
       "source": "8",
       "target": "20",
-      "type": "custom",
-      "label": "interested"
+      "data": {
+        "label": "interested"
+      }
     },
     {
       "id": "e18",
       "source": "8",
       "target": "13",
-      "type": "custom",
-      "label": "needs evidence"
+      "data": {
+        "label": "needs evidence"
+      }
     },
     {
       "id": "e19",
       "source": "9",
       "target": "20",
-      "type": "custom",
-      "label": "interested"
+      "data": {
+        "label": "interested"
+      }
     },
     {
       "id": "e20",
       "source": "9",
       "target": "12",
-      "type": "custom",
-      "label": "wants overview"
+      "data": {
+        "label": "wants overview"
+      }
     },
     {
       "id": "e21",
       "source": "10",
       "target": "20",
-      "type": "custom",
-      "label": "interested"
+      "data": {
+        "label": "interested"
+      }
     },
     {
       "id": "e22",
       "source": "11",
       "target": "20",
-      "type": "custom",
-      "label": "interested"
+      "data": {
+        "label": "interested"
+      }
     },
     {
       "id": "e23",
       "source": "12",
       "target": "20",
-      "type": "custom",
-      "label": "ready to proceed"
+      "data": {
+        "label": "ready to proceed"
+      }
     },
     {
       "id": "e24",
       "source": "13",
       "target": "20",
-      "type": "custom",
-      "label": "satisfied"
+      "data": {
+        "label": "satisfied"
+      }
     },
     {
       "id": "e25",
       "source": "13",
       "target": "26",
-      "type": "custom",
-      "label": "wants to try"
+      "data": {
+        "label": "wants to try"
+      }
     },
     {
       "id": "e26",
       "source": "14",
       "target": "20",
-      "type": "custom",
-      "label": "resolved"
+      "data": {
+        "label": "resolved"
+      }
     },
     {
       "id": "e27",
       "source": "14",
       "target": "26",
-      "type": "custom",
-      "label": "try first"
+      "data": {
+        "label": "try first"
+      }
     },
     {
       "id": "e28",
       "source": "15",
       "target": "20",
-      "type": "custom",
-      "label": "sees value"
+      "data": {
+        "label": "sees value"
+      }
     },
     {
       "id": "e29",
       "source": "15",
       "target": "26",
-      "type": "custom",
-      "label": "try first"
+      "data": {
+        "label": "try first"
+      }
     },
     {
       "id": "e30",
       "source": "16",
       "target": "27",
-      "type": "custom",
-      "label": "schedule follow-up"
+      "data": {
+        "label": "schedule follow-up"
+      }
     },
     {
       "id": "e31",
       "source": "16",
       "target": "26",
-      "type": "custom",
-      "label": "wants sample"
+      "data": {
+        "label": "wants sample"
+      }
     },
     {
       "id": "e32",
       "source": "17",
       "target": "22",
-      "type": "custom",
-      "label": "open to affiliate"
+      "data": {
+        "label": "open to affiliate"
+      }
     },
     {
       "id": "e33",
       "source": "17",
       "target": "34",
-      "type": "custom",
-      "label": "not interested"
+      "data": {
+        "label": "not interested"
+      }
     },
     {
       "id": "e34",
       "source": "18",
       "target": "26",
-      "type": "custom",
-      "label": "try first"
+      "data": {
+        "label": "try first"
+      }
     },
     {
       "id": "e35",
       "source": "18",
       "target": "20",
-      "type": "custom",
-      "label": "proceed"
+      "data": {
+        "label": "proceed"
+      }
     },
     {
       "id": "e36",
       "source": "19",
       "target": "27",
-      "type": "custom",
-      "label": "timing issue"
+      "data": {
+        "label": "timing issue"
+      }
     },
     {
       "id": "e37",
       "source": "19",
       "target": "26",
-      "type": "custom",
-      "label": "open to trying"
+      "data": {
+        "label": "open to trying"
+      }
     },
     {
       "id": "e38",
       "source": "19",
       "target": "34",
-      "type": "custom",
-      "label": "firm no"
+      "data": {
+        "label": "firm no"
+      }
     },
     {
       "id": "e39",
       "source": "20",
       "target": "21",
-      "type": "custom",
-      "label": "wholesale"
+      "data": {
+        "label": "wholesale"
+      }
     },
     {
       "id": "e40",
       "source": "20",
       "target": "22",
-      "type": "custom",
-      "label": "affiliate"
+      "data": {
+        "label": "affiliate"
+      }
     },
     {
       "id": "e41",
       "source": "20",
       "target": "23",
-      "type": "custom",
-      "label": "hybrid"
+      "data": {
+        "label": "hybrid"
+      }
     },
     {
       "id": "e42",
       "source": "21",
       "target": "24",
-      "type": "custom",
-      "label": "ready to order"
+      "data": {
+        "label": "ready to order"
+      }
     },
     {
       "id": "e43",
       "source": "21",
       "target": "23",
-      "type": "custom",
-      "label": "add affiliate"
+      "data": {
+        "label": "add affiliate"
+      }
     },
     {
       "id": "e44",
       "source": "21",
       "target": "27",
-      "type": "custom",
-      "label": "need time"
+      "data": {
+        "label": "need time"
+      }
     },
     {
       "id": "e45",
       "source": "22",
       "target": "25",
-      "type": "custom",
-      "label": "sign up"
+      "data": {
+        "label": "sign up"
+      }
     },
     {
       "id": "e46",
       "source": "22",
       "target": "26",
-      "type": "custom",
-      "label": "try first"
+      "data": {
+        "label": "try first"
+      }
     },
     {
       "id": "e47",
       "source": "22",
       "target": "27",
-      "type": "custom",
-      "label": "need time"
+      "data": {
+        "label": "need time"
+      }
     },
     {
       "id": "e48",
       "source": "23",
       "target": "24",
-      "type": "custom",
-      "label": "ready to start"
+      "data": {
+        "label": "ready to start"
+      }
     },
     {
       "id": "e49",
       "source": "23",
       "target": "26",
-      "type": "custom",
-      "label": "try first"
+      "data": {
+        "label": "try first"
+      }
     },
     {
       "id": "e50",
       "source": "23",
       "target": "27",
-      "type": "custom",
-      "label": "need time"
+      "data": {
+        "label": "need time"
+      }
     },
     {
       "id": "e51",
       "source": "24",
       "target": "30",
-      "type": "custom",
-      "label": "complete"
+      "data": {
+        "label": "complete"
+      }
     },
     {
       "id": "e52",
       "source": "25",
       "target": "31",
-      "type": "custom",
-      "label": "complete"
+      "data": {
+        "label": "complete"
+      }
     },
     {
       "id": "e53",
       "source": "26",
       "target": "27",
-      "type": "custom",
-      "label": "schedule follow-up"
+      "data": {
+        "label": "schedule follow-up"
+      }
     },
     {
       "id": "e54",
       "source": "27",
       "target": "28",
-      "type": "custom",
-      "label": "time selected"
+      "data": {
+        "label": "time selected"
+      }
     },
     {
       "id": "e55",
       "source": "28",
       "target": "32",
-      "type": "custom",
-      "label": "confirmed"
+      "data": {
+        "label": "confirmed"
+      }
     },
     {
       "id": "e56",
       "source": "29",
       "target": "33",
-      "type": "custom",
-      "label": "callback set"
+      "data": {
+        "label": "callback set"
+      }
     },
     {
       "id": "e57",
       "source": "29",
       "target": "34",
-      "type": "custom",
-      "label": "email only"
+      "data": {
+        "label": "email only"
+      }
     }
   ]
 }

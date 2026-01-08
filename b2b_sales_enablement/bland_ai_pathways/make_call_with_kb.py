@@ -17,6 +17,10 @@ import subprocess
 API_KEY = "org_8e83a10723c7ccbfa480b0d015920dddd0ae52af444a7691546e51f371dda789b471c727a9faf577ca2769"
 KB_ID = "b671527d-0c2d-4a21-9586-033dad3b0255"
 
+# Cal.com Integration Tools
+CHECK_AVAILABILITY_TOOL = "TL-79a3c232-ca51-4244-b5d2-21f4e70fd872"
+BOOK_APPOINTMENT_TOOL = "TL-bbaa7f38-1b6a-4f27-ad27-18fb7c6e1526"
+
 PATHWAYS = {
     "chiropractors": "cf2233ef-7fb2-49ff-af29-0eee47204e9f",
     "massage": "d202aad7-bcb6-478c-a211-b00877545e05",
@@ -50,6 +54,7 @@ def make_superpatch_call(phone_number: str, pathway_type: str, **kwargs) -> dict
         "wait_for_greeting": kwargs.get("wait_for_greeting", True),
         "record": kwargs.get("record", True),
         "max_duration": kwargs.get("max_duration", 15),  # 15 minutes max
+        "tools": [CHECK_AVAILABILITY_TOOL, BOOK_APPOINTMENT_TOOL],  # Cal.com scheduling tools
     }
     
     # Add any extra parameters

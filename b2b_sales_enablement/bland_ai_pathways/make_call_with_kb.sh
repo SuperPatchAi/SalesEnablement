@@ -6,6 +6,10 @@
 API_KEY="org_8e83a10723c7ccbfa480b0d015920dddd0ae52af444a7691546e51f371dda789b471c727a9faf577ca2769"
 KB_ID="b671527d-0c2d-4a21-9586-033dad3b0255"
 
+# Cal.com Integration Tools
+CHECK_AVAILABILITY_TOOL="TL-79a3c232-ca51-4244-b5d2-21f4e70fd872"
+BOOK_APPOINTMENT_TOOL="TL-bbaa7f38-1b6a-4f27-ad27-18fb7c6e1526"
+
 PHONE_NUMBER=$1
 PATHWAY_TYPE=$2
 
@@ -38,5 +42,9 @@ curl -X POST "https://api.bland.ai/v1/calls" \
     \"voice\": \"78c8543e-e5fe-448e-8292-20a7b8c45247\",
     \"first_sentence\": \"Hi, this is Jennifer with SuperPatch.\",
     \"wait_for_greeting\": true,
-    \"record\": true
+    \"record\": true,
+    \"tools\": [\"$CHECK_AVAILABILITY_TOOL\", \"$BOOK_APPOINTMENT_TOOL\"]
   }"
+
+echo ""
+echo "Call initiated with Cal.com scheduling tools enabled."
