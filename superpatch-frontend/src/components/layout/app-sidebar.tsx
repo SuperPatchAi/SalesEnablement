@@ -18,6 +18,7 @@ import {
   ChevronDown,
   Users,
   Briefcase,
+  Phone,
 } from "lucide-react";
 
 import {
@@ -169,6 +170,11 @@ export function AppSidebar({
       title: "Favorites",
       url: "/favorites",
       icon: Star,
+    },
+    {
+      title: "Voice Agent",
+      url: "/voice-agent",
+      icon: Phone,
     },
   ];
 
