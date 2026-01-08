@@ -46,6 +46,7 @@ export default function VoiceAgentPage() {
   const [selectedPathway, setSelectedPathway] = useState("chiropractors");
   const [analysis, setAnalysis] = useState<any>(null);
   const [analyzing, setAnalyzing] = useState(false);
+  const [webhookUrl, setWebhookUrl] = useState("");
 
   // Load calls on mount
   useEffect(() => {
@@ -70,20 +71,25 @@ export default function VoiceAgentPage() {
     setMaking(true);
     try {
       const pathway = PATHWAYS[selectedPathway as keyof typeof PATHWAYS];
+      const callPayload: Record<string, any> = {
+        phone_number: phoneNumber,
+        pathway_id: pathway.id,
+        voice: VOICE_ID,
+        first_sentence: "Hi, this is Jennifer with SuperPatch.",
+        wait_for_greeting: true,
+        record: true,
+        max_duration: 15,
+      };
+      
+      // Add webhook if provided (for Cal.com booking integration)
+      if (webhookUrl) {
+        callPayload.webhook = webhookUrl;
+      }
+      
       const response = await fetch("/api/bland/calls", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          phone_number: phoneNumber,
-          pathway_id: pathway.id,
-          voice: VOICE_ID,
-          first_sentence: "Hi, this is Jennifer with SuperPatch.",
-          wait_for_greeting: true,
-          record: true,
-          max_duration: 15,
-          // Note: tools cannot be passed with pathway_id - they're configured in the pathway
-          // knowledge_base is also typically configured in the pathway
-        }),
+        body: JSON.stringify(callPayload),
       });
       const result = await response.json();
       
@@ -236,6 +242,19 @@ export default function VoiceAgentPage() {
                 </div>
               </div>
 
+              <div className="space-y-2">
+                <Label htmlFor="webhook">Webhook URL (for Cal.com booking)</Label>
+                <Input
+                  id="webhook"
+                  placeholder="https://your-domain.com/api/webhooks/bland"
+                  value={webhookUrl}
+                  onChange={(e) => setWebhookUrl(e.target.value)}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Optional: Webhook receives call data for automatic Cal.com booking
+                </p>
+              </div>
+
               <div className="flex items-center gap-4 pt-4">
                 <Button onClick={makeCall} disabled={making || !phoneNumber} size="lg">
                   {making ? (
@@ -255,13 +274,27 @@ export default function VoiceAgentPage() {
               <div className="mt-6 p-4 bg-muted rounded-lg">
                 <h4 className="font-medium mb-2">Call Features:</h4>
                 <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>✅ Cal.com scheduling tools enabled</li>
-                  <li>✅ SuperPatch knowledge base enabled</li>
+                  <li>✅ Conversational pathway with 34 nodes</li>
                   <li>✅ Recording enabled</li>
                   <li>✅ Jennifer voice (professional, warm)</li>
                   <li>✅ Max duration: 15 minutes</li>
+                  <li>{webhookUrl ? "✅" : "⚪"} Webhook for Cal.com booking</li>
                 </ul>
               </div>
+              
+              {!webhookUrl && (
+                <div className="mt-4 p-4 border border-yellow-500/50 bg-yellow-500/10 rounded-lg">
+                  <h4 className="font-medium text-yellow-600 mb-2">📅 Cal.com Booking Setup</h4>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    To enable automatic booking, you need a public webhook URL.
+                  </p>
+                  <ol className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
+                    <li>Deploy this app to Vercel/similar</li>
+                    <li>Use the webhook URL: <code className="bg-muted px-1 rounded">https://your-domain/api/webhooks/bland</code></li>
+                    <li>Or use ngrok to expose localhost for testing</li>
+                  </ol>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
