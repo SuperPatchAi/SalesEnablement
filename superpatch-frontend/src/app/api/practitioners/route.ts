@@ -5,6 +5,7 @@ import path from "path";
 // Cache the practitioner data in memory
 let practitionersCache: Practitioner[] | null = null;
 let metadataCache: { provinces: string[]; cities: Record<string, string[]>; types: string[] } | null = null;
+let dataLoadPromise: Promise<Practitioner[]> | null = null;
 
 interface Practitioner {
   id: string;
@@ -34,48 +35,81 @@ interface PractitionerData {
   practitioners: Practitioner[];
 }
 
-function loadPractitioners(): Practitioner[] {
+async function loadPractitioners(): Promise<Practitioner[]> {
+  // Return cache if available
   if (practitionersCache) {
     return practitionersCache;
   }
 
-  // Try multiple paths to find the data file
-  const possiblePaths = [
-    path.join(process.cwd(), "..", "canadian_practitioners", "all_practitioners_latest.json"),
-    path.join(process.cwd(), "canadian_practitioners", "all_practitioners_latest.json"),
-    "/Users/cbsuperpatch/Desktop/SalesEnablement/canadian_practitioners/all_practitioners_latest.json",
-  ];
+  // Prevent concurrent loading
+  if (dataLoadPromise) {
+    return dataLoadPromise;
+  }
 
-  let data: PractitionerData | null = null;
-  
-  for (const filePath of possiblePaths) {
-    try {
-      if (fs.existsSync(filePath)) {
-        const fileContent = fs.readFileSync(filePath, "utf-8");
-        data = JSON.parse(fileContent);
-        console.log(`Loaded practitioners from: ${filePath}`);
-        break;
+  dataLoadPromise = (async () => {
+    // Try file system paths first (works locally)
+    const possiblePaths = [
+      // For local development - public folder
+      path.join(process.cwd(), "public", "data", "practitioners.json"),
+      // For local development - parent directory
+      path.join(process.cwd(), "..", "canadian_practitioners", "all_practitioners_latest.json"),
+    ];
+
+    let data: PractitionerData | null = null;
+    
+    for (const filePath of possiblePaths) {
+      try {
+        if (fs.existsSync(filePath)) {
+          const fileContent = fs.readFileSync(filePath, "utf-8");
+          data = JSON.parse(fileContent);
+          console.log(`Loaded practitioners from file: ${filePath}`);
+          break;
+        }
+      } catch (error) {
+        console.log(`Failed to load from ${filePath}:`, error);
       }
-    } catch (error) {
-      console.log(`Failed to load from ${filePath}:`, error);
     }
-  }
 
-  if (!data) {
-    console.error("Could not find practitioner data file");
-    return [];
-  }
+    // If file not found locally, try fetching from public URL (for Vercel)
+    if (!data) {
+      try {
+        // Get the base URL from environment or construct it
+        const baseUrl = process.env.VERCEL_URL 
+          ? `https://${process.env.VERCEL_URL}` 
+          : process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+        
+        console.log(`Attempting to fetch practitioners from: ${baseUrl}/data/practitioners.json`);
+        const response = await fetch(`${baseUrl}/data/practitioners.json`);
+        
+        if (response.ok) {
+          data = await response.json();
+          console.log(`Loaded practitioners from URL: ${baseUrl}/data/practitioners.json`);
+        } else {
+          console.error(`Failed to fetch practitioners: ${response.status}`);
+        }
+      } catch (error) {
+        console.error("Failed to fetch practitioners from URL:", error);
+      }
+    }
 
-  practitionersCache = data.practitioners;
-  return practitionersCache;
+    if (!data) {
+      console.error("Could not find practitioner data from any source");
+      return [];
+    }
+
+    practitionersCache = data.practitioners;
+    return practitionersCache;
+  })();
+
+  return dataLoadPromise;
 }
 
-function getMetadata(): { provinces: string[]; cities: Record<string, string[]>; types: string[] } {
+async function getMetadata(): Promise<{ provinces: string[]; cities: Record<string, string[]>; types: string[] }> {
   if (metadataCache) {
     return metadataCache;
   }
 
-  const practitioners = loadPractitioners();
+  const practitioners = await loadPractitioners();
   
   // Extract unique provinces
   const provinces = [...new Set(practitioners.map(p => p.province).filter(Boolean))].sort();
@@ -99,11 +133,11 @@ export async function GET(request: NextRequest) {
   
   // Check if requesting metadata only
   if (searchParams.get("metadata") === "true") {
-    const metadata = getMetadata();
+    const metadata = await getMetadata();
     return NextResponse.json(metadata);
   }
 
-  const practitioners = loadPractitioners();
+  const practitioners = await loadPractitioners();
   
   // Filter parameters
   const province = searchParams.get("province");
