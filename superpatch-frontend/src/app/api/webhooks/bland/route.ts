@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { serverUpsertCallRecord, serverUpdateByCallId } from "@/lib/db/call-records";
+import type { CallStatus, CallRecordInsert } from "@/lib/db/types";
 
 const CAL_API_KEY = process.env.CAL_API_KEY || "";
 const CAL_EVENT_TYPE_ID = Number(process.env.CAL_EVENT_TYPE_ID) || 4352394;
-const BASE_URL = process.env.VERCEL_URL 
-  ? `https://${process.env.VERCEL_URL}` 
-  : "http://localhost:3000";
 
 interface BlandWebhookPayload {
   call_id: string;
@@ -28,6 +27,9 @@ interface BlandWebhookPayload {
     practitioner_type?: string;
     campaign?: string;
     source?: string;
+    address?: string;
+    city?: string;
+    province?: string;
   };
 }
 
@@ -42,27 +44,24 @@ export async function POST(request: NextRequest) {
       to: payload.to,
       completed: payload.completed,
       variables: payload.variables,
+      metadata: payload.metadata,
     });
-    
-    // Check if call completed successfully
-    if (!payload.completed) {
-      console.log("Call not completed, skipping booking");
-      return NextResponse.json({ status: "ok", message: "Call not completed" });
-    }
     
     // Extract scheduling variables from the call
     const vars = payload.variables || {};
+    const meta = payload.metadata || {};
     
     // Look for scheduling intent and data
     const wantsDemo = vars.wants_demo === "true" || vars.schedule_demo === "true";
     const appointmentTime = vars.appointment_time || vars.preferred_time || vars.start_time;
-    const practitionerName = vars.practitioner_name || vars.name || vars.contact_name;
+    const practitionerName = vars.practitioner_name || vars.name || vars.contact_name || meta.practice_name;
     const practitionerEmail = vars.email || vars.practitioner_email;
     const practitionerPhone = vars.best_phone || vars.phone || payload.to;
-    const practiceAddress = vars.address || vars.practice_address;
-    const practiceName = vars.practice_name;
-    const practitionerType = vars.practitioner_type;
+    const practiceAddress = vars.address || vars.practice_address || meta.address;
+    const practiceName = vars.practice_name || meta.practice_name;
+    const practitionerType = vars.practitioner_type || meta.practitioner_type;
     const productsInterested = vars.products_interested || vars.products;
+    const practitionerId = meta.practitioner_id || vars.practitioner_id;
     
     console.log("📋 Extracted variables:", {
       wantsDemo,
@@ -70,14 +69,25 @@ export async function POST(request: NextRequest) {
       practitionerName,
       practitionerEmail,
       practiceAddress,
+      practitionerId,
     });
     
+    // Determine call status
+    let callStatus: CallStatus = "completed";
+    if (payload.status === "failed" || payload.status === "no-answer" || !payload.completed) {
+      callStatus = "failed";
+    } else if (wantsDemo || appointmentTime) {
+      callStatus = "booked";
+    }
+    
     // If they want a demo and we have enough info, book it
-    if (wantsDemo && appointmentTime && practitionerName && practitionerEmail) {
+    let bookingResult: { id: string; uid: string } | null = null;
+    
+    if (wantsDemo && appointmentTime && practitionerName && practitionerEmail && payload.completed) {
       console.log("🗓️ Attempting to book Cal.com appointment...");
       
       try {
-        const booking = await bookCalComAppointment({
+        bookingResult = await bookCalComAppointment({
           startTime: appointmentTime,
           name: practitionerName,
           email: practitionerEmail,
@@ -89,46 +99,105 @@ export async function POST(request: NextRequest) {
           callId: payload.call_id,
         });
         
-        console.log("✅ Booking successful:", booking);
-        
-        // Update campaign call record with booking success
-        await updateCampaignCallRecord(payload, vars, true, booking.id);
-        
-        return NextResponse.json({
-          status: "success",
-          message: "Appointment booked",
-          booking_id: booking.id,
-          booking_uid: booking.uid,
-        });
+        console.log("✅ Booking successful:", bookingResult);
+        callStatus = "calendar_sent";
       } catch (bookingError) {
         console.error("❌ Booking failed:", bookingError);
-        
-        // Log the data for manual follow-up (also updates campaign record)
-        await logForManualFollowUp(payload, vars);
-        
-        return NextResponse.json({
-          status: "partial",
-          message: "Call completed but booking failed - logged for manual follow-up",
-          error: String(bookingError),
-        });
+        // Keep status as "booked" since they wanted a demo
       }
+    }
+    
+    // Save to database
+    const callRecord: CallRecordInsert = {
+      practitioner_id: practitionerId || payload.call_id, // Use call_id if no practitioner_id
+      practitioner_name: practitionerName || practiceName || "Unknown",
+      practitioner_type: practitionerType,
+      phone: payload.to,
+      address: practiceAddress,
+      city: meta.city,
+      province: meta.province,
+      call_id: payload.call_id,
+      status: callStatus,
+      call_started_at: payload.created_at,
+      call_ended_at: payload.ended_at,
+      duration_seconds: payload.call_length,
+      transcript: payload.concatenated_transcript,
+      summary: payload.analysis?.summary,
+      appointment_booked: callStatus === "booked" || callStatus === "calendar_sent",
+      appointment_time: appointmentTime ? new Date(appointmentTime).toISOString() : null,
+      calendar_invite_sent: callStatus === "calendar_sent",
+      practitioner_email: practitionerEmail,
+      booking_id: bookingResult?.id,
+    };
+    
+    // Try to update existing record by call_id first, then upsert
+    let savedRecord = null;
+    if (practitionerId) {
+      savedRecord = await serverUpsertCallRecord(callRecord);
     } else {
-      // Log for manual follow-up if missing data
-      if (wantsDemo) {
-        console.log("⚠️ Wants demo but missing required data");
-        await logForManualFollowUp(payload, vars);
-      } else {
-        // Still update the campaign record for completed calls
-        await updateCampaignCallRecord(payload, vars, false);
+      // If no practitioner_id, try to update by call_id
+      savedRecord = await serverUpdateByCallId(payload.call_id, callRecord);
+      if (!savedRecord) {
+        // Create new record
+        savedRecord = await serverUpsertCallRecord(callRecord);
       }
-      
-      return NextResponse.json({
-        status: "ok",
-        message: wantsDemo 
-          ? "Demo requested but missing booking data - logged for follow-up"
-          : "Call completed - no booking requested",
+    }
+    
+    if (savedRecord) {
+      console.log("📊 Call record saved to database:", {
+        id: savedRecord.id,
+        status: savedRecord.status,
+        practitioner_id: savedRecord.practitioner_id,
+      });
+    } else {
+      console.warn("⚠️ Failed to save call record to database");
+    }
+    
+    // Log for manual follow-up if demo requested but booking failed
+    if (wantsDemo && !bookingResult) {
+      console.log("📝 MANUAL FOLLOW-UP NEEDED:");
+      console.log({
+        call_id: payload.call_id,
+        phone: payload.to,
+        timestamp: payload.ended_at,
+        variables: vars,
+        transcript_preview: payload.concatenated_transcript?.slice(0, 500),
       });
     }
+    
+    // Return appropriate response
+    if (!payload.completed) {
+      return NextResponse.json({ 
+        status: "ok", 
+        message: "Call not completed",
+        record_saved: !!savedRecord,
+      });
+    }
+    
+    if (bookingResult) {
+      return NextResponse.json({
+        status: "success",
+        message: "Appointment booked",
+        booking_id: bookingResult.id,
+        booking_uid: bookingResult.uid,
+        record_saved: !!savedRecord,
+      });
+    }
+    
+    if (wantsDemo) {
+      return NextResponse.json({
+        status: "partial",
+        message: "Demo requested but booking failed - logged for follow-up",
+        record_saved: !!savedRecord,
+      });
+    }
+    
+    return NextResponse.json({
+      status: "ok",
+      message: "Call completed - no booking requested",
+      record_saved: !!savedRecord,
+    });
+    
   } catch (error) {
     console.error("Webhook error:", error);
     return NextResponse.json(
@@ -193,82 +262,6 @@ async function bookCalComAppointment(data: {
   return response.json();
 }
 
-async function logForManualFollowUp(payload: BlandWebhookPayload, vars: Record<string, string>) {
-  // In production, you'd log this to a database or send to a CRM
-  // For now, we'll just log it
-  console.log("📝 MANUAL FOLLOW-UP NEEDED:");
-  console.log({
-    call_id: payload.call_id,
-    phone: payload.to,
-    timestamp: payload.ended_at,
-    variables: vars,
-    transcript_preview: payload.concatenated_transcript?.slice(0, 500),
-  });
-  
-  // Also update campaign call record
-  await updateCampaignCallRecord(payload, vars, false);
-}
-
-async function updateCampaignCallRecord(
-  payload: BlandWebhookPayload, 
-  vars: Record<string, string>,
-  bookingSuccess: boolean,
-  bookingId?: string
-) {
-  try {
-    const practitionerId = payload.metadata?.practitioner_id || vars.practitioner_id;
-    
-    if (!practitionerId && !payload.call_id) {
-      console.log("No practitioner_id or call_id found, skipping campaign record update");
-      return;
-    }
-
-    // Determine call status
-    let status = "completed";
-    if (payload.status === "failed" || payload.status === "no-answer") {
-      status = "failed";
-    } else if (bookingSuccess) {
-      status = "calendar_sent";
-    } else if (vars.wants_demo === "true" || vars.appointment_time) {
-      status = "booked";
-    }
-
-    const callRecord = {
-      practitioner_id: practitionerId,
-      practitioner_name: vars.practitioner_name || payload.metadata?.practice_name,
-      practitioner_type: vars.practitioner_type || payload.metadata?.practitioner_type,
-      phone: payload.to,
-      call_id: payload.call_id,
-      status,
-      call_started_at: payload.created_at,
-      call_ended_at: payload.ended_at,
-      duration_seconds: payload.call_length,
-      transcript: payload.concatenated_transcript,
-      summary: payload.analysis?.summary,
-      appointment_booked: status === "booked" || status === "calendar_sent",
-      appointment_time: vars.appointment_time,
-      calendar_invite_sent: bookingSuccess,
-      practitioner_email: vars.email || vars.practitioner_email,
-      booking_id: bookingId,
-    };
-
-    // Update the campaign call record via internal API
-    const response = await fetch(`${BASE_URL}/api/campaign/calls`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(callRecord),
-    });
-
-    if (!response.ok) {
-      console.error("Failed to update campaign call record:", await response.text());
-    } else {
-      console.log("📊 Campaign call record updated:", status);
-    }
-  } catch (error) {
-    console.error("Error updating campaign call record:", error);
-  }
-}
-
 // GET endpoint for testing
 export async function GET() {
   return NextResponse.json({
@@ -276,9 +269,10 @@ export async function GET() {
     message: "Bland.ai webhook endpoint ready",
     features: [
       "Receives call completion webhooks",
+      "Saves call records to Supabase database",
       "Extracts scheduling variables",
       "Books to Cal.com if demo requested",
-      "Logs for manual follow-up if booking fails",
+      "Stores transcripts and summaries",
     ],
   });
 }

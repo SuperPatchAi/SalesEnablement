@@ -1,139 +1,138 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-
-// Simple file-based storage for campaign calls (MVP solution)
-// In production, use a proper database like Vercel KV, Supabase, or MongoDB
-
-const STORAGE_FILE = path.join(process.cwd(), ".campaign-calls.json");
-
-interface CampaignCallRecord {
-  practitioner_id: string;
-  practitioner_name: string;
-  practitioner_type: string;
-  phone: string;
-  address: string;
-  city: string;
-  province: string;
-  call_id?: string;
-  status: string;
-  call_started_at?: string;
-  call_ended_at?: string;
-  duration_seconds?: number;
-  transcript?: string;
-  summary?: string;
-  appointment_booked: boolean;
-  appointment_time?: string;
-  calendar_invite_sent: boolean;
-  practitioner_email?: string;
-  booking_id?: string;
-  notes?: string;
-  created_at: string;
-  updated_at: string;
-}
-
-interface StorageData {
-  records: Record<string, CampaignCallRecord>;
-  lastUpdated: string;
-}
-
-function loadStorage(): StorageData {
-  try {
-    if (fs.existsSync(STORAGE_FILE)) {
-      const data = fs.readFileSync(STORAGE_FILE, "utf-8");
-      return JSON.parse(data);
-    }
-  } catch (error) {
-    console.error("Failed to load campaign storage:", error);
-  }
-  return { records: {}, lastUpdated: new Date().toISOString() };
-}
-
-function saveStorage(data: StorageData): void {
-  try {
-    data.lastUpdated = new Date().toISOString();
-    fs.writeFileSync(STORAGE_FILE, JSON.stringify(data, null, 2));
-  } catch (error) {
-    console.error("Failed to save campaign storage:", error);
-  }
-}
+import {
+  getAllCallRecords,
+  getCallRecord,
+  getCallRecordByCallId,
+  upsertCallRecord,
+  updateCallRecord,
+  deleteCallRecord,
+  clearAllRecords,
+  getRecordsByStatus,
+  getCampaignStats,
+} from "@/lib/db/call-records";
+import type { CallRecordInsert, CallStatus } from "@/lib/db/types";
 
 // GET - Retrieve campaign calls
 export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
-  const callId = searchParams.get("call_id");
-  const practitionerId = searchParams.get("practitioner_id");
-  const status = searchParams.get("status");
-  const since = searchParams.get("since"); // ISO timestamp for polling
+  try {
+    const searchParams = request.nextUrl.searchParams;
+    const callId = searchParams.get("call_id");
+    const practitionerId = searchParams.get("practitioner_id");
+    const status = searchParams.get("status") as CallStatus | null;
+    const stats = searchParams.get("stats") === "true";
 
-  const storage = loadStorage();
-  let records = Object.values(storage.records);
+    // Return stats if requested
+    if (stats) {
+      const campaignStats = await getCampaignStats();
+      return NextResponse.json({ stats: campaignStats });
+    }
 
-  // Filter by call_id
-  if (callId) {
-    records = records.filter(r => r.call_id === callId);
+    // Get single record by call_id
+    if (callId) {
+      const record = await getCallRecordByCallId(callId);
+      return NextResponse.json({
+        record,
+        found: !!record,
+      });
+    }
+
+    // Get single record by practitioner_id
+    if (practitionerId) {
+      const record = await getCallRecord(practitionerId);
+      return NextResponse.json({
+        record,
+        found: !!record,
+      });
+    }
+
+    // Filter by status
+    if (status) {
+      const records = await getRecordsByStatus(status);
+      return NextResponse.json({
+        records,
+        total: records.length,
+      });
+    }
+
+    // Get all records
+    const records = await getAllCallRecords();
+    const recordsArray = Object.values(records);
+    
+    // Sort by updated_at desc
+    recordsArray.sort((a, b) => 
+      new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+    );
+
+    return NextResponse.json({
+      records: Object.fromEntries(
+        recordsArray.map(r => [r.practitioner_id, r])
+      ),
+      total: recordsArray.length,
+    });
+  } catch (error) {
+    console.error("Failed to get campaign calls:", error);
+    return NextResponse.json(
+      { status: "error", message: String(error) },
+      { status: 500 }
+    );
   }
-
-  // Filter by practitioner_id
-  if (practitionerId) {
-    records = records.filter(r => r.practitioner_id === practitionerId);
-  }
-
-  // Filter by status
-  if (status) {
-    records = records.filter(r => r.status === status);
-  }
-
-  // Filter by updates since timestamp (for polling)
-  if (since) {
-    const sinceDate = new Date(since);
-    records = records.filter(r => new Date(r.updated_at) > sinceDate);
-  }
-
-  // Sort by updated_at desc
-  records.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
-
-  return NextResponse.json({
-    records,
-    lastUpdated: storage.lastUpdated,
-    total: records.length,
-  });
 }
 
 // POST - Create or update a campaign call record
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const storage = loadStorage();
 
-    // Determine if this is an update by call_id or practitioner_id
-    let existingKey: string | null = null;
-
-    if (body.call_id) {
-      // Find by call_id
-      existingKey = Object.keys(storage.records).find(
-        key => storage.records[key].call_id === body.call_id
-      ) || null;
+    // Validate required fields
+    if (!body.practitioner_id && !body.call_id) {
+      return NextResponse.json(
+        { status: "error", message: "practitioner_id or call_id is required" },
+        { status: 400 }
+      );
     }
 
-    if (!existingKey && body.practitioner_id) {
-      existingKey = body.practitioner_id;
+    // If we have a call_id, try to find and update existing record
+    if (body.call_id && !body.practitioner_id) {
+      const existing = await getCallRecordByCallId(body.call_id);
+      if (existing) {
+        body.practitioner_id = existing.practitioner_id;
+      } else {
+        // Use call_id as practitioner_id for new records without practitioner_id
+        body.practitioner_id = body.call_id;
+      }
     }
 
-    const now = new Date().toISOString();
-    const key = existingKey || body.practitioner_id || body.call_id || `call_${Date.now()}`;
-
-    const existingRecord = storage.records[key] || {};
-
-    const record: CampaignCallRecord = {
-      ...existingRecord,
-      ...body,
-      updated_at: now,
-      created_at: existingRecord.created_at || now,
+    const recordData: CallRecordInsert = {
+      practitioner_id: body.practitioner_id,
+      practitioner_name: body.practitioner_name || "Unknown",
+      practitioner_type: body.practitioner_type,
+      phone: body.phone || "",
+      address: body.address,
+      city: body.city,
+      province: body.province,
+      call_id: body.call_id,
+      status: body.status || "not_called",
+      call_started_at: body.call_started_at,
+      call_ended_at: body.call_ended_at,
+      duration_seconds: body.duration_seconds,
+      transcript: body.transcript,
+      summary: body.summary,
+      appointment_booked: body.appointment_booked || false,
+      appointment_time: body.appointment_time,
+      calendar_invite_sent: body.calendar_invite_sent || false,
+      practitioner_email: body.practitioner_email,
+      booking_id: body.booking_id,
+      notes: body.notes,
     };
 
-    storage.records[key] = record;
-    saveStorage(storage);
+    const record = await upsertCallRecord(recordData);
+
+    if (!record) {
+      return NextResponse.json(
+        { status: "error", message: "Failed to save record" },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({
       status: "success",
@@ -148,23 +147,66 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// PATCH - Update a specific field on a record
+export async function PATCH(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { practitioner_id, ...updates } = body;
+
+    if (!practitioner_id) {
+      return NextResponse.json(
+        { status: "error", message: "practitioner_id is required" },
+        { status: 400 }
+      );
+    }
+
+    const record = await updateCallRecord(practitioner_id, updates);
+
+    if (!record) {
+      return NextResponse.json(
+        { status: "error", message: "Record not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      status: "success",
+      record,
+    });
+  } catch (error) {
+    console.error("Failed to update campaign call:", error);
+    return NextResponse.json(
+      { status: "error", message: String(error) },
+      { status: 500 }
+    );
+  }
+}
+
 // DELETE - Clear all records or a specific one
 export async function DELETE(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
-  const practitionerId = searchParams.get("practitioner_id");
+  try {
+    const searchParams = request.nextUrl.searchParams;
+    const practitionerId = searchParams.get("practitioner_id");
 
-  const storage = loadStorage();
+    if (practitionerId) {
+      const success = await deleteCallRecord(practitionerId);
+      return NextResponse.json({
+        status: success ? "success" : "error",
+        message: success ? "Record deleted" : "Failed to delete record",
+      });
+    }
 
-  if (practitionerId) {
-    delete storage.records[practitionerId];
-  } else {
-    storage.records = {};
+    // Clear all records
+    await clearAllRecords();
+    return NextResponse.json({
+      status: "success",
+      message: "All records cleared",
+    });
+  } catch (error) {
+    console.error("Failed to delete campaign call:", error);
+    return NextResponse.json(
+      { status: "error", message: String(error) },
+      { status: 500 }
+    );
   }
-
-  saveStorage(storage);
-
-  return NextResponse.json({
-    status: "success",
-    message: practitionerId ? "Record deleted" : "All records cleared",
-  });
 }

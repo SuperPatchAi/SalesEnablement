@@ -133,10 +133,50 @@ export function PractitionerDetailDrawer({
       return;
     }
 
-    // Load local call record
-    const record = getCallRecord(practitioner.id);
-    setCallRecord(record);
-    setNotes(record?.notes || "");
+    // Load call record from API with localStorage fallback
+    try {
+      const response = await fetch(`/api/campaign/calls?practitioner_id=${practitioner.id}`);
+      const data = await response.json();
+      
+      if (data.record) {
+        // Convert API record to CampaignCallRecord format
+        const record: CampaignCallRecord = {
+          practitioner_id: data.record.practitioner_id,
+          practitioner_name: data.record.practitioner_name,
+          practitioner_type: data.record.practitioner_type || "",
+          phone: data.record.phone,
+          address: data.record.address || "",
+          city: data.record.city || "",
+          province: data.record.province || "",
+          call_id: data.record.call_id,
+          status: data.record.status,
+          call_started_at: data.record.call_started_at,
+          call_ended_at: data.record.call_ended_at,
+          duration_seconds: data.record.duration_seconds,
+          transcript: data.record.transcript,
+          summary: data.record.summary,
+          appointment_booked: data.record.appointment_booked,
+          appointment_time: data.record.appointment_time,
+          calendar_invite_sent: data.record.calendar_invite_sent,
+          practitioner_email: data.record.practitioner_email,
+          notes: data.record.notes,
+          created_at: data.record.created_at,
+          updated_at: data.record.updated_at,
+        };
+        setCallRecord(record);
+        setNotes(record.notes || "");
+      } else {
+        // Fallback to localStorage
+        const localRecord = getCallRecord(practitioner.id);
+        setCallRecord(localRecord);
+        setNotes(localRecord?.notes || "");
+      }
+    } catch {
+      // Fallback to localStorage on error
+      const localRecord = getCallRecord(practitioner.id);
+      setCallRecord(localRecord);
+      setNotes(localRecord?.notes || "");
+    }
 
     // Load calls from Bland API by phone number
     if (practitioner.phone) {
@@ -176,13 +216,34 @@ export function PractitionerDetailDrawer({
     }
   }, [open, practitioner, loadCallData]);
 
-  // Save notes when they change (debounced)
+  // Save notes when they change (debounced) - uses API with localStorage fallback
   useEffect(() => {
     if (!practitioner || !callRecord) return;
 
-    const timeout = setTimeout(() => {
+    const timeout = setTimeout(async () => {
       if (notes !== callRecord.notes) {
-        saveCallRecord({ ...callRecord, notes });
+        // Try API first
+        try {
+          const response = await fetch("/api/campaign/calls", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              practitioner_id: practitioner.id,
+              notes,
+            }),
+          });
+          
+          if (response.ok) {
+            // Update local state
+            setCallRecord(prev => prev ? { ...prev, notes } : null);
+          } else {
+            // Fallback to localStorage
+            saveCallRecord({ ...callRecord, notes });
+          }
+        } catch {
+          // Fallback to localStorage on error
+          saveCallRecord({ ...callRecord, notes });
+        }
       }
     }, 500);
 
