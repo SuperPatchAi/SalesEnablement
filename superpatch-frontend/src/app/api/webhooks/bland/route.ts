@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 const CAL_API_KEY = process.env.CAL_API_KEY || "";
 const CAL_EVENT_TYPE_ID = Number(process.env.CAL_EVENT_TYPE_ID) || 4352394;
+const BASE_URL = process.env.VERCEL_URL 
+  ? `https://${process.env.VERCEL_URL}` 
+  : "http://localhost:3000";
 
 interface BlandWebhookPayload {
   call_id: string;
@@ -14,8 +17,18 @@ interface BlandWebhookPayload {
   ended_at: string;
   concatenated_transcript: string;
   variables?: Record<string, string>;
-  pathway_logs?: any[];
-  analysis?: any;
+  pathway_logs?: Record<string, unknown>[];
+  analysis?: {
+    summary?: string;
+    [key: string]: unknown;
+  };
+  metadata?: {
+    practitioner_id?: string;
+    practice_name?: string;
+    practitioner_type?: string;
+    campaign?: string;
+    source?: string;
+  };
 }
 
 // POST /api/webhooks/bland - Handle Bland.ai call completion webhooks
@@ -45,6 +58,7 @@ export async function POST(request: NextRequest) {
     const appointmentTime = vars.appointment_time || vars.preferred_time || vars.start_time;
     const practitionerName = vars.practitioner_name || vars.name || vars.contact_name;
     const practitionerEmail = vars.email || vars.practitioner_email;
+    const practitionerPhone = vars.best_phone || vars.phone || payload.to;
     const practiceAddress = vars.address || vars.practice_address;
     const practiceName = vars.practice_name;
     const practitionerType = vars.practitioner_type;
@@ -67,6 +81,7 @@ export async function POST(request: NextRequest) {
           startTime: appointmentTime,
           name: practitionerName,
           email: practitionerEmail,
+          phone: practitionerPhone,
           address: practiceAddress,
           practiceName: practiceName,
           practitionerType: practitionerType,
@@ -75,6 +90,9 @@ export async function POST(request: NextRequest) {
         });
         
         console.log("✅ Booking successful:", booking);
+        
+        // Update campaign call record with booking success
+        await updateCampaignCallRecord(payload, vars, true, booking.id);
         
         return NextResponse.json({
           status: "success",
@@ -85,7 +103,7 @@ export async function POST(request: NextRequest) {
       } catch (bookingError) {
         console.error("❌ Booking failed:", bookingError);
         
-        // Log the data for manual follow-up
+        // Log the data for manual follow-up (also updates campaign record)
         await logForManualFollowUp(payload, vars);
         
         return NextResponse.json({
@@ -99,6 +117,9 @@ export async function POST(request: NextRequest) {
       if (wantsDemo) {
         console.log("⚠️ Wants demo but missing required data");
         await logForManualFollowUp(payload, vars);
+      } else {
+        // Still update the campaign record for completed calls
+        await updateCampaignCallRecord(payload, vars, false);
       }
       
       return NextResponse.json({
@@ -121,6 +142,7 @@ async function bookCalComAppointment(data: {
   startTime: string;
   name: string;
   email: string;
+  phone?: string;
   address?: string;
   practiceName?: string;
   practitionerType?: string;
@@ -150,6 +172,7 @@ async function bookCalComAppointment(data: {
       call_id: data.callId,
       practice_name: data.practiceName,
       practitioner_type: data.practitionerType,
+      practitioner_phone: data.phone,
       products_interested: data.products,
     },
   };
@@ -182,10 +205,68 @@ async function logForManualFollowUp(payload: BlandWebhookPayload, vars: Record<s
     transcript_preview: payload.concatenated_transcript?.slice(0, 500),
   });
   
-  // You could also:
-  // - Send to Google Sheets
-  // - Send to Slack/email
-  // - Store in database
+  // Also update campaign call record
+  await updateCampaignCallRecord(payload, vars, false);
+}
+
+async function updateCampaignCallRecord(
+  payload: BlandWebhookPayload, 
+  vars: Record<string, string>,
+  bookingSuccess: boolean,
+  bookingId?: string
+) {
+  try {
+    const practitionerId = payload.metadata?.practitioner_id || vars.practitioner_id;
+    
+    if (!practitionerId && !payload.call_id) {
+      console.log("No practitioner_id or call_id found, skipping campaign record update");
+      return;
+    }
+
+    // Determine call status
+    let status = "completed";
+    if (payload.status === "failed" || payload.status === "no-answer") {
+      status = "failed";
+    } else if (bookingSuccess) {
+      status = "calendar_sent";
+    } else if (vars.wants_demo === "true" || vars.appointment_time) {
+      status = "booked";
+    }
+
+    const callRecord = {
+      practitioner_id: practitionerId,
+      practitioner_name: vars.practitioner_name || payload.metadata?.practice_name,
+      practitioner_type: vars.practitioner_type || payload.metadata?.practitioner_type,
+      phone: payload.to,
+      call_id: payload.call_id,
+      status,
+      call_started_at: payload.created_at,
+      call_ended_at: payload.ended_at,
+      duration_seconds: payload.call_length,
+      transcript: payload.concatenated_transcript,
+      summary: payload.analysis?.summary,
+      appointment_booked: status === "booked" || status === "calendar_sent",
+      appointment_time: vars.appointment_time,
+      calendar_invite_sent: bookingSuccess,
+      practitioner_email: vars.email || vars.practitioner_email,
+      booking_id: bookingId,
+    };
+
+    // Update the campaign call record via internal API
+    const response = await fetch(`${BASE_URL}/api/campaign/calls`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(callRecord),
+    });
+
+    if (!response.ok) {
+      console.error("Failed to update campaign call record:", await response.text());
+    } else {
+      console.log("📊 Campaign call record updated:", status);
+    }
+  } catch (error) {
+    console.error("Error updating campaign call record:", error);
+  }
 }
 
 // GET endpoint for testing

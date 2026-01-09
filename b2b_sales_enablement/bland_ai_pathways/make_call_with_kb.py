@@ -3,11 +3,16 @@
 SuperPatch Sales Call with Knowledge Base Reference
 
 Usage:
+    # Basic call (without personalization)
     python3 make_call_with_kb.py --phone "+15551234567" --pathway chiropractors
+    
+    # Personalized call with practice context
+    python3 make_call_with_kb.py --phone "+15551234567" --pathway chiropractors \
+        --practice-name "Toronto Wellness" --address "123 Main St, Toronto"
     
 Or import and use:
     from make_call_with_kb import make_superpatch_call
-    make_superpatch_call("+15551234567", "chiropractors")
+    make_superpatch_call("+15551234567", "chiropractors", practice_name="Toronto Wellness")
 """
 
 import argparse
@@ -37,7 +42,15 @@ def make_superpatch_call(phone_number: str, pathway_type: str, **kwargs) -> dict
     Args:
         phone_number: Phone number to call (E.164 format: +15551234567)
         pathway_type: One of: chiropractors, massage, naturopaths, integrative, functional, acupuncturists
-        **kwargs: Additional call parameters (voice, record, etc.)
+        **kwargs: Additional call parameters including practice context:
+            - practice_name: Name of the practice (for personalization)
+            - practice_address: Address (for scheduling confirmation)
+            - practice_city: City
+            - practice_province: Province
+            - google_rating: Google rating
+            - review_count: Number of reviews
+            - website: Practice website
+            - voice, record, max_duration, webhook, etc.
     
     Returns:
         API response as dict
@@ -45,20 +58,53 @@ def make_superpatch_call(phone_number: str, pathway_type: str, **kwargs) -> dict
     if pathway_type not in PATHWAYS:
         raise ValueError(f"Unknown pathway: {pathway_type}. Available: {list(PATHWAYS.keys())}")
     
+    # Build request_data with practice context for personalization
+    request_data = {}
+    practice_fields = [
+        'practice_name', 'practice_address', 'practice_city', 'practice_province',
+        'google_rating', 'review_count', 'website', 'practitioner_type'
+    ]
+    for field in practice_fields:
+        if field in kwargs:
+            request_data[field] = str(kwargs[field]) if kwargs[field] else ""
+    
+    # Flag if we have address (for scheduling confirmation flow)
+    if kwargs.get('practice_address'):
+        request_data['has_address'] = 'true'
+    
+    # Build first sentence with personalization if we have practice name
+    practice_name = kwargs.get('practice_name', '')
+    if practice_name:
+        first_sentence = f"Hi, this is Jennifer with SuperPatch. Am I speaking with someone from {practice_name}?"
+    else:
+        first_sentence = "Hi, this is Jennifer with SuperPatch."
+    
     payload = {
         "phone_number": phone_number,
         "pathway_id": PATHWAYS[pathway_type],
+        "pathway_version": 1,  # Use version 1 (where we deploy updates)
+        "knowledge_base": KB_ID,  # Connect KB for product/study information
         "voice": kwargs.get("voice", "78c8543e-e5fe-448e-8292-20a7b8c45247"),
-        "first_sentence": kwargs.get("first_sentence", "Hi, this is Jennifer with SuperPatch."),
+        "first_sentence": first_sentence,
         "wait_for_greeting": kwargs.get("wait_for_greeting", True),
         "record": kwargs.get("record", True),
         "max_duration": kwargs.get("max_duration", 15),  # 15 minutes max
-        # Note: tools and knowledge_base cannot be passed with pathway_id
-        # They should be configured in the pathway itself
+        "webhook": kwargs.get("webhook", "https://sales-enablement-six.vercel.app/api/webhooks/bland"),
     }
     
+    # Add request_data if we have practice context
+    if request_data:
+        payload["request_data"] = request_data
+    
+    # Add metadata for tracking
+    if practice_name or kwargs.get('metadata'):
+        payload["metadata"] = kwargs.get('metadata', {})
+        if practice_name:
+            payload["metadata"]["practice_name"] = practice_name
+            payload["metadata"]["source"] = "call_list"
+    
     # Add any extra parameters
-    for key in ["from_number", "webhook", "metadata", "transfer_phone_number"]:
+    for key in ["from_number", "transfer_phone_number"]:
         if key in kwargs:
             payload[key] = kwargs[key]
     
@@ -92,13 +138,29 @@ if __name__ == "__main__":
     parser.add_argument("--voice", default="78c8543e-e5fe-448e-8292-20a7b8c45247", help="Voice to use")
     parser.add_argument("--no-record", action="store_true", help="Don't record call")
     
+    # Practice context for personalization
+    parser.add_argument("--practice-name", help="Practice name (for personalized opening)")
+    parser.add_argument("--address", help="Practice address (for scheduling confirmation)")
+    parser.add_argument("--city", help="City")
+    parser.add_argument("--province", help="Province")
+    parser.add_argument("--rating", type=float, help="Google rating")
+    parser.add_argument("--reviews", type=int, help="Review count")
+    parser.add_argument("--website", help="Practice website")
+    
     args = parser.parse_args()
     
     result = make_superpatch_call(
         args.phone, 
         args.pathway,
         voice=args.voice,
-        record=not args.no_record
+        record=not args.no_record,
+        practice_name=args.practice_name,
+        practice_address=args.address,
+        practice_city=args.city,
+        practice_province=args.province,
+        google_rating=args.rating,
+        review_count=args.reviews,
+        website=args.website
     )
     
     print(json.dumps(result, indent=2))

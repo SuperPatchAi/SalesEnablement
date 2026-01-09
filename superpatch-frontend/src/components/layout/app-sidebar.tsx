@@ -1,9 +1,11 @@
 "use client";
 
 import * as React from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   User,
   Building,
@@ -19,7 +21,11 @@ import {
   Users,
   Briefcase,
   Phone,
+  PhoneCall,
+  CalendarCheck,
+  Activity,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 import {
   Sidebar,
@@ -83,12 +89,71 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   onMarketChange?: (market: MarketId) => void;
 }
 
+// Quick stats hook for sidebar
+function useQuickStats() {
+  const [stats, setStats] = useState({
+    activeCalls: 0,
+    queuedCalls: 0,
+    todayBooked: 0,
+  });
+
+  useEffect(() => {
+    // Load stats from localStorage
+    const loadStats = () => {
+      if (typeof window === "undefined") return;
+      
+      try {
+        const data = localStorage.getItem("superpatch_campaign_calls");
+        if (data) {
+          const records = JSON.parse(data);
+          const today = new Date().toDateString();
+          
+          let active = 0;
+          let queued = 0;
+          let booked = 0;
+          
+          Object.values(records).forEach((record: any) => {
+            if (record.status === "in_progress") active++;
+            if (record.status === "queued") queued++;
+            if (
+              (record.status === "booked" || record.status === "calendar_sent") &&
+              new Date(record.updated_at).toDateString() === today
+            ) {
+              booked++;
+            }
+          });
+          
+          setStats({ activeCalls: active, queuedCalls: queued, todayBooked: booked });
+        }
+      } catch (error) {
+        console.error("Failed to load sidebar stats:", error);
+      }
+    };
+
+    loadStats();
+    
+    // Poll for updates every 10 seconds
+    const interval = setInterval(loadStats, 10000);
+    
+    // Also listen for storage events
+    window.addEventListener("storage", loadStats);
+    
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("storage", loadStats);
+    };
+  }, []);
+
+  return stats;
+}
+
 export function AppSidebar({
   currentMarket,
   onMarketChange,
   ...props
 }: AppSidebarProps) {
   const pathname = usePathname();
+  const quickStats = useQuickStats();
 
   // Filter products by current market (for D2C)
   const marketProducts = products.filter((p) =>
@@ -172,8 +237,8 @@ export function AppSidebar({
       icon: Star,
     },
     {
-      title: "Voice Agent",
-      url: "/voice-agent",
+      title: "Call Center",
+      url: "/campaign",
       icon: Phone,
     },
   ];
@@ -283,6 +348,65 @@ export function AppSidebar({
                   );
                 }
 
+                // Regular menu item - with special handling for Call Center
+                if (item.title === "Call Center") {
+                  const hasActivity = quickStats.activeCalls > 0 || quickStats.queuedCalls > 0;
+                  
+                  return (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton
+                        asChild
+                        tooltip={`Call Center${hasActivity ? ` (${quickStats.activeCalls + quickStats.queuedCalls} pending)` : ""}`}
+                        isActive={isActive}
+                        className="relative"
+                      >
+                        <Link href={item.url} className="flex items-center gap-2">
+                          <div className="relative">
+                            <Icon className="h-4 w-4" />
+                            {/* Active call pulse indicator */}
+                            {quickStats.activeCalls > 0 && (
+                              <span className="absolute -top-1 -right-1 flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+                              </span>
+                            )}
+                          </div>
+                          <span className="flex-1">{item.title}</span>
+                          {/* Stats badges - hidden when collapsed */}
+                          <div className="flex items-center gap-1 group-data-[collapsible=icon]:hidden">
+                            {quickStats.activeCalls > 0 && (
+                              <Badge 
+                                variant="default" 
+                                className="h-5 px-1.5 text-[10px] bg-green-500 hover:bg-green-500"
+                              >
+                                <PhoneCall className="w-3 h-3 mr-0.5" />
+                                {quickStats.activeCalls}
+                              </Badge>
+                            )}
+                            {quickStats.queuedCalls > 0 && (
+                              <Badge 
+                                variant="secondary" 
+                                className="h-5 px-1.5 text-[10px]"
+                              >
+                                {quickStats.queuedCalls}
+                              </Badge>
+                            )}
+                            {quickStats.todayBooked > 0 && (
+                              <Badge 
+                                variant="outline" 
+                                className="h-5 px-1.5 text-[10px] border-purple-300 text-purple-600"
+                              >
+                                <CalendarCheck className="w-3 h-3 mr-0.5" />
+                                {quickStats.todayBooked}
+                              </Badge>
+                            )}
+                          </div>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                }
+
                 // Regular menu item
                 return (
                   <SidebarMenuItem key={item.title}>
@@ -305,6 +429,35 @@ export function AppSidebar({
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border">
+        {/* Quick Stats Summary - visible when expanded */}
+        {(quickStats.activeCalls > 0 || quickStats.queuedCalls > 0 || quickStats.todayBooked > 0) && (
+          <div className="px-3 py-2 group-data-[collapsible=icon]:hidden">
+            <div className="flex items-center gap-1.5 text-[10px] text-sidebar-foreground/60 mb-1.5">
+              <Activity className="w-3 h-3" />
+              <span>Today&apos;s Activity</span>
+            </div>
+            <div className="flex items-center gap-2">
+              {quickStats.activeCalls > 0 && (
+                <div className="flex items-center gap-1 text-xs">
+                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                  <span className="text-sidebar-foreground/80">{quickStats.activeCalls} active</span>
+                </div>
+              )}
+              {quickStats.queuedCalls > 0 && (
+                <div className="flex items-center gap-1 text-xs text-sidebar-foreground/60">
+                  <span>{quickStats.queuedCalls} queued</span>
+                </div>
+              )}
+              {quickStats.todayBooked > 0 && (
+                <div className="flex items-center gap-1 text-xs text-purple-400">
+                  <CalendarCheck className="w-3 h-3" />
+                  <span>{quickStats.todayBooked} booked</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+        
         <SidebarMenu>
           <SidebarMenuItem>
             <div className="flex items-center gap-2 px-2 py-2 text-xs text-sidebar-foreground/60 group-data-[collapsible=icon]:hidden">

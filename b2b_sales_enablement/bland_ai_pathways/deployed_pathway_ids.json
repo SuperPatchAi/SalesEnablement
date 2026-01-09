@@ -1,38 +1,49 @@
 {
-  "deployed_at": "2026-01-08T19:45:00Z",
+  "deployed_at": "2026-01-09T15:28:14Z",
   "api_version": "v1",
-  "fix_applied": "Removed position, globalNode, extractVars fields; used simple numeric IDs; capped text at 1500 chars",
-  "deployment_method": "Update BOTH main pathway AND version/1",
+  "changes_deployed": [
+    "Added new objection nodes (35-37) for practitioner-specific objections",
+    "Added global routing edges - every node can route to any objection or scheduling node",
+    "Added return edges from objection nodes back to main flow",
+    "Added ROUTING PRIORITY instructions to all prompts",
+    "Full word track content now in pathways"
+  ],
   "pathways": {
     "Chiropractors": {
       "pathway_id": "cf2233ef-7fb2-49ff-af29-0eee47204e9f",
-      "nodes": 17,
-      "edges": 22
-    },
-    "Acupuncturists": {
-      "pathway_id": "154f93f4-54a5-4900-92e8-0fa217508127",
-      "nodes": 17,
-      "edges": 22
-    },
-    "Functional_Medicine": {
-      "pathway_id": "236dbd85-c74d-4774-a7af-4b5812015c68",
-      "nodes": 17,
-      "edges": 22
-    },
-    "Integrative_Medicine": {
-      "pathway_id": "1c958dd7-e1ff-4f6d-b9a3-f80a369c26aa",
-      "nodes": 17,
-      "edges": 22
+      "nodes": 36,
+      "edges": 264,
+      "objection_nodes": 9
     },
     "Massage_Therapists": {
       "pathway_id": "d202aad7-bcb6-478c-a211-b00877545e05",
-      "nodes": 17,
-      "edges": 22
+      "nodes": 35,
+      "edges": 242,
+      "objection_nodes": 8
     },
     "Naturopaths": {
       "pathway_id": "1d07d635-147e-4f69-a4cd-c124b33b073d",
-      "nodes": 17,
-      "edges": 22
+      "nodes": 37,
+      "edges": 289,
+      "objection_nodes": 10
+    },
+    "Functional_Medicine": {
+      "pathway_id": "236dbd85-c74d-4774-a7af-4b5812015c68",
+      "nodes": 36,
+      "edges": 265,
+      "objection_nodes": 9
+    },
+    "Acupuncturists": {
+      "pathway_id": "154f93f4-54a5-4900-92e8-0fa217508127",
+      "nodes": 36,
+      "edges": 269,
+      "objection_nodes": 9
+    },
+    "Integrative_Medicine": {
+      "pathway_id": "1c958dd7-e1ff-4f6d-b9a3-f80a369c26aa",
+      "nodes": 35,
+      "edges": 241,
+      "objection_nodes": 8
     }
   }
 }

@@ -1,0 +1,427 @@
+/**
+ * Campaign Storage - localStorage wrapper for call record management
+ * 
+ * Stores call records, campaign state, and practitioner call history
+ */
+
+export type CallStatus = 
+  | 'not_called' 
+  | 'queued' 
+  | 'in_progress' 
+  | 'completed' 
+  | 'booked' 
+  | 'calendar_sent' 
+  | 'failed';
+
+export interface CampaignCallRecord {
+  practitioner_id: string;
+  practitioner_name: string;
+  practitioner_type: string;
+  phone: string;
+  address: string;
+  city: string;
+  province: string;
+  call_id?: string;
+  status: CallStatus;
+  call_started_at?: string;
+  call_ended_at?: string;
+  duration_seconds?: number;
+  transcript?: string;
+  summary?: string;
+  appointment_booked: boolean;
+  appointment_time?: string;
+  calendar_invite_sent: boolean;
+  practitioner_email?: string;
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CampaignStats {
+  total_calls: number;
+  completed: number;
+  booked: number;
+  failed: number;
+  in_progress: number;
+  queued: number;
+  not_called: number;
+  calendar_sent: number;
+  total_duration_seconds: number;
+  avg_duration_seconds: number;
+  success_rate: number;
+  booking_rate: number;
+}
+
+const STORAGE_KEY = 'superpatch_campaign_calls';
+const CAMPAIGN_STATE_KEY = 'superpatch_campaign_state';
+
+// Helper to check if we're in browser
+const isBrowser = typeof window !== 'undefined';
+
+/**
+ * Get all call records from storage
+ */
+export function getCallRecords(): Record<string, CampaignCallRecord> {
+  if (!isBrowser) return {};
+  
+  try {
+    const data = localStorage.getItem(STORAGE_KEY);
+    return data ? JSON.parse(data) : {};
+  } catch (error) {
+    console.error('Failed to load call records:', error);
+    return {};
+  }
+}
+
+/**
+ * Get a single call record by practitioner ID
+ */
+export function getCallRecord(practitionerId: string): CampaignCallRecord | null {
+  const records = getCallRecords();
+  return records[practitionerId] || null;
+}
+
+/**
+ * Get call record by Bland.ai call_id
+ */
+export function getCallRecordByCallId(callId: string): CampaignCallRecord | null {
+  const records = getCallRecords();
+  return Object.values(records).find(r => r.call_id === callId) || null;
+}
+
+/**
+ * Save or update a call record
+ */
+export function saveCallRecord(record: CampaignCallRecord): void {
+  if (!isBrowser) return;
+  
+  const records = getCallRecords();
+  records[record.practitioner_id] = {
+    ...record,
+    updated_at: new Date().toISOString(),
+  };
+  
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+  } catch (error) {
+    console.error('Failed to save call record:', error);
+  }
+}
+
+/**
+ * Create a new call record for a practitioner
+ */
+export function createCallRecord(practitioner: {
+  id: string;
+  name: string;
+  practitioner_type: string;
+  phone: string;
+  address: string;
+  city: string;
+  province: string;
+}): CampaignCallRecord {
+  const now = new Date().toISOString();
+  
+  const record: CampaignCallRecord = {
+    practitioner_id: practitioner.id,
+    practitioner_name: practitioner.name,
+    practitioner_type: practitioner.practitioner_type,
+    phone: practitioner.phone,
+    address: practitioner.address,
+    city: practitioner.city,
+    province: practitioner.province,
+    status: 'not_called',
+    appointment_booked: false,
+    calendar_invite_sent: false,
+    created_at: now,
+    updated_at: now,
+  };
+  
+  saveCallRecord(record);
+  return record;
+}
+
+/**
+ * Update call status
+ */
+export function updateCallStatus(
+  practitionerId: string, 
+  status: CallStatus, 
+  updates?: Partial<CampaignCallRecord>
+): CampaignCallRecord | null {
+  const record = getCallRecord(practitionerId);
+  if (!record) return null;
+  
+  const updated: CampaignCallRecord = {
+    ...record,
+    ...updates,
+    status,
+    updated_at: new Date().toISOString(),
+  };
+  
+  // Set timestamps based on status
+  if (status === 'in_progress' && !updated.call_started_at) {
+    updated.call_started_at = new Date().toISOString();
+  }
+  
+  if (['completed', 'booked', 'calendar_sent', 'failed'].includes(status) && !updated.call_ended_at) {
+    updated.call_ended_at = new Date().toISOString();
+  }
+  
+  saveCallRecord(updated);
+  return updated;
+}
+
+/**
+ * Update call record from webhook data
+ */
+export function updateFromWebhook(
+  callId: string,
+  webhookData: {
+    status?: string;
+    call_length?: number;
+    concatenated_transcript?: string;
+    variables?: Record<string, string | undefined>;
+    analysis?: {
+      summary?: string;
+    };
+  }
+): CampaignCallRecord | null {
+  const record = getCallRecordByCallId(callId);
+  if (!record) return null;
+  
+  const vars = webhookData.variables || {};
+  
+  // Determine status based on webhook data
+  let status: CallStatus = 'completed';
+  if (vars.wants_demo === 'true' || vars.appointment_time) {
+    status = 'booked';
+  }
+  if (vars.schedule_demo === 'true' && vars.practitioner_email) {
+    status = 'calendar_sent';
+  }
+  if (webhookData.status === 'failed' || webhookData.status === 'no-answer') {
+    status = 'failed';
+  }
+  
+  const updated: CampaignCallRecord = {
+    ...record,
+    status,
+    duration_seconds: webhookData.call_length,
+    transcript: webhookData.concatenated_transcript,
+    summary: webhookData.analysis?.summary,
+    appointment_booked: status === 'booked' || status === 'calendar_sent',
+    appointment_time: vars.appointment_time,
+    practitioner_email: vars.practitioner_email || vars.email,
+    calendar_invite_sent: status === 'calendar_sent',
+    call_ended_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  };
+  
+  saveCallRecord(updated);
+  return updated;
+}
+
+/**
+ * Get all records with a specific status
+ */
+export function getRecordsByStatus(status: CallStatus): CampaignCallRecord[] {
+  const records = getCallRecords();
+  return Object.values(records).filter(r => r.status === status);
+}
+
+/**
+ * Get campaign statistics
+ */
+export function getCampaignStats(): CampaignStats {
+  const records = Object.values(getCallRecords());
+  
+  const stats: CampaignStats = {
+    total_calls: records.length,
+    completed: 0,
+    booked: 0,
+    failed: 0,
+    in_progress: 0,
+    queued: 0,
+    not_called: 0,
+    calendar_sent: 0,
+    total_duration_seconds: 0,
+    avg_duration_seconds: 0,
+    success_rate: 0,
+    booking_rate: 0,
+  };
+  
+  let callsWithDuration = 0;
+  
+  for (const record of records) {
+    switch (record.status) {
+      case 'completed':
+        stats.completed++;
+        break;
+      case 'booked':
+        stats.booked++;
+        break;
+      case 'calendar_sent':
+        stats.calendar_sent++;
+        stats.booked++; // Also count as booked
+        break;
+      case 'failed':
+        stats.failed++;
+        break;
+      case 'in_progress':
+        stats.in_progress++;
+        break;
+      case 'queued':
+        stats.queued++;
+        break;
+      case 'not_called':
+        stats.not_called++;
+        break;
+    }
+    
+    if (record.duration_seconds) {
+      stats.total_duration_seconds += record.duration_seconds;
+      callsWithDuration++;
+    }
+  }
+  
+  const completedCalls = stats.completed + stats.booked + stats.calendar_sent;
+  const totalAttempted = completedCalls + stats.failed;
+  
+  stats.success_rate = totalAttempted > 0 ? (completedCalls / totalAttempted) * 100 : 0;
+  stats.booking_rate = completedCalls > 0 ? ((stats.booked + stats.calendar_sent) / completedCalls) * 100 : 0;
+  stats.avg_duration_seconds = callsWithDuration > 0 ? Math.round(stats.total_duration_seconds / callsWithDuration) : 0;
+  
+  return stats;
+}
+
+/**
+ * Clear all call records
+ */
+export function clearAllRecords(): void {
+  if (!isBrowser) return;
+  localStorage.removeItem(STORAGE_KEY);
+}
+
+/**
+ * Export records as JSON
+ */
+export function exportRecords(): string {
+  const records = getCallRecords();
+  const stats = getCampaignStats();
+  
+  return JSON.stringify({
+    exported_at: new Date().toISOString(),
+    stats,
+    records: Object.values(records),
+  }, null, 2);
+}
+
+/**
+ * Import records from JSON
+ */
+export function importRecords(json: string): number {
+  try {
+    const data = JSON.parse(json);
+    const records = Array.isArray(data.records) ? data.records : Object.values(data);
+    
+    let imported = 0;
+    for (const record of records) {
+      if (record.practitioner_id) {
+        saveCallRecord(record as CampaignCallRecord);
+        imported++;
+      }
+    }
+    
+    return imported;
+  } catch (error) {
+    console.error('Failed to import records:', error);
+    return 0;
+  }
+}
+
+// Campaign queue state management
+export interface CampaignQueueState {
+  is_running: boolean;
+  current_call_id?: string;
+  current_practitioner_id?: string;
+  queued_practitioner_ids: string[];
+  delay_between_calls_ms: number;
+  max_concurrent_calls: number;
+  started_at?: string;
+  paused_at?: string;
+}
+
+const DEFAULT_QUEUE_STATE: CampaignQueueState = {
+  is_running: false,
+  queued_practitioner_ids: [],
+  delay_between_calls_ms: 60000, // 1 minute
+  max_concurrent_calls: 1,
+};
+
+export function getCampaignQueueState(): CampaignQueueState {
+  if (!isBrowser) return DEFAULT_QUEUE_STATE;
+  
+  try {
+    const data = localStorage.getItem(CAMPAIGN_STATE_KEY);
+    return data ? { ...DEFAULT_QUEUE_STATE, ...JSON.parse(data) } : DEFAULT_QUEUE_STATE;
+  } catch {
+    return DEFAULT_QUEUE_STATE;
+  }
+}
+
+export function saveCampaignQueueState(state: Partial<CampaignQueueState>): void {
+  if (!isBrowser) return;
+  
+  const current = getCampaignQueueState();
+  const updated = { ...current, ...state };
+  
+  try {
+    localStorage.setItem(CAMPAIGN_STATE_KEY, JSON.stringify(updated));
+  } catch (error) {
+    console.error('Failed to save campaign state:', error);
+  }
+}
+
+export function addToQueue(practitionerIds: string[]): void {
+  const state = getCampaignQueueState();
+  const newIds = practitionerIds.filter(id => !state.queued_practitioner_ids.includes(id));
+  
+  saveCampaignQueueState({
+    queued_practitioner_ids: [...state.queued_practitioner_ids, ...newIds],
+  });
+  
+  // Update status for queued practitioners
+  for (const id of newIds) {
+    const record = getCallRecord(id);
+    if (record && record.status === 'not_called') {
+      updateCallStatus(id, 'queued');
+    }
+  }
+}
+
+export function removeFromQueue(practitionerId: string): void {
+  const state = getCampaignQueueState();
+  saveCampaignQueueState({
+    queued_practitioner_ids: state.queued_practitioner_ids.filter(id => id !== practitionerId),
+  });
+}
+
+export function clearQueue(): void {
+  const state = getCampaignQueueState();
+  
+  // Reset status for queued practitioners
+  for (const id of state.queued_practitioner_ids) {
+    const record = getCallRecord(id);
+    if (record && record.status === 'queued') {
+      updateCallStatus(id, 'not_called');
+    }
+  }
+  
+  saveCampaignQueueState({
+    is_running: false,
+    queued_practitioner_ids: [],
+    current_call_id: undefined,
+    current_practitioner_id: undefined,
+  });
+}

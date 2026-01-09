@@ -36,8 +36,8 @@ Build an end-to-end sales enablement platform that:
 │                                                                         │
 │   PHASE 3: Voice Agent Development                                      │
 │   ┌─────────────┐    ┌─────────────┐    ┌─────────────────┐            │
-│   │ Word Tracks │───▶│  Bland.ai   │───▶│  34-Node Convo  │            │
-│   │  + Context  │    │  Pathways   │    │     Flows       │            │
+│   │ Word Tracks │───▶│  Bland.ai   │───▶│  36-38 Nodes    │            │
+│   │  + Context  │    │  Pathways   │    │  365-423 Edges  │            │
 │   └─────────────┘    └─────────────┘    └─────────────────┘            │
 │                                                                         │
 │   PHASE 4: Scheduling Integration                                       │
@@ -86,6 +86,13 @@ SalesEnablement/
 │   │           ├── Integrative_Medicine_WordTrack.md
 │   │           └── Acupuncturists_WordTrack.md
 │   └── canadian_market/           # Canadian-specific content
+│       ├── PRACTITIONER_SCRAPER_README.md
+│       └── wordtracks/
+│
+├── 📊 Data Collection Tools
+│   └── scripts/
+│       ├── canadian_practitioner_scraper.py  # Google Maps API scraper
+│       └── test_canadian_practitioner_scraper.py
 │
 ├── 🤖 PHASE 3: Voice Agent Development
 │   └── b2b_sales_enablement/
@@ -241,53 +248,123 @@ Response: "Correct—it's a complementary technology. Think of it as a
 take-home bridge between sessions, not a replacement."
 ```
 
+### Practitioner-Specific Objection Nodes
+
+Each pathway includes 7 standard objection nodes PLUS practitioner-specific objections from the word tracks:
+
+| Practitioner | Additional Objection Nodes |
+|--------------|---------------------------|
+| **Chiropractors** | "No Time to Learn", "Salonpas Comparison" |
+| **Massage Therapists** | "No Space to Stock" |
+| **Acupuncturists** | "TCM Terms", "Not Real Acupuncture" |
+| **Naturopaths** | "Prefer Internal Supplements", "Root Cause Approach", "Too Simple" |
+| **Functional Medicine** | "Root Cause Focus", "Too Many Things" |
+| **Integrative Medicine** | "Too Simple" |
+
 ---
 
 ## 🤖 Phase 3: Voice Agent Development
 
 ### Bland.ai Conversational Pathways
 
-We programmatically generated **6 intelligent voice agents**—one for each practitioner type—with **34 nodes each**:
+We programmatically generated **6 intelligent voice agents**—one for each practitioner type—with **36-38 nodes** and **365-423 edges** enabling full dynamic routing:
 
 ```
-Conversation Flow (34 Nodes):
+Conversation Flow (36-38 Nodes with Global Routing):
 ┌─────────────┐
 │ Introduction │ ──▶ "Hi, this is Jennifer with SuperPatch..."
 └─────┬───────┘
-      │
-      ▼
-┌─────────────┐
-│  Discovery  │ ──▶ 5 practitioner-specific questions
-│  Questions  │
-└─────┬───────┘
-      │
-      ▼
-┌─────────────┐
-│  Product    │ ──▶ Freedom, REM, Peace, Liberty, Boost presentations
-│ Presentations│
-└─────┬───────┘
-      │
-      ▼
-┌─────────────┐
-│  Objection  │ ──▶ 7 individual objection handlers
-│  Handling   │
-└─────┬───────┘
-      │
-      ▼
-┌─────────────┐
-│  Business   │ ──▶ Wholesale, Affiliate, Hybrid models
-│   Model     │
-└─────┬───────┘
-      │
-      ▼
-┌─────────────┐
-│  Scheduling │ ──▶ Cal.com integration for in-person visits
-└─────┬───────┘
+      │ ←──────────────────────────────────────────────────┐
+      ▼                                                     │
+┌─────────────┐    ┌──────────────────────────────────┐    │
+│  Discovery  │◀──▶│  GLOBAL ROUTING (any node can    │    │
+│  Questions  │    │  jump to any other node)         │    │
+└─────┬───────┘    └──────────────────────────────────┘    │
+      │                        │                           │
+      ▼                        ▼                           │
+┌─────────────┐    ┌─────────────────┐                    │
+│  Product    │◀──▶│  Objection      │──────────────────▶│
+│ Presentations│    │  Handling (9)   │  (return edges)   │
+└─────┬───────┘    └─────────────────┘                    │
+      │                                                    │
+      ▼                                                    │
+┌─────────────┐    ┌─────────────────┐                    │
+│  Business   │◀──▶│  Scheduling     │                    │
+│   Model     │    │  (Cal.com)      │                    │
+└─────┬───────┘    └─────────────────┘                    │
+      │                   │                                │
+      ▼                   ▼                                │
+┌─────────────┐    ┌─────────────────┐                    │
+│ Close/Order │    │  Send Info Only │────────────────────┘
+└─────┬───────┘    └─────────────────┘
       │
       ▼
 ┌─────────────┐
 │  End Call   │ ──▶ 5 ending variations (sale, callback, etc.)
 └─────────────┘
+```
+
+### Node Structure Per Pathway
+
+| Category | Nodes | Purpose |
+|----------|-------|---------|
+| **Introduction** | 2 | Opening + Company intro |
+| **Discovery** | 5 | Practice, patients, challenges, current products, ideal solution |
+| **Products** | 5 | Freedom, REM, Peace, Liberty, Product Overview |
+| **Objections** | 9 | 7 standard + practitioner-specific objections |
+| **Business Models** | 4 | Options, Wholesale, Affiliate, Hybrid |
+| **Closing** | 2 | Place Order, Set Up Affiliate |
+| **Scheduling** | 5 | Check Availability, Appointments, Callbacks |
+| **End Calls** | 3 | Sale Made, Affiliate Set Up, Graceful Exit |
+| **Other** | 2 | Offer Sample, Send Info Only |
+
+### Global Routing Architecture
+
+Every pathway includes **full bidirectional routing** enabling Jennifer to:
+
+1. **Jump to ANY node** when triggered by keywords
+2. **Return to the main flow** after handling objections
+3. **Skip directly to scheduling** when prospect is ready
+4. **Route to specific products** when asked about pain, sleep, stress, etc.
+
+```
+Edge Counts Per Pathway:
+┌────────────────────────┬───────┬───────┐
+│ Practitioner           │ Nodes │ Edges │
+├────────────────────────┼───────┼───────┤
+│ Chiropractors          │  37   │  393  │
+│ Massage Therapists     │  36   │  366  │
+│ Naturopaths            │  38   │  423  │
+│ Functional Medicine    │  37   │  394  │
+│ Integrative Medicine   │  36   │  365  │
+│ Acupuncturists         │  37   │  398  │
+└────────────────────────┴───────┴───────┘
+```
+
+### Routing Priority System
+
+Each node includes a **ROUTING PRIORITY** section that instructs Jennifer to immediately route based on triggers:
+
+```markdown
+## ROUTING PRIORITY - READ THIS FIRST
+When the prospect says ANY of the following, IMMEDIATELY route:
+
+**PRODUCT TRIGGERS**:
+- "Tell me about pain relief" → Route to Present: Freedom Patch
+- "What about sleep?" → Route to Present: REM Patch
+- "stress" / "anxiety" → Route to Present: Peace Patch
+
+**OBJECTION TRIGGERS**:
+- "I need proof" / "research" → Route to Objection: Need Research
+- "It's expensive" → Route to Objection: Price Concern
+
+**BUSINESS MODEL TRIGGERS**:
+- "How do I order?" → Route to Business Model Options
+- "Tell me about affiliate" → Route to Business Model: Affiliate
+
+**SCHEDULING TRIGGERS**:
+- "Can we schedule" → Route to Check Availability
+- "Just send me info" → Route to Send Info Only
 ```
 
 ### Agent Personality: Jennifer
@@ -304,6 +381,26 @@ Tone Guidelines:
 - Self-deprecating humor okay
 - Neighborly ("no worries, take your time!")
 - Down-to-earth and empathetic
+```
+
+### Knowledge Base Integration
+
+Jennifer has access to a comprehensive knowledge base (`superpatch_knowledge_base.txt`) containing:
+
+- **Product Details**: All 13 SuperPatch products with specifications
+- **Clinical Evidence**: RESTORE, HARMONI, and other studies
+- **Business Models**: Wholesale pricing, affiliate commissions, hybrid options
+- **Company Information**: Founded date, certifications, manufacturing
+- **FAQ Responses**: Common questions and accurate answers
+
+```python
+# Knowledge base is connected via KB_ID in call payload
+payload = {
+    "phone_number": phone,
+    "pathway_id": pathway_id,
+    "knowledge_base": "KB-xxxxx",  # Connected!
+    ...
+}
 ```
 
 ### Context Injection
@@ -378,16 +475,33 @@ For local testing, use ngrok: `ngrok http 3000`
 
 ### Variables Extracted
 
-The pathway nodes extract these variables during the conversation:
+The pathway nodes use `extractVars` to capture key information during the conversation:
 
-| Variable | Purpose |
-|----------|---------|
-| `practitioner_name` | Contact name for booking |
-| `email` | Email for calendar invite |
-| `appointment_time` | Preferred date/time |
-| `address` | Practice address for in-person visit |
-| `practice_name` | Business name |
-| `products_interested` | Which patches to bring samples of |
+| Variable | Node(s) Captured | Purpose |
+|----------|------------------|---------|
+| `practitioner_name` | Introduction, Discovery | Contact name for booking |
+| `practice_name` | Introduction, Discovery | Business name |
+| `practitioner_email` | Scheduling nodes, Send Info | Email for calendar invite |
+| `best_phone` | Scheduling nodes | Confirmed callback number |
+| `appointment_time` | Scheduling nodes | Preferred date/time |
+| `practice_address` | Scheduling nodes | Practice address for in-person visit |
+| `products_interested` | Scheduling nodes | Which patches to bring samples of |
+| `wants_demo` | Schedule Appointment | Flag for demo request |
+
+### Scheduling Flow
+
+The scheduling nodes explicitly collect all required booking information:
+
+```
+Check Availability
+    ↓ "What day works best?"
+    ↓ "And what email should I send the invite to?"
+    ↓ "Is [phone] the best number to reach you?"
+    ↓
+Schedule Appointment ──→ End Call: Follow-Up Scheduled
+    ↓
+    └──→ Cal.com booking via webhook
+```
 
 ### Legacy: Direct Tool Integration
 
@@ -554,8 +668,9 @@ npm run dev
 | Videos Analyzed | 44 |
 | Framework Extractions | 5,357 lines |
 | Word Track Documents | 6 (1,500+ lines each) |
-| Conversation Nodes | 204 (34 per pathway × 6) |
-| Unique Objection Responses | 42+ |
+| Conversation Nodes | 221 (36-38 per pathway × 6) |
+| Conversation Edges | 2,339 total (365-423 per pathway) |
+| Unique Objection Responses | 54+ |
 | Discovery Questions | 90+ |
 
 ### Voice Agent Capabilities
@@ -563,8 +678,14 @@ npm run dev
 - ✅ Natural conversation flow
 - ✅ Practitioner-specific language
 - ✅ Real-time objection handling
-- ✅ Calendar integration
-- ✅ Appointment booking
+- ✅ **Global routing** - jump to any node instantly
+- ✅ **Return routing** - flow back after handling objections
+- ✅ **Product routing** - jump to specific product when asked
+- ✅ **Routing priority** - explicit triggers in every prompt
+- ✅ Calendar integration (Cal.com)
+- ✅ Appointment booking with email/phone capture
+- ✅ Knowledge base connected
+- ✅ Send Info Only option for email-only requests
 - ✅ Google Sheets logging
 
 ---
@@ -588,10 +709,215 @@ npm run dev
 | `gemini_video_analyzer.py` | Analyze YouTube videos for sales techniques |
 | `bland_ai_pathway_generator.py` | Generate conversation flows from word tracks |
 | `update_pathways_with_context.py` | Inject practitioner-specific content |
-| `expanded_pathway_generator.py` | Create 34-node detailed pathways |
+| `expanded_pathway_generator.py` | Create detailed pathways |
 | `deploy_pathways.py` | Deploy pathways to Bland.ai API |
+| `deploy_updated_pathways.py` | Deploy contextual pathways with full routing |
 | `bland_cli.py` | CLI for making calls, checking status, analyzing |
+| `make_call_with_kb.py` | Make calls with Knowledge Base connected |
 | `restore_with_edge_labels.py` | Redeploy pathways with proper routing |
+
+---
+
+## 🇨🇦 Canadian Practitioner Data Collection
+
+A Google Maps Places API scraper for collecting wellness practitioner leads across Canada.
+
+### Market Size (Total Addressable Market)
+
+| Practitioner Type | Est. Count | Key Provinces |
+|-------------------|------------|---------------|
+| **Massage Therapists** | 23,000+ | Ontario, BC |
+| **Chiropractors** | ~9,000 | Ontario, Quebec, BC |
+| **Acupuncturists** | ~4,000 | BC, Ontario, Quebec |
+| **Integrative Medicine** | ~2,500 | Urban centers |
+| **Functional Medicine** | ~1,500 | Toronto, Vancouver |
+| **Naturopaths** | ~800 | BC, Ontario |
+| **TOTAL** | **~40,800** | |
+
+*Sources: Canadian Chiropractic Association, CRMTA, Provincial regulatory bodies*
+
+### Scraper ROI
+
+| Metric | Value |
+|--------|-------|
+| **API Cost** | ~$60-80 USD |
+| **Expected captures** | 25,000-32,000 leads |
+| **Cost per lead** | < $0.01 |
+| **Alternative (lead list purchase)** | $2,500-$12,500 |
+
+### Scraper Coverage
+
+Collects business data for 6 practitioner types across 69+ Canadian cities:
+
+| Practitioner Type | Search Variations |
+|------------------|-------------------|
+| Acupuncturists | acupuncturist |
+| Chiropractors | chiropractor |
+| Functional Medicine | functional medicine doctor/practitioner |
+| Integrative Medicine | integrative medicine doctor/practitioner |
+| Massage Therapists | massage therapist, RMT |
+| Naturopaths | naturopath, naturopathic doctor |
+
+### Data Collected Per Practitioner
+
+- Business name, address, phone number
+- Website URL
+- Google rating and review count
+- Geographic coordinates
+- Business status (operational/closed)
+- Direct Google Maps link
+
+### Usage
+
+```bash
+# Set up environment
+python3 -m venv .venv
+source .venv/bin/activate
+pip install requests
+
+# Set API key
+export GOOGLE_MAPS_API_KEY="your_key_here"
+
+# Run the scraper (full Canada ~$70)
+python scripts/canadian_practitioner_scraper.py
+
+# Run for specific provinces only (~$15-20)
+python scripts/canadian_practitioner_scraper.py --provinces "Ontario" "British Columbia"
+
+# Run for specific practitioner types (~$5-10)
+python scripts/canadian_practitioner_scraper.py --types "chiropractor" "massage therapist"
+
+# Test run (~$2-4)
+python scripts/canadian_practitioner_scraper.py --provinces "Ontario" --types "chiropractor" --max-pages 2
+```
+
+### Output
+
+Results are saved to `canadian_practitioners/`:
+- `all_practitioners_latest.csv` - Complete dataset
+- `all_practitioners_latest.json` - JSON format
+- Optional: `by_type/` and `by_province/` breakdowns
+
+See `canadian_market/PRACTITIONER_SCRAPER_README.md` for full documentation.
+
+---
+
+## 📞 Campaign Calling with Personalization
+
+### How It Works
+
+When making calls from the scraped practitioner list, Jennifer receives **context about each practice** via Bland.ai's `request_data` feature. This allows her to:
+
+1. **Address the practice by name**: "Am I speaking with someone from Toronto Wellness Clinic?"
+2. **Reference their reputation**: "I noticed you have great reviews..."
+3. **Confirm address for scheduling** (instead of asking for it): "I have your address as 123 Main St - is that correct?"
+4. **Only ask for email** (since we have everything else)
+
+### Data Flow
+
+```
+┌─────────────────────┐
+│  Scraped CSV/JSON   │  (name, address, phone, rating, reviews)
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│ make_campaign_calls │  Loads data, formats phone numbers
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐    ┌─────────────────┐
+│   Bland.ai API      │───▶│  request_data:  │
+│   /v1/calls         │    │  - practice_name│
+└─────────────────────┘    │  - address      │
+                           │  - city         │
+                           │  - rating       │
+                           │  - review_count │
+                           └─────────────────┘
+                                    │
+                                    ▼
+                           ┌─────────────────┐
+                           │ Jennifer uses   │
+                           │ {{practice_name}}│
+                           │ in her scripts  │
+                           └─────────────────┘
+```
+
+### Running a Campaign
+
+```bash
+cd b2b_sales_enablement/bland_ai_pathways
+
+# Dry run - see what would be called
+python3 make_campaign_calls.py \
+    --csv ../../canadian_practitioners/all_practitioners_latest.csv \
+    --dry-run \
+    --limit 10
+
+# Call chiropractors in Ontario with 4+ stars
+python3 make_campaign_calls.py \
+    --csv ../../canadian_practitioners/all_practitioners_latest.csv \
+    --filter-type chiropractor \
+    --filter-province Ontario \
+    --min-rating 4.0 \
+    --limit 20
+
+# Single personalized call
+python3 make_campaign_calls.py \
+    --phone "+16475551234" \
+    --practice-name "Toronto Wellness Clinic" \
+    --type chiropractor \
+    --address "123 Main St, Toronto, ON" \
+    --rating 4.8 \
+    --reviews 127
+```
+
+### Variables Available in Pathway Prompts
+
+| Variable | Source | Example |
+|----------|--------|---------|
+| `{{practice_name}}` | Scraped data | "Toronto Wellness Clinic" |
+| `{{practice_address}}` | Scraped data | "123 Main St, Toronto, ON" |
+| `{{practice_city}}` | Scraped data | "Toronto" |
+| `{{practice_province}}` | Scraped data | "Ontario" |
+| `{{google_rating}}` | Scraped data | "4.8" |
+| `{{review_count}}` | Scraped data | "127" |
+| `{{website}}` | Scraped data | "https://example.com" |
+| `{{to}}` | Bland.ai built-in | Phone number called |
+
+### Scheduling Flow (with pre-filled data)
+
+Since we already have the address from the scraped data:
+
+```
+Jennifer: "I'd love to set up a quick visit. I have your address as 
+           123 Main St, Toronto - is that still correct?"
+           
+Prospect: "Yes, that's right."
+
+Jennifer: "Perfect. And what email should I send the calendar invite to?"
+
+[Only need: Email + Preferred Time]
+```
+
+### Campaign Results
+
+Each campaign run saves results to `campaign_results_TIMESTAMP.json`:
+
+```json
+{
+  "total": 20,
+  "successful": 18,
+  "failed": 2,
+  "calls": [
+    {
+      "practice": "Toronto Wellness Clinic",
+      "phone": "+16475551234",
+      "result": {"call_id": "...", "status": "queued"}
+    }
+  ]
+}
+```
 
 ---
 
@@ -606,11 +932,15 @@ npm run dev
 ### Challenges Overcome
 1. **Bland.ai UI Compatibility**: Stripped problematic fields from payloads
 2. **Static Text Toggle**: Ensured prompts weren't read verbatim
-3. **Knowledge Base Integration**: Embedded facts in prompts instead of separate nodes
+3. **Knowledge Base Integration**: Connected KB via call payload + embedded facts in prompts
 4. **Cal.com v1 vs v2 API**: Navigated endpoint differences
 5. **Tools + Pathways Conflict**: Bland.ai doesn't allow `tools` with `pathway_id`—solved with webhooks
 6. **Edge Labels for Routing**: Discovered correct edge format for conversation routing
 7. **Version Management**: Must update both pathway AND version 1 for UI visibility
+8. **Dynamic Routing**: Agent wasn't routing to objection/scheduling nodes—solved with 300+ global routing edges
+9. **Routing Priority**: Added explicit trigger instructions to every node prompt
+10. **Email/Phone Capture**: Scheduling nodes weren't collecting booking info—added extractVars and explicit prompts
+11. **Product Routing**: Added edges to/between product presentation nodes for KB-style lookups
 
 ---
 
@@ -620,6 +950,15 @@ npm run dev
 - [x] Voice Agent Dashboard with call management
 - [x] Webhook-based Cal.com booking integration
 - [x] CLI tool for Bland.ai API interactions
+- [x] Global routing (any node → any node)
+- [x] Routing priority triggers in all prompts
+- [x] Practitioner-specific objection nodes
+- [x] Email and phone capture for scheduling
+- [x] Knowledge base integration
+- [x] Send Info Only node for email-only requests
+- [x] Product-specific routing (ask about pain → Freedom Patch)
+- [x] Return routing from objections to main flow
+- [x] Canadian practitioner data collection tool (Google Maps API)
 
 ### Planned
 - [ ] Add more practitioner types (Physical Therapists, Athletic Trainers)
@@ -630,6 +969,7 @@ npm run dev
 - [ ] Add multilingual support
 - [ ] Real-time call monitoring dashboard
 - [ ] Automated follow-up email sequences
+- [ ] Call outcome tracking and conversion metrics
 
 ---
 
@@ -645,4 +985,4 @@ Built with AI assistance for SuperPatch sales enablement.
 
 ---
 
-*Last Updated: January 2026*
+*Last Updated: January 9, 2026*
