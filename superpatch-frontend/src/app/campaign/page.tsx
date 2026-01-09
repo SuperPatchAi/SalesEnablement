@@ -18,7 +18,7 @@ import {
   Search, Play, Pause, Square,
   Clock, Loader2, Download, RefreshCw,
   ListChecks, BarChart3, Phone, Zap,
-  PanelLeftClose, PanelLeft, Filter, Kanban
+  PanelLeftClose, PanelLeft, Filter, Kanban, MapPin
 } from "lucide-react";
 import {
   CampaignCallRecord,
@@ -45,6 +45,13 @@ import { CommandSearch, useCommandSearch, CommandSearchTrigger } from "@/compone
 import { callNotifications } from "@/components/campaign/call-notifications";
 import { getBatchCaller, Practitioner, BatchCallerEvent } from "@/lib/batch-caller";
 import { PractitionerDetailDrawer } from "@/components/campaign/practitioner-detail-drawer";
+import dynamic from "next/dynamic";
+
+// Dynamically import map to avoid SSR issues with Leaflet
+const PractitionerMap = dynamic(
+  () => import("@/components/campaign/practitioner-map").then(mod => mod.PractitionerMap),
+  { ssr: false, loading: () => <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-muted-foreground" /></div> }
+);
 
 // Enrichment data from Firecrawl scraping
 interface EnrichmentPractitioner {
@@ -1049,6 +1056,10 @@ function CampaignPageContent() {
                 <Zap className="w-4 h-4" />
                 Quick Call
               </TabsTrigger>
+              <TabsTrigger value="map" className="gap-2">
+                <MapPin className="w-4 h-4" />
+                Map
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -1658,6 +1669,35 @@ function CampaignPageContent() {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        {/* Map Tab */}
+        <TabsContent value="map" className="flex-1 m-0 overflow-hidden">
+          <PractitionerMap 
+            practitioners={filteredPractitioners.map(p => ({
+              id: p.id,
+              name: p.name,
+              address: p.address,
+              city: p.city,
+              province: p.province,
+              phone: p.phone || undefined,
+              practitioner_type: p.practitioner_type,
+              latitude: p.latitude,
+              longitude: p.longitude,
+              rating: p.rating ? Number(p.rating) : undefined,
+              review_count: p.review_count ? Number(p.review_count) : undefined,
+            }))}
+            callRecords={callRecords}
+            selectedProvince={province}
+            selectedCity={city}
+            onPractitionerClick={(practitioner) => {
+              const full = practitioners.find(p => p.id === practitioner.id);
+              if (full) {
+                setSelectedPractitioner(full);
+                setDetailDrawerOpen(true);
+              }
+            }}
+          />
         </TabsContent>
         </Tabs>
       </div>
