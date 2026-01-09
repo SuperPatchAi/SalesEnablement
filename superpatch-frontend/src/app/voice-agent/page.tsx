@@ -75,8 +75,8 @@ export default function VoiceAgentPage() {
         phone_number: phoneNumber,
         pathway_id: pathway.id,
         voice: VOICE_ID,
-        first_sentence: "Hi, this is Jennifer with SuperPatch.",
-        wait_for_greeting: true,
+        // Don't use first_sentence with pathways - the pathway's start node handles it
+        wait_for_greeting: false,
         record: true,
         max_duration: 15,
         webhook: WEBHOOK_URL,
