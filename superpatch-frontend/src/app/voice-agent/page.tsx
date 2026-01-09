@@ -74,6 +74,7 @@ export default function VoiceAgentPage() {
       const callPayload: Record<string, any> = {
         phone_number: phoneNumber,
         pathway_id: pathway.id,
+        pathway_version: 1,  // Explicitly use version 1 (where we deploy)
         voice: VOICE_ID,
         // Don't use first_sentence with pathways - the pathway's start node handles it
         wait_for_greeting: false,
