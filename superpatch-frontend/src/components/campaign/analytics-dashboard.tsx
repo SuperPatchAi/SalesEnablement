@@ -30,6 +30,7 @@ import {
 } from "recharts";
 import { CampaignCallRecord, CallStatus, CampaignStats } from "@/lib/campaign-storage";
 import { TrendingUp, TrendingDown, Phone, Calendar, Clock, Target, Users, MapPin } from "lucide-react";
+import { GaugeChart, RadialProgressChart, StatCard } from "./enhanced-charts";
 
 interface AnalyticsDashboardProps {
   records: Record<string, CampaignCallRecord>;
@@ -260,6 +261,44 @@ export function AnalyticsDashboard({ records, stats }: AnalyticsDashboardProps) 
                 per connected call
               </div>
             </CardContent>
+          </Card>
+        </div>
+
+        {/* Enhanced Visual Metrics */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <GaugeChart
+            value={stats.total_calls > 0 ? Math.round(((stats.completed + stats.booked) / stats.total_calls) * 100) : 0}
+            max={100}
+            title="Connection Rate"
+            subtitle="of all calls"
+            color="hsl(142, 76%, 36%)"
+            size="sm"
+          />
+          <GaugeChart
+            value={Math.round(stats.booking_rate)}
+            max={100}
+            title="Booking Rate"
+            subtitle="of connected calls"
+            color="hsl(262, 83%, 58%)"
+            size="sm"
+          />
+          <Card className="flex flex-col items-center justify-center p-4">
+            <RadialProgressChart
+              data={[
+                { name: "Completed", value: stats.total_calls > 0 ? Math.round((stats.completed / stats.total_calls) * 100) : 0, fill: "hsl(142, 76%, 36%)" },
+              ]}
+              centerLabel="Completed"
+              centerValue={stats.completed}
+            />
+          </Card>
+          <Card className="flex flex-col items-center justify-center p-4">
+            <RadialProgressChart
+              data={[
+                { name: "Booked", value: stats.completed > 0 ? Math.round((stats.booked / stats.completed) * 100) : 0, fill: "hsl(262, 83%, 58%)" },
+              ]}
+              centerLabel="Booked"
+              centerValue={stats.booked}
+            />
           </Card>
         </div>
 

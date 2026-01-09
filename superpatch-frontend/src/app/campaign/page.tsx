@@ -18,7 +18,7 @@ import {
   Search, Play, Pause, Square,
   Clock, Loader2, Download, RefreshCw,
   ListChecks, BarChart3, Phone, Zap,
-  PanelLeftClose, PanelLeft, Filter, Kanban, MapPin
+  PanelLeftClose, PanelLeft, Filter, Kanban, MapPin, History
 } from "lucide-react";
 import {
   CampaignCallRecord,
@@ -45,6 +45,21 @@ import { CommandSearch, useCommandSearch, CommandSearchTrigger } from "@/compone
 import { callNotifications } from "@/components/campaign/call-notifications";
 import { getBatchCaller, Practitioner, BatchCallerEvent } from "@/lib/batch-caller";
 import { PractitionerDetailDrawer } from "@/components/campaign/practitioner-detail-drawer";
+import { CallTimeline } from "@/components/campaign/call-timeline";
+import { 
+  NoPractitionersFound, 
+  NoCallsYet, 
+  NoAnalyticsData, 
+  NoPipelineData, 
+  NoMapData,
+  QueueEmpty 
+} from "@/components/campaign/empty-states";
+import { 
+  GaugeChart, 
+  RadialProgressChart, 
+  StatCard, 
+  KPIGrid 
+} from "@/components/campaign/enhanced-charts";
 import dynamic from "next/dynamic";
 
 // Dynamically import map to avoid SSR issues with Leaflet
@@ -1008,9 +1023,9 @@ function CampaignPageContent() {
                       )}
 
                       {queuedCalls.length === 0 && activeCalls.length === 0 && recentCalls.length === 0 && (
-                        <p className="text-center text-muted-foreground py-8">
-                          No calls in queue. Select practitioners and start a campaign.
-                        </p>
+                        <QueueEmpty 
+                          onAddPractitioners={() => setActiveTab("practitioners")}
+                        />
                       )}
                     </div>
                   </TabsContent>
@@ -1099,6 +1114,10 @@ function CampaignPageContent() {
               <TabsTrigger value="map" className="gap-2">
                 <MapPin className="w-4 h-4" />
                 Map
+              </TabsTrigger>
+              <TabsTrigger value="timeline" className="gap-2">
+                <History className="w-4 h-4" />
+                Timeline
               </TabsTrigger>
             </TabsList>
           </div>
@@ -1301,6 +1320,20 @@ function CampaignPageContent() {
             <div className="flex-1 flex items-center justify-center">
               <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
             </div>
+          ) : filteredPractitioners.length === 0 ? (
+            <NoPractitionersFound 
+              onClearFilters={() => {
+                setProvince("");
+                setCity("");
+                setPractitionerType("");
+                setSearch("");
+                setMinRating("");
+                setHasEnrichment(false);
+                setHasEmails(false);
+                setHasTeamMembers(false);
+                setIsMultilingual(false);
+              }}
+            />
           ) : (
             <div ref={parentRef} className="flex-1 overflow-auto">
               <div
@@ -1524,22 +1557,34 @@ function CampaignPageContent() {
 
         {/* Pipeline Tab */}
         <TabsContent value="pipeline" className="flex-1 m-0 overflow-hidden">
-          <PipelineBoard
-            records={callRecords}
-            onCardClick={(record) => {
-              // Find the practitioner data and open detail drawer
-              const practitioner = practitioners.find(p => p.id === record.practitioner_id);
-              if (practitioner) {
-                setSelectedPractitioner(practitioner);
-                setDetailDrawerOpen(true);
-              }
-            }}
-          />
+          {Object.keys(callRecords).length === 0 ? (
+            <NoPipelineData 
+              onAddToQueue={() => setActiveTab("practitioners")}
+            />
+          ) : (
+            <PipelineBoard
+              records={callRecords}
+              onCardClick={(record) => {
+                // Find the practitioner data and open detail drawer
+                const practitioner = practitioners.find(p => p.id === record.practitioner_id);
+                if (practitioner) {
+                  setSelectedPractitioner(practitioner);
+                  setDetailDrawerOpen(true);
+                }
+              }}
+            />
+          )}
         </TabsContent>
 
         {/* Analytics Tab */}
         <TabsContent value="analytics" className="flex-1 m-0 overflow-hidden">
-          <AnalyticsDashboard records={callRecords} stats={stats} />
+          {Object.keys(callRecords).length === 0 ? (
+            <NoAnalyticsData 
+              onMakeCalls={() => setActiveTab("practitioners")}
+            />
+          ) : (
+            <AnalyticsDashboard records={callRecords} stats={stats} />
+          )}
         </TabsContent>
 
         {/* Quick Call Tab */}
@@ -1747,32 +1792,58 @@ function CampaignPageContent() {
           
           {/* Map Component */}
           <div className="flex-1">
-            <PractitionerMap 
-              practitioners={filteredPractitioners.map(p => ({
-                id: p.id,
-                name: p.name,
-                address: p.address,
-                city: p.city,
-                province: p.province,
-                phone: p.phone || undefined,
-                practitioner_type: p.practitioner_type,
-                latitude: p.latitude,
-                longitude: p.longitude,
-                rating: p.rating ? Number(p.rating) : undefined,
-                review_count: p.review_count ? Number(p.review_count) : undefined,
-              }))}
-              callRecords={callRecords}
-              selectedProvince={province}
-              selectedCity={city}
-              onPractitionerClick={(practitioner) => {
-                const full = practitioners.find(p => p.id === practitioner.id);
-                if (full) {
-                  setSelectedPractitioner(full);
+            {filteredPractitioners.filter(p => p.latitude && p.longitude).length === 0 ? (
+              <NoMapData 
+                onLoadPractitioners={() => loadAllPractitioners()}
+              />
+            ) : (
+              <PractitionerMap 
+                practitioners={filteredPractitioners.map(p => ({
+                  id: p.id,
+                  name: p.name,
+                  address: p.address,
+                  city: p.city,
+                  province: p.province,
+                  phone: p.phone || undefined,
+                  practitioner_type: p.practitioner_type,
+                  latitude: p.latitude,
+                  longitude: p.longitude,
+                  rating: p.rating ? Number(p.rating) : undefined,
+                  review_count: p.review_count ? Number(p.review_count) : undefined,
+                }))}
+                callRecords={callRecords}
+                selectedProvince={province}
+                selectedCity={city}
+                onPractitionerClick={(practitioner) => {
+                  const full = practitioners.find(p => p.id === practitioner.id);
+                  if (full) {
+                    setSelectedPractitioner(full);
+                    setDetailDrawerOpen(true);
+                  }
+                }}
+              />
+            )}
+          </div>
+        </TabsContent>
+
+        {/* Timeline Tab */}
+        <TabsContent value="timeline" className="flex-1 m-0 overflow-hidden">
+          {Object.keys(callRecords).length === 0 ? (
+            <NoCallsYet 
+              onStartCampaign={() => setActiveTab("practitioners")}
+            />
+          ) : (
+            <CallTimeline 
+              records={callRecords}
+              onEventClick={(record) => {
+                const practitioner = practitioners.find(p => p.id === record.practitioner_id);
+                if (practitioner) {
+                  setSelectedPractitioner(practitioner);
                   setDetailDrawerOpen(true);
                 }
               }}
             />
-          </div>
+          )}
         </TabsContent>
         </Tabs>
       </div>
