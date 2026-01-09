@@ -365,9 +365,16 @@ The Next.js app includes a webhook endpoint at `/api/webhooks/bland`:
 
 ### Setting Up Webhook Booking
 
-1. **Deploy the app** (Vercel, etc.) to get a public URL
-2. **Enter webhook URL** when making calls: `https://your-domain.com/api/webhooks/bland`
-3. **Alternative**: Use ngrok for local testing: `ngrok http 3000`
+**Production Webhook URL**:
+```
+https://sales-enablement-six.vercel.app/api/webhooks/bland
+```
+
+1. Go to the [Voice Agent Dashboard](https://sales-enablement-six.vercel.app/voice-agent)
+2. Enter the webhook URL above
+3. Make a call - appointments will auto-book to Cal.com!
+
+For local testing, use ngrok: `ngrok http 3000`
 
 ### Variables Extracted
 
@@ -412,6 +419,8 @@ It only takes about 20-30 minutes. What day works best for you?"
 ---
 
 ## 🖥️ Frontend Application
+
+**Live URL**: https://sales-enablement-six.vercel.app/
 
 A Next.js sales enablement app for human sales reps AND voice agent management:
 
