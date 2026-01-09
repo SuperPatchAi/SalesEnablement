@@ -98,16 +98,28 @@ SalesEnablement/
 │
 ├── 📅 PHASE 4: Scheduling Integration
 │   └── b2b_sales_enablement/
-│       └── appointment_webhook/
-│           ├── server.py              # Flask webhook server
-│           ├── sheets_integration.py  # Google Sheets logging
-│           └── update_bland_tools_calcom.py
+│       ├── appointment_webhook/
+│       │   ├── server.py              # Flask webhook server (legacy)
+│       │   ├── sheets_integration.py  # Google Sheets logging
+│       │   └── update_bland_tools_calcom.py
+│       └── bland_ai_pathways/
+│           ├── bland_cli.py           # CLI for Bland.ai API
+│           ├── make_call_with_kb.py   # Python call script
+│           └── make_call_with_kb.sh   # Bash call script
 │
 └── 🖥️ Frontend Application
-    └── superpatch-frontend/       # Next.js sales enablement app
-        ├── src/app/               # Pages by market (D2C, B2B, Canadian)
-        ├── src/data/wordtracks/   # TypeScript word track data
-        └── public/                # Patch images & roadmaps
+    └── superpatch-frontend/           # Next.js sales enablement app
+        ├── src/app/
+        │   ├── [market]/              # Pages by market (D2C, B2B, Canadian)
+        │   ├── voice-agent/           # Voice Agent Dashboard
+        │   └── api/
+        │       ├── bland/             # Bland.ai API proxy routes
+        │       │   ├── calls/route.ts
+        │       │   └── calls/[id]/...
+        │       └── webhooks/
+        │           └── bland/route.ts # Cal.com booking webhook
+        ├── src/data/wordtracks/       # TypeScript word track data
+        └── public/                    # Patch images & roadmaps
 ```
 
 ---
@@ -318,27 +330,68 @@ PRACTITIONER_CONTEXTS = {
 
 ## 📅 Phase 4: Scheduling Integration
 
-### Cal.com + Google Sheets Integration
+### Cal.com + Webhook Integration
 
-The voice agent can:
-1. **Check availability** via Cal.com API
-2. **Book appointments** for in-person sales rep visits
-3. **Log all data** to Google Sheets for tracking
+> **Important**: Bland.ai's API does not allow `tools` to be passed when using `pathway_id`. 
+> Therefore, Cal.com booking is handled via **webhooks** instead of inline tools.
 
-### Custom Bland.ai Tools
+The voice agent workflow:
+1. **Collects scheduling info** during the call (name, email, preferred time, address)
+2. **Sends webhook** on call completion with extracted variables
+3. **Webhook books** to Cal.com automatically
+4. **Logs data** to Google Sheets for tracking
+
+### Webhook Architecture
+
+```
+┌─────────────┐    ┌──────────┐    ┌─────────────┐    ┌─────────┐
+│ Voice Agent │───▶│ Bland.ai │───▶│ Your Webhook│───▶│ Cal.com │
+│   (Call)    │    │ (Pathway)│    │ (Book Appt) │    │(Calendar)│
+└─────────────┘    └──────────┘    └─────────────┘    └─────────┘
+```
+
+### Webhook Endpoint
+
+The Next.js app includes a webhook endpoint at `/api/webhooks/bland`:
+
+```typescript
+// superpatch-frontend/src/app/api/webhooks/bland/route.ts
+
+// Receives call completion data from Bland.ai
+// Extracts: name, email, preferred_time, address, practice_name
+// Books: Cal.com appointment for in-person sales visit
+// Fallback: Logs for manual follow-up if booking fails
+```
+
+### Setting Up Webhook Booking
+
+1. **Deploy the app** (Vercel, etc.) to get a public URL
+2. **Enter webhook URL** when making calls: `https://your-domain.com/api/webhooks/bland`
+3. **Alternative**: Use ngrok for local testing: `ngrok http 3000`
+
+### Variables Extracted
+
+The pathway nodes extract these variables during the conversation:
+
+| Variable | Purpose |
+|----------|---------|
+| `practitioner_name` | Contact name for booking |
+| `email` | Email for calendar invite |
+| `appointment_time` | Preferred date/time |
+| `address` | Practice address for in-person visit |
+| `practice_name` | Business name |
+| `products_interested` | Which patches to bring samples of |
+
+### Legacy: Direct Tool Integration
+
+For reference, two Cal.com tools are also configured in Bland.ai (for non-pathway calls):
 
 ```python
-# Two custom tools configured in Bland.ai:
-
-Tool 1: check_cal_availability
+Tool 1: check_cal_availability (TL-79a3c232-ca51-4244-b5d2-21f4e70fd872)
 - Endpoint: Cal.com /v1/slots
-- Returns: Available time slots
-- Agent says: "Let me check my calendar..."
 
-Tool 2: book_cal_appointment
+Tool 2: book_cal_appointment (TL-bbaa7f38-1b6a-4f27-ad27-18fb7c6e1526)
 - Endpoint: Cal.com /v1/bookings
-- Collects: Name, email, phone, practice address
-- Creates: Calendar event with video link
 ```
 
 ### What Gets Booked
@@ -360,9 +413,11 @@ It only takes about 20-30 minutes. What day works best for you?"
 
 ## 🖥️ Frontend Application
 
-A Next.js sales enablement app for human sales reps:
+A Next.js sales enablement app for human sales reps AND voice agent management:
 
 ### Features
+
+#### Sales Enablement
 - **Market Switcher**: D2C, B2B, Canadian views
 - **Word Track Viewer**: Full scripts with copy functionality
 - **Product Pages**: Each patch with clinical evidence
@@ -370,10 +425,31 @@ A Next.js sales enablement app for human sales reps:
 - **Roadmap Visualizations**: Sales journey infographics
 - **Practice Mode**: Objection handling flashcards
 
+#### Voice Agent Dashboard (`/voice-agent`)
+- **Make Calls**: Select practitioner pathway, enter phone number
+- **Webhook Integration**: Enter webhook URL for Cal.com booking
+- **Call History**: View all calls with status and duration
+- **Call Details**: Full transcript, analysis, recording links
+- **Call Management**: Stop active calls, analyze completed calls
+
+### API Routes
+
+The app includes API routes that proxy Bland.ai requests (avoiding CORS issues):
+
+| Route | Method | Purpose |
+|-------|--------|---------|
+| `/api/bland/calls` | POST | Initiate a new call |
+| `/api/bland/calls` | GET | List all calls |
+| `/api/bland/calls/[id]` | GET | Get call details |
+| `/api/bland/calls/[id]/analyze` | POST | Analyze a call |
+| `/api/bland/calls/[id]/stop` | POST | Stop an active call |
+| `/api/webhooks/bland` | POST | Receive call completion webhooks |
+
 ### Tech Stack
 - Next.js 14 + TypeScript
 - Tailwind CSS + shadcn/ui
 - Responsive design
+- Server-side API proxying
 
 ---
 
@@ -381,8 +457,49 @@ A Next.js sales enablement app for human sales reps:
 
 ### Running the Voice Agent
 
+#### Option 1: Voice Agent Dashboard (Recommended)
+
+The Next.js app includes a full-featured Voice Agent Dashboard:
+
 ```bash
-# Make a test call
+cd superpatch-frontend
+npm run dev
+# Open http://localhost:3000/voice-agent
+```
+
+Features:
+- **Make Calls**: Select pathway, enter phone number, start call
+- **Call History**: View all calls with status, duration, recordings
+- **Call Details**: Full transcript, analysis, metadata
+- **Webhook Support**: Enter webhook URL for Cal.com booking
+
+#### Option 2: Command Line Interface
+
+```bash
+cd b2b_sales_enablement/bland_ai_pathways
+
+# Make a call
+python bland_cli.py call +1234567890 --pathway cf2233ef-7fb2-49ff-af29-0eee47204e9f
+
+# Check call status
+python bland_cli.py status <call_id>
+
+# List recent calls
+python bland_cli.py list
+
+# Get call recording
+python bland_cli.py recording <call_id>
+
+# Analyze call
+python bland_cli.py analyze <call_id> --goal "Did they book a demo?"
+
+# Stop an active call
+python bland_cli.py stop <call_id>
+```
+
+#### Option 3: Direct API Call
+
+```bash
 curl -X POST "https://api.bland.ai/v1/calls" \
   -H "authorization: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
@@ -394,6 +511,8 @@ curl -X POST "https://api.bland.ai/v1/calls" \
     "wait_for_greeting": true
   }'
 ```
+
+> ⚠️ **Note**: When using `pathway_id`, you cannot include `tools` in the call payload. Tools must be configured via webhooks.
 
 ### Available Pathway IDs
 
@@ -462,6 +581,8 @@ npm run dev
 | `update_pathways_with_context.py` | Inject practitioner-specific content |
 | `expanded_pathway_generator.py` | Create 34-node detailed pathways |
 | `deploy_pathways.py` | Deploy pathways to Bland.ai API |
+| `bland_cli.py` | CLI for making calls, checking status, analyzing |
+| `restore_with_edge_labels.py` | Redeploy pathways with proper routing |
 
 ---
 
@@ -478,17 +599,28 @@ npm run dev
 2. **Static Text Toggle**: Ensured prompts weren't read verbatim
 3. **Knowledge Base Integration**: Embedded facts in prompts instead of separate nodes
 4. **Cal.com v1 vs v2 API**: Navigated endpoint differences
+5. **Tools + Pathways Conflict**: Bland.ai doesn't allow `tools` with `pathway_id`—solved with webhooks
+6. **Edge Labels for Routing**: Discovered correct edge format for conversation routing
+7. **Version Management**: Must update both pathway AND version 1 for UI visibility
 
 ---
 
 ## 🔮 Future Enhancements
 
+### Completed ✅
+- [x] Voice Agent Dashboard with call management
+- [x] Webhook-based Cal.com booking integration
+- [x] CLI tool for Bland.ai API interactions
+
+### Planned
 - [ ] Add more practitioner types (Physical Therapists, Athletic Trainers)
-- [ ] Implement call analytics dashboard
+- [ ] Enhanced call analytics and reporting
 - [ ] Add SMS follow-up sequences
-- [ ] Integrate with CRM systems
+- [ ] Integrate with CRM systems (HubSpot, Salesforce)
 - [ ] A/B test different opening scripts
 - [ ] Add multilingual support
+- [ ] Real-time call monitoring dashboard
+- [ ] Automated follow-up email sequences
 
 ---
 
