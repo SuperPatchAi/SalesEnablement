@@ -185,6 +185,10 @@ function CampaignPageContent() {
   const [quickCallNotFound, setQuickCallNotFound] = useState(false);
   const [quickCallMaking, setQuickCallMaking] = useState(false);
 
+  // Map state - track if all practitioners are loaded
+  const [allPractitionersLoaded, setAllPractitionersLoaded] = useState(false);
+  const [loadingAllPractitioners, setLoadingAllPractitioners] = useState(false);
+
   // Refs
   const parentRef = useRef<HTMLDivElement>(null);
   const batchCaller = useRef(getBatchCaller());
@@ -248,6 +252,7 @@ function CampaignPageContent() {
   // Load practitioners when filters change
   useEffect(() => {
     loadPractitioners(1);
+    setAllPractitionersLoaded(false); // Reset when filters change
   }, [loadPractitioners]);
 
   // Debounced search handled by loadPractitioners dependency
@@ -298,6 +303,41 @@ function CampaignPageContent() {
   function loadMorePractitioners() {
     if (pagination.hasMore && !loadingMore) {
       loadPractitioners(pagination.page + 1);
+    }
+  }
+
+  // Load all practitioners for map view
+  async function loadAllPractitioners() {
+    if (allPractitionersLoaded || loadingAllPractitioners) return;
+    
+    setLoadingAllPractitioners(true);
+    
+    try {
+      const params = new URLSearchParams();
+      params.set('limit', '50000'); // Load all at once
+      
+      // Apply same filters
+      if (province) params.set('province', province);
+      if (city) params.set('city', city);
+      if (practitionerType) params.set('type', practitionerType);
+      if (search) params.set('search', search);
+      if (minRating) params.set('minRating', minRating);
+      if (hasPhoneOnly) params.set('hasPhone', 'true');
+      
+      const response = await fetch(`/api/practitioners?${params}`);
+      const data: PaginatedResponse = await response.json();
+      
+      setPractitioners(data.practitioners);
+      setPagination({
+        page: 1,
+        total: data.pagination.total,
+        hasMore: false,
+      });
+      setAllPractitionersLoaded(true);
+    } catch (error) {
+      console.error('Failed to load all practitioners:', error);
+    } finally {
+      setLoadingAllPractitioners(false);
     }
   }
 
@@ -1672,32 +1712,67 @@ function CampaignPageContent() {
         </TabsContent>
 
         {/* Map Tab */}
-        <TabsContent value="map" className="flex-1 m-0 overflow-hidden">
-          <PractitionerMap 
-            practitioners={filteredPractitioners.map(p => ({
-              id: p.id,
-              name: p.name,
-              address: p.address,
-              city: p.city,
-              province: p.province,
-              phone: p.phone || undefined,
-              practitioner_type: p.practitioner_type,
-              latitude: p.latitude,
-              longitude: p.longitude,
-              rating: p.rating ? Number(p.rating) : undefined,
-              review_count: p.review_count ? Number(p.review_count) : undefined,
-            }))}
-            callRecords={callRecords}
-            selectedProvince={province}
-            selectedCity={city}
-            onPractitionerClick={(practitioner) => {
-              const full = practitioners.find(p => p.id === practitioner.id);
-              if (full) {
-                setSelectedPractitioner(full);
-                setDetailDrawerOpen(true);
-              }
-            }}
-          />
+        <TabsContent value="map" className="flex-1 m-0 overflow-hidden flex flex-col">
+          {/* Load All Banner */}
+          {!allPractitionersLoaded && pagination.hasMore && (
+            <div className="px-6 py-3 bg-amber-50 dark:bg-amber-950/30 border-b border-amber-200 dark:border-amber-800 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm text-amber-800 dark:text-amber-200">
+                <MapPin className="w-4 h-4" />
+                <span>
+                  Showing <strong>{filteredPractitioners.length}</strong> of <strong>{pagination.total.toLocaleString()}</strong> practitioners. 
+                  Load all to see the complete map.
+                </span>
+              </div>
+              <Button 
+                size="sm" 
+                variant="outline"
+                onClick={loadAllPractitioners}
+                disabled={loadingAllPractitioners}
+                className="border-amber-300 hover:bg-amber-100 dark:border-amber-700 dark:hover:bg-amber-900/50"
+              >
+                {loadingAllPractitioners ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Loading...
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-4 h-4 mr-2" />
+                    Load All ({pagination.total.toLocaleString()})
+                  </>
+                )}
+              </Button>
+            </div>
+          )}
+          
+          {/* Map Component */}
+          <div className="flex-1">
+            <PractitionerMap 
+              practitioners={filteredPractitioners.map(p => ({
+                id: p.id,
+                name: p.name,
+                address: p.address,
+                city: p.city,
+                province: p.province,
+                phone: p.phone || undefined,
+                practitioner_type: p.practitioner_type,
+                latitude: p.latitude,
+                longitude: p.longitude,
+                rating: p.rating ? Number(p.rating) : undefined,
+                review_count: p.review_count ? Number(p.review_count) : undefined,
+              }))}
+              callRecords={callRecords}
+              selectedProvince={province}
+              selectedCity={city}
+              onPractitionerClick={(practitioner) => {
+                const full = practitioners.find(p => p.id === practitioner.id);
+                if (full) {
+                  setSelectedPractitioner(full);
+                  setDetailDrawerOpen(true);
+                }
+              }}
+            />
+          </div>
         </TabsContent>
         </Tabs>
       </div>
