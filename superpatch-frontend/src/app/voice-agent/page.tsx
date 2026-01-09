@@ -15,6 +15,7 @@ const KB_ID = "b671527d-0c2d-4a21-9586-033dad3b0255";
 const CHECK_AVAILABILITY_TOOL = "TL-79a3c232-ca51-4244-b5d2-21f4e70fd872";
 const BOOK_APPOINTMENT_TOOL = "TL-bbaa7f38-1b6a-4f27-ad27-18fb7c6e1526";
 const VOICE_ID = "78c8543e-e5fe-448e-8292-20a7b8c45247";
+const WEBHOOK_URL = "https://sales-enablement-six.vercel.app/api/webhooks/bland";
 
 const PATHWAYS = {
   chiropractors: { id: "cf2233ef-7fb2-49ff-af29-0eee47204e9f", name: "Chiropractors", emoji: "🦴" },
@@ -46,7 +47,6 @@ export default function VoiceAgentPage() {
   const [selectedPathway, setSelectedPathway] = useState("chiropractors");
   const [analysis, setAnalysis] = useState<any>(null);
   const [analyzing, setAnalyzing] = useState(false);
-  const [webhookUrl, setWebhookUrl] = useState("");
 
   // Load calls on mount
   useEffect(() => {
@@ -79,12 +79,8 @@ export default function VoiceAgentPage() {
         wait_for_greeting: true,
         record: true,
         max_duration: 15,
+        webhook: WEBHOOK_URL,
       };
-      
-      // Add webhook if provided (for Cal.com booking integration)
-      if (webhookUrl) {
-        callPayload.webhook = webhookUrl;
-      }
       
       const response = await fetch("/api/bland/calls", {
         method: "POST",
@@ -242,19 +238,6 @@ export default function VoiceAgentPage() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="webhook">Webhook URL (for Cal.com booking)</Label>
-                <Input
-                  id="webhook"
-                  placeholder="https://your-domain.com/api/webhooks/bland"
-                  value={webhookUrl}
-                  onChange={(e) => setWebhookUrl(e.target.value)}
-                />
-                <p className="text-xs text-muted-foreground">
-                  Optional: Webhook receives call data for automatic Cal.com booking
-                </p>
-              </div>
-
               <div className="flex items-center gap-4 pt-4">
                 <Button onClick={makeCall} disabled={making || !phoneNumber} size="lg">
                   {making ? (
@@ -278,23 +261,9 @@ export default function VoiceAgentPage() {
                   <li>✅ Recording enabled</li>
                   <li>✅ Jennifer voice (professional, warm)</li>
                   <li>✅ Max duration: 15 minutes</li>
-                  <li>{webhookUrl ? "✅" : "⚪"} Webhook for Cal.com booking</li>
+                  <li>✅ Cal.com booking via webhook</li>
                 </ul>
               </div>
-              
-              {!webhookUrl && (
-                <div className="mt-4 p-4 border border-yellow-500/50 bg-yellow-500/10 rounded-lg">
-                  <h4 className="font-medium text-yellow-600 mb-2">📅 Cal.com Booking Setup</h4>
-                  <p className="text-sm text-muted-foreground mb-2">
-                    To enable automatic booking, you need a public webhook URL.
-                  </p>
-                  <ol className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
-                    <li>Deploy this app to Vercel/similar</li>
-                    <li>Use the webhook URL: <code className="bg-muted px-1 rounded">https://your-domain/api/webhooks/bland</code></li>
-                    <li>Or use ngrok to expose localhost for testing</li>
-                  </ol>
-                </div>
-              )}
             </CardContent>
           </Card>
         </TabsContent>
