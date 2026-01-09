@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const API_KEY = "org_8e83a10723c7ccbfa480b0d015920dddd0ae52af444a7691546e51f371dda789b471c727a9faf577ca2769";
+const API_KEY = process.env.BLAND_API_KEY || "";
 const BASE_URL = "https://api.bland.ai/v1";
 
 // GET /api/bland/calls/[id] - Get call details

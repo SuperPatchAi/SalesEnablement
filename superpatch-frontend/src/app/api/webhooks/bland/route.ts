@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const CAL_API_KEY = "cal_live_67740b479d1bb9437a5b9b0ea81455d7";
-const CAL_EVENT_TYPE_ID = 4352394;
+const CAL_API_KEY = process.env.CAL_API_KEY || "";
+const CAL_EVENT_TYPE_ID = Number(process.env.CAL_EVENT_TYPE_ID) || 4352394;
 
 interface BlandWebhookPayload {
   call_id: string;
