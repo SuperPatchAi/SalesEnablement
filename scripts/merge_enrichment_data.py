@@ -106,8 +106,34 @@ def merge_enrichment_data(
                     stats['with_services'] += 1
         else:
             # Use base version (no enrichment)
-            practitioner = base_p
+            practitioner = base_p.copy()
             stats['not_enriched'] += 1
+        
+        # Ensure latitude/longitude are numbers (not strings)
+        if practitioner.get('latitude'):
+            try:
+                practitioner['latitude'] = float(practitioner['latitude'])
+            except (ValueError, TypeError):
+                practitioner['latitude'] = None
+        if practitioner.get('longitude'):
+            try:
+                practitioner['longitude'] = float(practitioner['longitude'])
+            except (ValueError, TypeError):
+                practitioner['longitude'] = None
+        
+        # Ensure rating is a number
+        if practitioner.get('rating'):
+            try:
+                practitioner['rating'] = float(practitioner['rating'])
+            except (ValueError, TypeError):
+                practitioner['rating'] = None
+        
+        # Ensure review_count is a number
+        if practitioner.get('review_count'):
+            try:
+                practitioner['review_count'] = int(practitioner['review_count'])
+            except (ValueError, TypeError):
+                practitioner['review_count'] = None
         
         merged.append(practitioner)
         stats['total'] += 1
