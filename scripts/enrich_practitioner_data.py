@@ -361,7 +361,8 @@ def enrich_practitioners(
     min_rating: float = 0,
     province_filter: Optional[str] = None,
     type_filter: Optional[str] = None,
-    resume: bool = True
+    resume: bool = True,
+    skip: int = 0
 ) -> list[dict]:
     """
     Main enrichment function - uses Scrape (1 credit) instead of Extract (24 credits)
@@ -389,6 +390,11 @@ def enrich_practitioners(
     # Only process those with websites
     filtered = [p for p in filtered if p.get('website')]
     logger.info(f"With websites: {len(filtered)}")
+    
+    # Apply skip (for resuming from previous runs)
+    if skip > 0:
+        filtered = filtered[skip:]
+        logger.info(f"After skipping first {skip}: {len(filtered)}")
     
     if limit:
         filtered = filtered[:limit]
@@ -557,6 +563,12 @@ def main():
         action="store_true",
         help="Don't resume from checkpoint, start fresh"
     )
+    parser.add_argument(
+        "--skip",
+        type=int,
+        default=0,
+        help="Skip the first N clinics (for resuming from a previous run)"
+    )
     
     args = parser.parse_args()
     
@@ -578,7 +590,8 @@ def main():
         min_rating=args.min_rating,
         province_filter=args.province,
         type_filter=args.type,
-        resume=not args.no_resume
+        resume=not args.no_resume,
+        skip=args.skip
     )
     
     return 0
