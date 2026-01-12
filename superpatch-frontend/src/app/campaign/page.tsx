@@ -423,14 +423,43 @@ function CampaignPageContent() {
             aValue = a.enrichment?.success ? 1 : 0;
             bValue = b.enrichment?.success ? 1 : 0;
             break;
+          case "lastCalled":
+            // Sort by last call date (most recent first when desc)
+            const aLastCall = callRecords[a.id]?.call_ended_at || callRecords[a.id]?.call_started_at || callRecords[a.id]?.updated_at;
+            const bLastCall = callRecords[b.id]?.call_ended_at || callRecords[b.id]?.call_started_at || callRecords[b.id]?.updated_at;
+            aValue = aLastCall ? new Date(aLastCall).getTime() : 0;
+            bValue = bLastCall ? new Date(bLastCall).getTime() : 0;
+            break;
+          case "callCount":
+            // Sort by call count
+            aValue = callRecords[a.id] ? 1 : 0;
+            bValue = callRecords[b.id] ? 1 : 0;
+            break;
+          case "duration":
+            // Sort by call duration
+            aValue = callRecords[a.id]?.duration_seconds || 0;
+            bValue = callRecords[b.id]?.duration_seconds || 0;
+            break;
+          case "voicemail":
+            // Sort by voicemail status (voicemail first when asc)
+            aValue = callRecords[a.id]?.status === 'voicemail' ? 1 : 0;
+            bValue = callRecords[b.id]?.status === 'voicemail' ? 1 : 0;
+            break;
+          case "appointment":
+            // Sort by appointment time (earliest first when asc)
+            const aAppt = callRecords[a.id]?.appointment_time;
+            const bAppt = callRecords[b.id]?.appointment_time;
+            aValue = aAppt ? new Date(aAppt).getTime() : 0;
+            bValue = bAppt ? new Date(bAppt).getTime() : 0;
+            break;
           case "status":
             // Get call status
             const aStatus = callRecords[a.id]?.status || "not_called";
             const bStatus = callRecords[b.id]?.status || "not_called";
-            // Define order: booked > calendar_sent > completed > in_progress > queued > failed > not_called
+            // Define order: booked > calendar_sent > completed > in_progress > queued > voicemail > failed > not_called
             const statusOrder: Record<string, number> = {
-              booked: 7, calendar_sent: 6, completed: 5, in_progress: 4, 
-              queued: 3, failed: 2, not_called: 1
+              booked: 8, calendar_sent: 7, completed: 6, in_progress: 5, 
+              queued: 4, voicemail: 3, failed: 2, not_called: 1
             };
             aValue = statusOrder[aStatus] || 0;
             bValue = statusOrder[bStatus] || 0;
@@ -506,6 +535,79 @@ function CampaignPageContent() {
   const getCallStatus = (practitionerId: string): CallStatus => {
     const record = callRecords[practitionerId];
     return record?.status || 'not_called';
+  };
+
+  // Get last call date for a practitioner
+  const getLastCallDate = (practitionerId: string): string | null => {
+    const record = callRecords[practitionerId];
+    return record?.call_ended_at || record?.call_started_at || record?.updated_at || null;
+  };
+
+  // Get call count for a practitioner
+  const getCallCount = (practitionerId: string): number => {
+    const record = callRecords[practitionerId];
+    return record ? 1 : 0; // Currently tracking single record per practitioner
+  };
+
+  // Get call duration for a practitioner
+  const getCallDuration = (practitionerId: string): number | null => {
+    const record = callRecords[practitionerId];
+    return record?.duration_seconds || null;
+  };
+
+  // Check if voicemail was left
+  const hasVoicemail = (practitionerId: string): boolean => {
+    const record = callRecords[practitionerId];
+    return record?.status === 'voicemail';
+  };
+
+  // Get appointment time for a practitioner
+  const getAppointmentTime = (practitionerId: string): string | null => {
+    const record = callRecords[practitionerId];
+    return record?.appointment_time || null;
+  };
+
+  // Get call summary for a practitioner
+  const getCallSummary = (practitionerId: string): string | null => {
+    const record = callRecords[practitionerId];
+    return record?.summary || null;
+  };
+
+  // Format relative time (e.g., "2h ago", "3d ago")
+  const formatRelativeTime = (dateString: string): string => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffMins < 1440) return `${Math.floor(diffMins / 60)}h ago`;
+    if (diffMins < 10080) return `${Math.floor(diffMins / 1440)}d ago`;
+    return date.toLocaleDateString();
+  };
+
+  // Format duration in mm:ss
+  const formatDuration = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  // Format appointment date/time compactly
+  const formatAppointment = (dateString: string): string => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const isToday = date.toDateString() === now.toDateString();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const isTomorrow = date.toDateString() === tomorrow.toDateString();
+    
+    const timeStr = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    
+    if (isToday) return `Today ${timeStr}`;
+    if (isTomorrow) return `Tomorrow ${timeStr}`;
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ` ${timeStr}`;
   };
 
   // Start campaign with selected practitioners
@@ -1309,6 +1411,54 @@ function CampaignPageContent() {
                 />
               </div>
             )}
+            {visibleColumns.find(c => c.id === "lastCalled") && (
+              <div className="w-[110px]">
+                <SortableHeader 
+                  column={columns.find(c => c.id === "lastCalled")!} 
+                  sortState={sortState} 
+                  onSort={handleSort} 
+                />
+              </div>
+            )}
+            {visibleColumns.find(c => c.id === "callCount") && (
+              <div className="w-[60px] text-center">
+                <SortableHeader 
+                  column={columns.find(c => c.id === "callCount")!} 
+                  sortState={sortState} 
+                  onSort={handleSort} 
+                />
+              </div>
+            )}
+            {visibleColumns.find(c => c.id === "duration") && (
+              <div className="w-[80px] text-center">
+                <SortableHeader 
+                  column={columns.find(c => c.id === "duration")!} 
+                  sortState={sortState} 
+                  onSort={handleSort} 
+                />
+              </div>
+            )}
+            {visibleColumns.find(c => c.id === "voicemail") && (
+              <div className="w-[50px] text-center">
+                <SortableHeader 
+                  column={columns.find(c => c.id === "voicemail")!} 
+                  sortState={sortState} 
+                  onSort={handleSort} 
+                />
+              </div>
+            )}
+            {visibleColumns.find(c => c.id === "appointment") && (
+              <div className="w-[120px]">
+                <SortableHeader 
+                  column={columns.find(c => c.id === "appointment")!} 
+                  sortState={sortState} 
+                  onSort={handleSort} 
+                />
+              </div>
+            )}
+            {visibleColumns.find(c => c.id === "summary") && (
+              <div className="w-[150px]">Summary</div>
+            )}
             {visibleColumns.find(c => c.id === "status") && (
               <div className="w-[100px] text-center">
                 <SortableHeader 
@@ -1463,6 +1613,59 @@ function CampaignPageContent() {
                           ) : (
                             <span className="text-xs text-muted-foreground">-</span>
                           )}
+                        </div>
+                      )}
+                      {/* Call data columns */}
+                      {visibleColumns.find(c => c.id === "lastCalled") && (
+                        <div className="w-[110px] text-xs text-muted-foreground">
+                          {getLastCallDate(practitioner.id) 
+                            ? formatRelativeTime(getLastCallDate(practitioner.id)!)
+                            : '-'}
+                        </div>
+                      )}
+                      {visibleColumns.find(c => c.id === "callCount") && (
+                        <div className="w-[60px] text-center">
+                          {getCallCount(practitioner.id) > 0 ? (
+                            <Badge variant="secondary" className="text-xs px-1.5">
+                              {getCallCount(practitioner.id)}
+                            </Badge>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">-</span>
+                          )}
+                        </div>
+                      )}
+                      {visibleColumns.find(c => c.id === "duration") && (
+                        <div className="w-[80px] text-center text-xs text-muted-foreground">
+                          {getCallDuration(practitioner.id) 
+                            ? formatDuration(getCallDuration(practitioner.id)!)
+                            : '-'}
+                        </div>
+                      )}
+                      {visibleColumns.find(c => c.id === "voicemail") && (
+                        <div className="w-[50px] text-center">
+                          {hasVoicemail(practitioner.id) && (
+                            <Badge variant="outline" className="bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 text-[10px] px-1">
+                              VM
+                            </Badge>
+                          )}
+                        </div>
+                      )}
+                      {visibleColumns.find(c => c.id === "appointment") && (
+                        <div className="w-[120px] text-xs">
+                          {getAppointmentTime(practitioner.id) ? (
+                            <span className="text-green-700 dark:text-green-400 font-medium">
+                              {formatAppointment(getAppointmentTime(practitioner.id)!)}
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground">-</span>
+                          )}
+                        </div>
+                      )}
+                      {visibleColumns.find(c => c.id === "summary") && (
+                        <div className="w-[150px] text-xs text-muted-foreground truncate" title={getCallSummary(practitioner.id) || ''}>
+                          {getCallSummary(practitioner.id) 
+                            ? getCallSummary(practitioner.id)!.substring(0, 30) + (getCallSummary(practitioner.id)!.length > 30 ? '...' : '')
+                            : '-'}
                         </div>
                       )}
                       {visibleColumns.find(c => c.id === "status") && (

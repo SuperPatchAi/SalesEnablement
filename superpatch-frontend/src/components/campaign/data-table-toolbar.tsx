@@ -50,6 +50,13 @@ export const DEFAULT_COLUMNS: ColumnDef[] = [
   { id: "reviews", label: "Reviews", visible: false, sortable: true, width: "w-[80px]" },
   { id: "phone", label: "Phone", visible: true, sortable: false, width: "w-[120px]" },
   { id: "enriched", label: "Enriched", visible: true, sortable: true, width: "w-[90px]" },
+  // Call data columns
+  { id: "lastCalled", label: "Last Called", visible: true, sortable: true, width: "w-[110px]" },
+  { id: "callCount", label: "Calls", visible: false, sortable: true, width: "w-[60px]" },
+  { id: "duration", label: "Duration", visible: false, sortable: true, width: "w-[80px]" },
+  { id: "voicemail", label: "VM", visible: true, sortable: true, width: "w-[50px]" },
+  { id: "appointment", label: "Appointment", visible: true, sortable: true, width: "w-[120px]" },
+  { id: "summary", label: "Summary", visible: false, sortable: false, width: "w-[150px]" },
   { id: "status", label: "Status", visible: true, sortable: true, width: "w-[100px]" },
 ];
 
