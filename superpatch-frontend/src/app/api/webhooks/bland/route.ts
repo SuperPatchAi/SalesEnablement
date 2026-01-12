@@ -359,8 +359,9 @@ async function bookCalComAppointment(data: {
         value: "inPerson",
         optionValue: data.address || "TBD",
       },
-      notes: notes,
     },
+    // Notes field for "Additional notes" system question
+    notes: notes,
     timeZone: "America/New_York",
     language: "en",
     metadata: {
@@ -370,6 +371,9 @@ async function bookCalComAppointment(data: {
       practitioner_type: data.practitionerType,
       practitioner_phone: data.phone,
       products_interested: data.products,
+      // Also store notes in metadata for backup
+      call_summary: data.summary,
+      full_context: notes,
     },
   };
   
