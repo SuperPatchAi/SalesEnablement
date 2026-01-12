@@ -105,6 +105,8 @@ interface BlandWebhookPayload {
 
 // POST /api/webhooks/bland - Handle Bland.ai call completion webhooks
 export async function POST(request: NextRequest) {
+  console.log("🔔 WEBHOOK RECEIVED - Starting processing...");
+  
   try {
     const payload: BlandWebhookPayload = await request.json();
     
@@ -113,9 +115,14 @@ export async function POST(request: NextRequest) {
       status: payload.status,
       to: payload.to,
       completed: payload.completed,
+      call_length: payload.call_length,
+      answered_by: payload.answered_by,
       variables: payload.variables,
       metadata: payload.metadata,
     });
+    
+    console.log("🔧 Supabase configured:", isSupabaseConfigured);
+    console.log("🔧 Supabase admin client:", !!supabaseAdmin);
     
     // Extract scheduling variables from the call
     const vars = payload.variables || {};
@@ -248,22 +255,32 @@ export async function POST(request: NextRequest) {
     // Try to update existing record by call_id first, then upsert
     let savedRecord = null;
     
+    console.log("💾 Attempting to save call record:", {
+      practitioner_id: callRecord.practitioner_id,
+      phone: callRecord.phone,
+      status: callRecord.status,
+      call_id: callRecord.call_id,
+    });
+    
     // First, try to update by call_id (in case call is already in progress)
     savedRecord = await serverUpdateByCallId(payload.call_id, callRecord);
+    console.log("💾 Update by call_id result:", savedRecord ? "success" : "no existing record");
     
     if (!savedRecord) {
       // If no existing record, upsert with practitioner_id
+      console.log("💾 Trying upsert with practitioner_id:", callRecord.practitioner_id);
       savedRecord = await serverUpsertCallRecord(callRecord);
+      console.log("💾 Upsert result:", savedRecord ? "success" : "failed");
     }
     
     if (savedRecord) {
-      console.log("📊 Call record saved to database:", {
+      console.log("✅ Call record saved to database:", {
         id: savedRecord.id,
         status: savedRecord.status,
         practitioner_id: savedRecord.practitioner_id,
       });
     } else {
-      console.warn("⚠️ Failed to save call record to database");
+      console.error("❌ Failed to save call record to database - check Supabase connection");
     }
     
     // Log for manual follow-up if demo requested but booking failed

@@ -193,7 +193,7 @@ export class BatchCaller {
       pathway_version: 1,
       knowledge_base: KB_ID,
       voice: VOICE_ID,
-      first_sentence: `Hi, this is Jennifer with SuperPatch. Am I speaking with someone from ${practitioner.name}?`,
+      // Don't use first_sentence with pathways - let the pathway handle the intro
       wait_for_greeting: true,
       record: true,
       max_duration: 15,
@@ -205,6 +205,10 @@ export class BatchCaller {
         practitioner_id: practitioner.id,
         practice_name: practitioner.name,
         practitioner_type: practitioner.practitioner_type,
+        // Include full address info for webhook processing
+        address: practitioner.address || '',
+        city: practitioner.city || '',
+        province: practitioner.province || '',
       },
     };
 

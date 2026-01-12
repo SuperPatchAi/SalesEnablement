@@ -371,17 +371,64 @@ export async function serverUpsertCallRecord(record: CallRecordInsert): Promise<
     return null;
   }
 
+  // Strategy: 
+  // 1. If we have a call_id, try to upsert by call_id (unique constraint)
+  // 2. If we have practitioner_id, try to upsert by practitioner_id
+  // 3. Otherwise, just insert a new record
+
+  // Try by call_id first (most reliable for webhooks)
+  if (record.call_id) {
+    console.log('📝 Upserting by call_id:', record.call_id);
+    const { data, error } = await client
+      .from('call_records')
+      .upsert(record as any, { 
+        onConflict: 'call_id',
+        ignoreDuplicates: false 
+      })
+      .select()
+      .single();
+
+    if (!error && data) {
+      return data as CallRecord;
+    }
+    
+    // If call_id upsert failed, log and continue
+    if (error) {
+      console.warn('call_id upsert failed, trying alternative:', error.message);
+    }
+  }
+
+  // If no call_id or upsert failed, try by practitioner_id
+  if (record.practitioner_id) {
+    console.log('📝 Upserting by practitioner_id:', record.practitioner_id);
+    const { data, error } = await client
+      .from('call_records')
+      .upsert(record as any, { 
+        onConflict: 'practitioner_id',
+        ignoreDuplicates: false 
+      })
+      .select()
+      .single();
+
+    if (!error && data) {
+      return data as CallRecord;
+    }
+    
+    if (error) {
+      console.warn('practitioner_id upsert failed, trying insert:', error.message);
+    }
+  }
+
+  // Last resort: just insert (for unknown callers or new records)
+  console.log('📝 Inserting new record (no unique key match)');
   const { data, error } = await client
     .from('call_records')
-    .upsert(record as any, { 
-      onConflict: 'practitioner_id',
-      ignoreDuplicates: false 
-    })
+    .insert(record as any)
     .select()
     .single();
 
   if (error) {
-    console.error('Failed to server upsert call record:', error);
+    console.error('Failed to insert call record:', error);
     return null;
   }
 

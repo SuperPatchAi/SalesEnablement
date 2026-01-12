@@ -770,6 +770,18 @@ function CampaignPageContent() {
         acupuncturist: "154f93f4-54a5-4900-92e8-0fa217508127",
       };
       
+      // Build request_data for pathway variable substitution
+      const requestData = {
+        practice_name: quickCallResult.name || 'your practice',
+        practice_address: quickCallResult.address || '',
+        practice_city: quickCallResult.city || '',
+        practice_province: quickCallResult.province || '',
+        google_rating: quickCallResult.rating?.toString() || '',
+        review_count: quickCallResult.review_count?.toString() || '',
+        website: quickCallResult.website || '',
+        practitioner_type: quickCallResult.practitioner_type || '',
+      };
+
       const callPayload = {
         phone_number: formattedPhone,
         pathway_id: pathways[quickCallType] || pathways.chiropractor,
@@ -780,13 +792,17 @@ function CampaignPageContent() {
         record: true,
         max_duration: 15,
         webhook: "https://sales-enablement-six.vercel.app/api/webhooks/bland",
+        request_data: requestData,
         metadata: {
+          campaign: 'quick_call',
+          source: 'quick_call_with_context',
           practitioner_id: quickCallResult.id,
-          practitioner_name: quickCallResult.name,
+          practice_name: quickCallResult.name,
           practitioner_type: quickCallResult.practitioner_type,
           selected_pathway: quickCallType,
-          city: quickCallResult.city,
-          province: quickCallResult.province,
+          address: quickCallResult.address || '',
+          city: quickCallResult.city || '',
+          province: quickCallResult.province || '',
         },
       };
       
@@ -860,6 +876,11 @@ function CampaignPageContent() {
         record: true,
         max_duration: 15,
         webhook: "https://sales-enablement-six.vercel.app/api/webhooks/bland",
+        metadata: {
+          campaign: 'quick_call',
+          source: 'manual_dial',
+          selected_pathway: quickCallType,
+        },
       };
       
       const response = await fetch('/api/bland/calls', {
