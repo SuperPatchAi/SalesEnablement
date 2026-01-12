@@ -211,6 +211,7 @@ export async function POST(request: NextRequest) {
           practitionerType: practitionerType,
           products: productsInterested,
           callId: payload.call_id,
+          summary: payload.analysis?.summary,
         });
         
         console.log("✅ Booking successful:", bookingResult);
@@ -329,10 +330,23 @@ async function bookCalComAppointment(data: {
   practitionerType?: string;
   products?: string;
   callId: string;
+  summary?: string;
 }) {
   // Parse the start time and calculate end time (30 min later)
   const start = new Date(data.startTime);
   const end = new Date(start.getTime() + 30 * 60 * 1000);
+  
+  // Build notes for sales team with full context
+  const notes = [
+    `Practice: ${data.practiceName || 'N/A'}`,
+    `Type: ${data.practitionerType || 'N/A'}`,
+    `Phone: ${data.phone || 'N/A'}`,
+    `Products Interested: ${data.products || 'N/A'}`,
+    `Address: ${data.address || 'TBD'}`,
+    '',
+    'Call Summary:',
+    data.summary || 'No summary available',
+  ].join('\n');
   
   const bookingPayload = {
     eventTypeId: CAL_EVENT_TYPE_ID,
@@ -345,6 +359,7 @@ async function bookCalComAppointment(data: {
         value: "inPerson",
         optionValue: data.address || "TBD",
       },
+      notes: notes,
     },
     timeZone: "America/New_York",
     language: "en",
