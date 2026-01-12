@@ -314,7 +314,7 @@ export function PractitionerDetailDrawer({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-[500px] sm:w-[600px] overflow-y-auto">
+      <SheetContent className="w-[500px] sm:w-[600px] overflow-y-auto z-[1100]">
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2 flex-wrap">
             {practitioner.name}
