@@ -8,6 +8,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-montserrat);
   --font-mono: var(--font-jetbrains-mono);
+  --font-data: var(--font-inter);
   
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -150,6 +151,30 @@
   h5, h6 {
     @apply font-bold;
   }
+}
+
+/* Data table styling - professional Inter font for practitioners */
+.data-table-row {
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  font-size: 0.8125rem; /* 13px - more compact */
+  line-height: 1.4;
+}
+
+.data-table-row .practitioner-name {
+  font-weight: 500;
+  font-size: 0.8125rem;
+}
+
+.data-table-row .practitioner-address {
+  font-size: 0.6875rem; /* 11px */
+  color: var(--muted-foreground);
+}
+
+.data-table-header {
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  font-size: 0.75rem; /* 12px */
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 /* Custom animations */

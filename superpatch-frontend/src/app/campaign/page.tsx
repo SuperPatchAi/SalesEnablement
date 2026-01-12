@@ -482,7 +482,7 @@ function CampaignPageContent() {
   const rowVirtualizer = useVirtualizer({
     count: filteredPractitioners.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 56,
+    estimateSize: () => 44, // Reduced from 56px for more compact view
     overscan: 20,
   });
 
@@ -1334,7 +1334,7 @@ function CampaignPageContent() {
       <div className="flex-1 overflow-hidden">
         <div className="h-full flex flex-col">
           {/* Table Header */}
-          <div className="flex items-center px-6 py-2 border-b bg-muted/50 text-sm font-medium text-muted-foreground">
+          <div className="flex items-center px-6 py-2 border-b bg-muted/50 data-table-header text-muted-foreground">
             {visibleColumns.find(c => c.id === "select") && (
               <div className="w-10">
                 <input
@@ -1515,7 +1515,7 @@ function CampaignPageContent() {
                         height: `${virtualRow.size}px`,
                         transform: `translateY(${virtualRow.start}px)`,
                       }}
-                      className={`flex items-center px-6 border-b cursor-pointer transition-colors ${
+                      className={`flex items-center px-6 border-b cursor-pointer transition-colors data-table-row ${
                         isSelected ? 'bg-blue-50 dark:bg-blue-950/30' : 'hover:bg-muted/30'
                       }`}
                       onClick={() => handleRowClick(practitioner)}
@@ -1533,13 +1533,13 @@ function CampaignPageContent() {
                       {visibleColumns.find(c => c.id === "name") && (
                         <div className="flex-1 min-w-[200px]">
                           <div className="flex items-center gap-2">
-                            <p className="font-medium truncate">{practitioner.name}</p>
+                            <p className="practitioner-name truncate">{practitioner.name}</p>
                             {/* Quick enrichment indicators (compact) */}
                             {practitioner.enrichment?.success && practitioner.enrichment?.data && (
                               <div className="flex items-center gap-0.5 flex-shrink-0">
                                 {practitioner.enrichment.data.practitioners?.length > 0 && (
                                   <span 
-                                    className="w-4 h-4 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 text-[9px] font-bold flex items-center justify-center"
+                                    className="w-3.5 h-3.5 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 text-[8px] font-semibold flex items-center justify-center"
                                     title={`${practitioner.enrichment.data.practitioners.length} team member(s)`}
                                   >
                                     {practitioner.enrichment.data.practitioners.length}
@@ -1547,7 +1547,7 @@ function CampaignPageContent() {
                                 )}
                                 {practitioner.enrichment.data.emails?.length > 0 && (
                                   <span 
-                                    className="w-4 h-4 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 text-[9px] flex items-center justify-center"
+                                    className="w-3.5 h-3.5 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 text-[8px] flex items-center justify-center"
                                     title={`${practitioner.enrichment.data.emails.length} email(s)`}
                                   >
                                     ✉
@@ -1555,7 +1555,7 @@ function CampaignPageContent() {
                                 )}
                                 {practitioner.enrichment.data.languages?.length > 1 && (
                                   <span 
-                                    className="w-4 h-4 rounded-full bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400 text-[9px] flex items-center justify-center"
+                                    className="w-3.5 h-3.5 rounded-full bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400 text-[8px] flex items-center justify-center"
                                     title={`Multilingual: ${practitioner.enrichment.data.languages.join(', ')}`}
                                   >
                                     🌍
@@ -1564,24 +1564,24 @@ function CampaignPageContent() {
                               </div>
                             )}
                           </div>
-                          <p className="text-xs text-muted-foreground truncate">{practitioner.address}</p>
+                          <p className="practitioner-address truncate">{practitioner.address}</p>
                         </div>
                       )}
                       {visibleColumns.find(c => c.id === "type") && (
-                        <div className="w-[140px] text-sm text-muted-foreground truncate">
+                        <div className="w-[140px] text-muted-foreground truncate">
                           {practitioner.practitioner_type}
                         </div>
                       )}
                       {visibleColumns.find(c => c.id === "city") && (
-                        <div className="w-[120px] text-sm">{practitioner.city}</div>
+                        <div className="w-[120px]">{practitioner.city}</div>
                       )}
                       {visibleColumns.find(c => c.id === "province") && (
-                        <div className="w-[100px] text-sm text-muted-foreground">{practitioner.province}</div>
+                        <div className="w-[100px] text-muted-foreground">{practitioner.province}</div>
                       )}
                       {visibleColumns.find(c => c.id === "rating") && (
                         <div className="w-[80px] text-center">
                           {practitioner.rating ? (
-                            <span className="flex items-center justify-center gap-1 text-sm">
+                            <span className="flex items-center justify-center gap-1">
                               <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
                               {practitioner.rating}
                             </span>
@@ -1589,12 +1589,12 @@ function CampaignPageContent() {
                         </div>
                       )}
                       {visibleColumns.find(c => c.id === "reviews") && (
-                        <div className="w-[80px] text-center text-sm text-muted-foreground">
+                        <div className="w-[80px] text-center text-muted-foreground">
                           {practitioner.review_count || 0}
                         </div>
                       )}
                       {visibleColumns.find(c => c.id === "phone") && (
-                        <div className="w-[120px] text-sm text-muted-foreground">
+                        <div className="w-[120px] text-muted-foreground">
                           {practitioner.phone || '-'}
                         </div>
                       )}
@@ -1617,7 +1617,7 @@ function CampaignPageContent() {
                       )}
                       {/* Call data columns */}
                       {visibleColumns.find(c => c.id === "lastCalled") && (
-                        <div className="w-[110px] text-xs text-muted-foreground">
+                        <div className="w-[110px] text-muted-foreground">
                           {getLastCallDate(practitioner.id) 
                             ? formatRelativeTime(getLastCallDate(practitioner.id)!)
                             : '-'}
@@ -1626,16 +1626,16 @@ function CampaignPageContent() {
                       {visibleColumns.find(c => c.id === "callCount") && (
                         <div className="w-[60px] text-center">
                           {getCallCount(practitioner.id) > 0 ? (
-                            <Badge variant="secondary" className="text-xs px-1.5">
+                            <Badge variant="secondary" className="text-[11px] px-1.5">
                               {getCallCount(practitioner.id)}
                             </Badge>
                           ) : (
-                            <span className="text-xs text-muted-foreground">-</span>
+                            <span className="text-muted-foreground">-</span>
                           )}
                         </div>
                       )}
                       {visibleColumns.find(c => c.id === "duration") && (
-                        <div className="w-[80px] text-center text-xs text-muted-foreground">
+                        <div className="w-[80px] text-center text-muted-foreground">
                           {getCallDuration(practitioner.id) 
                             ? formatDuration(getCallDuration(practitioner.id)!)
                             : '-'}
@@ -1651,7 +1651,7 @@ function CampaignPageContent() {
                         </div>
                       )}
                       {visibleColumns.find(c => c.id === "appointment") && (
-                        <div className="w-[120px] text-xs">
+                        <div className="w-[120px]">
                           {getAppointmentTime(practitioner.id) ? (
                             <span className="text-green-700 dark:text-green-400 font-medium">
                               {formatAppointment(getAppointmentTime(practitioner.id)!)}
@@ -1662,7 +1662,7 @@ function CampaignPageContent() {
                         </div>
                       )}
                       {visibleColumns.find(c => c.id === "summary") && (
-                        <div className="w-[150px] text-xs text-muted-foreground truncate" title={getCallSummary(practitioner.id) || ''}>
+                        <div className="w-[150px] text-muted-foreground truncate" title={getCallSummary(practitioner.id) || ''}>
                           {getCallSummary(practitioner.id) 
                             ? getCallSummary(practitioner.id)!.substring(0, 30) + (getCallSummary(practitioner.id)!.length > 30 ? '...' : '')
                             : '-'}
@@ -1670,7 +1670,7 @@ function CampaignPageContent() {
                       )}
                       {visibleColumns.find(c => c.id === "status") && (
                         <div className="w-[100px] text-center">
-                          <Badge className={`${STATUS_COLORS[status]} text-xs`}>
+                          <Badge className={`${STATUS_COLORS[status]} text-[11px]`}>
                             {STATUS_LABELS[status]}
                           </Badge>
                         </div>
