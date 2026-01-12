@@ -359,9 +359,12 @@ async function bookCalComAppointment(data: {
         value: "inPerson",
         optionValue: data.address || "TBD",
       },
+      // Notes field - this is a standard booking question in Cal.com
+      notes: notes,
     },
     timeZone: "America/New_York",
     language: "en",
+    title: `SuperPatch Demo - ${data.practiceName || data.name}`,
     metadata: {
       source: "bland_ai_webhook",
       call_id: data.callId,
@@ -369,9 +372,7 @@ async function bookCalComAppointment(data: {
       practitioner_type: data.practitionerType,
       practitioner_phone: data.phone,
       products_interested: data.products,
-      // Store full context in metadata - visible in Cal.com booking details
       call_summary: data.summary || "No summary available",
-      booking_notes: notes,
     },
   };
   
