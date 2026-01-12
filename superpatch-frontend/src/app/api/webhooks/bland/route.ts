@@ -359,12 +359,12 @@ async function bookCalComAppointment(data: {
         value: "inPerson",
         optionValue: data.address || "TBD",
       },
-      // Notes field - this is a standard booking question in Cal.com
-      notes: notes,
     },
     timeZone: "America/New_York",
     language: "en",
     title: `SuperPatch Demo - ${data.practiceName || data.name}`,
+    // Description field - this shows in calendar event details
+    description: notes,
     metadata: {
       source: "bland_ai_webhook",
       call_id: data.callId,
