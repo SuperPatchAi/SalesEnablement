@@ -1,9 +1,74 @@
 import { NextRequest, NextResponse } from "next/server";
 import { serverUpsertCallRecord, serverUpdateByCallId } from "@/lib/db/call-records";
+import { supabaseAdmin, isSupabaseConfigured } from "@/lib/supabase";
 import type { CallStatus, CallRecordInsert } from "@/lib/db/types";
 
 const CAL_API_KEY = process.env.CAL_API_KEY || "";
 const CAL_EVENT_TYPE_ID = Number(process.env.CAL_EVENT_TYPE_ID) || 4352394;
+
+// Helper to normalize phone numbers for comparison
+function normalizePhone(phone: string): string {
+  return phone.replace(/\D/g, "").slice(-10); // Get last 10 digits
+}
+
+// Practitioner lookup result type
+interface PractitionerLookup {
+  id: string;
+  name: string;
+  practitioner_type: string;
+  address?: string | null;
+  city?: string | null;
+  province?: string | null;
+  phone?: string | null;
+}
+
+// Look up practitioner by phone number in Supabase
+async function findPractitionerByPhone(phone: string): Promise<PractitionerLookup | null> {
+  if (!isSupabaseConfigured || !supabaseAdmin) {
+    return null;
+  }
+  
+  try {
+    const normalizedPhone = normalizePhone(phone);
+    
+    // Try exact match first
+    const { data: exactMatch, error: exactError } = await supabaseAdmin
+      .from('practitioners')
+      .select('id, name, practitioner_type, address, city, province, phone')
+      .eq('phone', phone)
+      .limit(1)
+      .single();
+    
+    if (!exactError && exactMatch) {
+      const result = exactMatch as PractitionerLookup;
+      console.log(`📍 Found practitioner by exact phone: ${result.name}`);
+      return result;
+    }
+    
+    // Try partial match (last 10 digits)
+    const { data: partialMatches } = await supabaseAdmin
+      .from('practitioners')
+      .select('id, name, practitioner_type, address, city, province, phone')
+      .not('phone', 'is', null)
+      .limit(100);
+    
+    if (partialMatches) {
+      const matches = partialMatches as PractitionerLookup[];
+      for (const p of matches) {
+        if (p.phone && normalizePhone(p.phone) === normalizedPhone) {
+          console.log(`📍 Found practitioner by normalized phone: ${p.name}`);
+          return p;
+        }
+      }
+    }
+    
+    console.log(`📍 No practitioner found for phone: ${phone}`);
+    return null;
+  } catch (error) {
+    console.error('Error looking up practitioner by phone:', error);
+    return null;
+  }
+}
 
 interface BlandWebhookPayload {
   call_id: string;
@@ -30,7 +95,12 @@ interface BlandWebhookPayload {
     address?: string;
     city?: string;
     province?: string;
+    clinic_email?: string;
+    call_language?: string;
   };
+  // Voicemail detection fields
+  voicemail_detected?: boolean;
+  answered_by?: "human" | "voicemail" | "unknown";
 }
 
 // POST /api/webhooks/bland - Handle Bland.ai call completion webhooks
@@ -72,10 +142,54 @@ export async function POST(request: NextRequest) {
       practitionerId,
     });
     
+    // Try to find practitioner by phone if not provided in metadata
+    let resolvedPractitionerId: string | undefined | null = practitionerId;
+    let resolvedPractitionerName = practitionerName || practiceName;
+    let resolvedPractitionerType = practitionerType;
+    let resolvedAddress = practiceAddress;
+    let resolvedCity = meta.city;
+    let resolvedProvince = meta.province;
+    
+    if (!resolvedPractitionerId) {
+      const foundPractitioner = await findPractitionerByPhone(payload.to);
+      if (foundPractitioner) {
+        resolvedPractitionerId = foundPractitioner.id;
+        resolvedPractitionerName = resolvedPractitionerName || foundPractitioner.name;
+        resolvedPractitionerType = resolvedPractitionerType || foundPractitioner.practitioner_type;
+        resolvedAddress = resolvedAddress || foundPractitioner.address || undefined;
+        resolvedCity = resolvedCity || foundPractitioner.city || undefined;
+        resolvedProvince = resolvedProvince || foundPractitioner.province || undefined;
+        
+        console.log(`✅ Linked call to practitioner: ${foundPractitioner.name} (${foundPractitioner.id})`);
+      } else {
+        // Unknown caller - practitioner_id will be NULL
+        // Extract whatever info we can from the call variables
+        resolvedPractitionerId = undefined; // Will be NULL in DB
+        resolvedPractitionerName = resolvedPractitionerName || vars.business_name || vars.company_name || "Unknown Caller";
+        resolvedPractitionerType = resolvedPractitionerType || vars.business_type || "Unknown";
+        resolvedAddress = resolvedAddress || vars.location || undefined;
+        
+        console.log(`📝 Recording call from unknown number: ${payload.to}`);
+        console.log(`   Name from call: ${resolvedPractitionerName}`);
+      }
+    }
+    
     // Determine call status
     let callStatus: CallStatus = "completed";
+    
+    // Check for voicemail first
+    const wentToVoicemail = 
+      payload.voicemail_detected === true ||
+      payload.answered_by === "voicemail" ||
+      payload.status === "voicemail" ||
+      vars.went_to_voicemail === "true" ||
+      vars.voicemail_left === "true";
+    
     if (payload.status === "failed" || payload.status === "no-answer" || !payload.completed) {
       callStatus = "failed";
+    } else if (wentToVoicemail) {
+      // Voicemail was left - track separately for follow-up
+      callStatus = "voicemail" as CallStatus;
     } else if (wantsDemo || appointmentTime) {
       callStatus = "booked";
     }
@@ -107,15 +221,15 @@ export async function POST(request: NextRequest) {
       }
     }
     
-    // Save to database
+    // Save to database - use resolved practitioner data
     const callRecord: CallRecordInsert = {
-      practitioner_id: practitionerId || payload.call_id, // Use call_id if no practitioner_id
-      practitioner_name: practitionerName || practiceName || "Unknown",
-      practitioner_type: practitionerType,
+      practitioner_id: resolvedPractitionerId,
+      practitioner_name: resolvedPractitionerName || "Unknown",
+      practitioner_type: resolvedPractitionerType,
       phone: payload.to,
-      address: practiceAddress,
-      city: meta.city,
-      province: meta.province,
+      address: resolvedAddress,
+      city: resolvedCity,
+      province: resolvedProvince,
       call_id: payload.call_id,
       status: callStatus,
       call_started_at: payload.created_at,
@@ -126,21 +240,19 @@ export async function POST(request: NextRequest) {
       appointment_booked: callStatus === "booked" || callStatus === "calendar_sent",
       appointment_time: appointmentTime ? new Date(appointmentTime).toISOString() : null,
       calendar_invite_sent: callStatus === "calendar_sent",
-      practitioner_email: practitionerEmail,
+      practitioner_email: practitionerEmail || meta.clinic_email,
       booking_id: bookingResult?.id,
     };
     
     // Try to update existing record by call_id first, then upsert
     let savedRecord = null;
-    if (practitionerId) {
+    
+    // First, try to update by call_id (in case call is already in progress)
+    savedRecord = await serverUpdateByCallId(payload.call_id, callRecord);
+    
+    if (!savedRecord) {
+      // If no existing record, upsert with practitioner_id
       savedRecord = await serverUpsertCallRecord(callRecord);
-    } else {
-      // If no practitioner_id, try to update by call_id
-      savedRecord = await serverUpdateByCallId(payload.call_id, callRecord);
-      if (!savedRecord) {
-        // Create new record
-        savedRecord = await serverUpsertCallRecord(callRecord);
-      }
     }
     
     if (savedRecord) {
@@ -270,9 +382,11 @@ export async function GET() {
     features: [
       "Receives call completion webhooks",
       "Saves call records to Supabase database",
+      "Links calls to practitioners by phone lookup",
       "Extracts scheduling variables",
       "Books to Cal.com if demo requested",
       "Stores transcripts and summaries",
+      "Tracks voicemail status",
     ],
   });
 }

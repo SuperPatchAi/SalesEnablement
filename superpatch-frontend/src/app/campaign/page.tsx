@@ -22,12 +22,11 @@ import {
 } from "lucide-react";
 import {
   CampaignCallRecord,
-  CallStatus,
-  getCallRecords,
-  getCampaignStats,
   createCallRecord,
   exportRecords,
 } from "@/lib/campaign-storage";
+import { CallStatus } from "@/lib/db/types";
+import { useSupabaseCallRecords } from "@/hooks/useSupabaseCallRecords";
 import { KPICards } from "@/components/campaign/kpi-cards";
 import { FilterPanel, FilterState, FilterSheet, FilterSheetTrigger } from "@/components/campaign/filter-panel";
 import { PipelineBoard, FunnelView } from "@/components/campaign/pipeline-board";
@@ -130,6 +129,7 @@ const STATUS_COLORS: Record<CallStatus, string> = {
   booked: 'bg-purple-100 text-purple-800',
   calendar_sent: 'bg-teal-100 text-teal-800',
   failed: 'bg-red-100 text-red-800',
+  voicemail: 'bg-orange-100 text-orange-800',
 };
 
 const STATUS_LABELS: Record<CallStatus, string> = {
@@ -140,6 +140,7 @@ const STATUS_LABELS: Record<CallStatus, string> = {
   booked: 'Booked',
   calendar_sent: 'Calendar Sent',
   failed: 'Failed',
+  voicemail: 'Voicemail',
 };
 
 function CampaignPageContent() {
@@ -184,8 +185,15 @@ function CampaignPageContent() {
   const [campaignRunning, setCampaignRunning] = useState(false);
   const [campaignPaused, setCampaignPaused] = useState(false);
   const [, setCurrentCallId] = useState<string | null>(null);
-  const [callRecords, setCallRecords] = useState<Record<string, CampaignCallRecord>>({});
   const [queueDrawerOpen, setQueueDrawerOpen] = useState(false);
+  
+  // Use Supabase for call records with realtime updates
+  const { 
+    records: callRecords, 
+    stats, 
+    refresh: refreshCallRecords,
+    isConnected: isRealtimeConnected 
+  } = useSupabaseCallRecords();
 
   // Detail drawer state
   const [detailDrawerOpen, setDetailDrawerOpen] = useState(false);
@@ -250,10 +258,9 @@ function CampaignPageContent() {
     }
   }, [province, city, practitionerType, search, minRating, hasPhoneOnly]);
 
-  // Load metadata on mount
+  // Load metadata on mount (call records are loaded by useSupabaseCallRecords hook)
   useEffect(() => {
     loadMetadata();
-    loadCallRecords();
   }, []);
 
   // Handle tab query parameter from URL
@@ -310,9 +317,9 @@ function CampaignPageContent() {
     }
   }
 
+  // Refresh call records from Supabase
   function loadCallRecords() {
-    const records = getCallRecords();
-    setCallRecords(records);
+    refreshCallRecords();
   }
 
   function loadMorePractitioners() {
@@ -792,8 +799,7 @@ function CampaignPageContent() {
     // The actual call will be initiated from the detail drawer
   };
 
-  // Get stats
-  const stats = getCampaignStats();
+  // Stats come from useSupabaseCallRecords hook
 
   // Filter state object for FilterPanel
   const filterState: FilterState = {

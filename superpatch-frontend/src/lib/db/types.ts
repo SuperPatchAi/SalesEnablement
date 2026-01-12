@@ -14,7 +14,8 @@ export type CallStatus =
   | 'completed' 
   | 'booked' 
   | 'calendar_sent' 
-  | 'failed';
+  | 'failed'
+  | 'voicemail';
 
 export interface Database {
   public: {
@@ -22,7 +23,7 @@ export interface Database {
       call_records: {
         Row: {
           id: string;
-          practitioner_id: string;
+          practitioner_id: string | null;  // NULL for unknown callers
           practitioner_name: string;
           practitioner_type: string | null;
           phone: string;
@@ -47,7 +48,7 @@ export interface Database {
         };
         Insert: {
           id?: string;
-          practitioner_id: string;
+          practitioner_id?: string | null;  // Optional - NULL for unknown callers
           practitioner_name: string;
           practitioner_type?: string | null;
           phone: string;
@@ -72,7 +73,7 @@ export interface Database {
         };
         Update: {
           id?: string;
-          practitioner_id?: string;
+          practitioner_id?: string | null;
           practitioner_name?: string;
           practitioner_type?: string | null;
           phone?: string;
@@ -175,6 +176,7 @@ export interface CampaignStats {
   queued: number;
   not_called: number;
   calendar_sent: number;
+  voicemail: number;
   total_duration_seconds: number;
   avg_duration_seconds: number;
   success_rate: number;

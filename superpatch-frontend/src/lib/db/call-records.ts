@@ -95,8 +95,10 @@ export async function upsertCallRecord(record: CallRecordInsert): Promise<CallRe
   if (!isSupabaseConfigured || !supabase) {
     // Fallback to localStorage
     const now = new Date().toISOString();
+    // Generate a unique ID for unknown callers (when practitioner_id is null/undefined)
+    const practitionerIdForStorage = record.practitioner_id || `unknown-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     const localRecord: localStorage.CampaignCallRecord = {
-      practitioner_id: record.practitioner_id,
+      practitioner_id: practitionerIdForStorage,
       practitioner_name: record.practitioner_name,
       practitioner_type: record.practitioner_type || '',
       phone: record.phone,
@@ -245,6 +247,7 @@ export async function getCampaignStats(): Promise<CampaignStats> {
       queued: 0,
       not_called: 0,
       calendar_sent: 0,
+      voicemail: 0,
       total_duration_seconds: 0,
       avg_duration_seconds: 0,
       success_rate: 0,
@@ -262,6 +265,7 @@ export async function getCampaignStats(): Promise<CampaignStats> {
     queued: 0,
     not_called: 0,
     calendar_sent: 0,
+    voicemail: 0,
     total_duration_seconds: 0,
     avg_duration_seconds: 0,
     success_rate: 0,
@@ -281,6 +285,9 @@ export async function getCampaignStats(): Promise<CampaignStats> {
       case 'calendar_sent':
         stats.calendar_sent++;
         stats.booked++; // Also count as booked
+        break;
+      case 'voicemail':
+        stats.voicemail++;
         break;
       case 'failed':
         stats.failed++;

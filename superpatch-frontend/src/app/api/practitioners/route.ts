@@ -1,29 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
+import { supabaseAdmin, isSupabaseConfigured } from "@/lib/supabase";
 
-// Cache the practitioner data in memory
-let practitionersCache: Practitioner[] | null = null;
-let metadataCache: { provinces: string[]; cities: Record<string, string[]>; types: string[] } | null = null;
-let dataLoadPromise: Promise<Practitioner[]> | null = null;
-
+// Types
 interface Practitioner {
   id: string;
   name: string;
   practitioner_type: string;
-  address: string;
-  city: string;
-  province: string;
+  address: string | null;
+  city: string | null;
+  province: string | null;
   phone: string | null;
   website: string | null;
   rating: number | null;
   review_count: number | null;
-  business_status: string;
-  google_maps_uri: string;
-  latitude: number;
-  longitude: number;
-  scraped_at: string;
-  notes: string;
+  business_status: string | null;
+  google_maps_uri: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  scraped_at: string | null;
+  notes: string | null;
+  enrichment?: {
+    success?: boolean;
+    scraped_at?: string;
+    data?: {
+      practitioners?: Array<{ name: string; credentials?: string }>;
+      emails?: string[];
+      services?: string[];
+      languages?: string[];
+    };
+  } | null;
+  enrichment_status?: string;
+  enriched_at?: string | null;
 }
 
 interface PractitionerData {
@@ -35,93 +44,125 @@ interface PractitionerData {
   practitioners: Practitioner[];
 }
 
-async function loadPractitioners(): Promise<Practitioner[]> {
-  // Return cache if available
-  if (practitionersCache) {
-    return practitionersCache;
+// Cache for JSON fallback (only used if Supabase fails)
+let jsonCache: Practitioner[] | null = null;
+let metadataCache: { provinces: string[]; cities: Record<string, string[]>; types: string[] } | null = null;
+
+// Check if practitioners table exists in Supabase
+let supabaseTableExists: boolean | null = null;
+
+async function checkSupabaseTable(): Promise<boolean> {
+  if (supabaseTableExists !== null) return supabaseTableExists;
+  
+  if (!isSupabaseConfigured || !supabaseAdmin) {
+    supabaseTableExists = false;
+    return false;
   }
-
-  // Prevent concurrent loading
-  if (dataLoadPromise) {
-    return dataLoadPromise;
-  }
-
-  dataLoadPromise = (async () => {
-    // Try file system paths first (works locally)
-    const possiblePaths = [
-      // For local development - public folder
-      path.join(process.cwd(), "public", "data", "practitioners.json"),
-      // For local development - parent directory
-      path.join(process.cwd(), "..", "canadian_practitioners", "all_practitioners_latest.json"),
-    ];
-
-    let data: PractitionerData | null = null;
+  
+  try {
+    const { error } = await supabaseAdmin
+      .from('practitioners')
+      .select('id')
+      .limit(1);
     
-    for (const filePath of possiblePaths) {
-      try {
-        if (fs.existsSync(filePath)) {
-          const fileContent = fs.readFileSync(filePath, "utf-8");
-          data = JSON.parse(fileContent);
-          console.log(`Loaded practitioners from file: ${filePath}`);
-          break;
-        }
-      } catch (error) {
-        console.log(`Failed to load from ${filePath}:`, error);
-      }
-    }
-
-    // If file not found locally, try fetching from public URL (for Vercel)
-    if (!data) {
-      try {
-        // Get the base URL from environment or construct it
-        const baseUrl = process.env.VERCEL_URL 
-          ? `https://${process.env.VERCEL_URL}` 
-          : process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-        
-        console.log(`Attempting to fetch practitioners from: ${baseUrl}/data/practitioners.json`);
-        const response = await fetch(`${baseUrl}/data/practitioners.json`);
-        
-        if (response.ok) {
-          data = await response.json();
-          console.log(`Loaded practitioners from URL: ${baseUrl}/data/practitioners.json`);
-        } else {
-          console.error(`Failed to fetch practitioners: ${response.status}`);
-        }
-      } catch (error) {
-        console.error("Failed to fetch practitioners from URL:", error);
-      }
-    }
-
-    if (!data) {
-      console.error("Could not find practitioner data from any source");
-      return [];
-    }
-
-    practitionersCache = data.practitioners;
-    return practitionersCache;
-  })();
-
-  return dataLoadPromise;
+    supabaseTableExists = !error;
+    return supabaseTableExists;
+  } catch {
+    supabaseTableExists = false;
+    return false;
+  }
 }
 
-async function getMetadata(): Promise<{ provinces: string[]; cities: Record<string, string[]>; types: string[] }> {
-  if (metadataCache) {
-    return metadataCache;
+// Load from JSON file (fallback)
+async function loadFromJSON(): Promise<Practitioner[]> {
+  if (jsonCache) return jsonCache;
+
+  const possiblePaths = [
+    path.join(process.cwd(), "public", "data", "practitioners.json"),
+    path.join(process.cwd(), "..", "canadian_practitioners", "all_practitioners_latest.json"),
+  ];
+
+  for (const filePath of possiblePaths) {
+    try {
+      if (fs.existsSync(filePath)) {
+        const fileContent = fs.readFileSync(filePath, "utf-8");
+        const data: PractitionerData = JSON.parse(fileContent);
+        jsonCache = data.practitioners;
+        console.log(`[Practitioners API] Loaded from JSON: ${filePath}`);
+        return jsonCache;
+      }
+    } catch (error) {
+      console.log(`[Practitioners API] Failed to load from ${filePath}:`, error);
+    }
   }
 
-  const practitioners = await loadPractitioners();
+  console.error("[Practitioners API] No practitioner data found");
+  return [];
+}
+
+// Get metadata for filters
+async function getMetadata(): Promise<{ provinces: string[]; cities: Record<string, string[]>; types: string[] }> {
+  if (metadataCache) return metadataCache;
+
+  const useSupabase = await checkSupabaseTable();
   
-  // Extract unique provinces
-  const provinces = [...new Set(practitioners.map(p => p.province).filter(Boolean))].sort();
+  if (useSupabase && supabaseAdmin) {
+    try {
+      // Get distinct provinces
+      const { data: provinceData } = await supabaseAdmin
+        .from('practitioners')
+        .select('province')
+        .not('province', 'is', null);
+      
+      const provinces = [...new Set(
+        (provinceData as { province: string }[] || [])
+          .map(p => p.province)
+          .filter(Boolean)
+      )].sort();
+      
+      // Get distinct types
+      const { data: typeData } = await supabaseAdmin
+        .from('practitioners')
+        .select('practitioner_type')
+        .not('practitioner_type', 'is', null);
+      
+      const types = [...new Set(
+        (typeData as { practitioner_type: string }[] || [])
+          .map(t => t.practitioner_type)
+          .filter(Boolean)
+      )].sort();
+      
+      // Get cities by province
+      const { data: cityData } = await supabaseAdmin
+        .from('practitioners')
+        .select('province, city')
+        .not('city', 'is', null);
+      
+      const typedCityData = cityData as { province: string; city: string }[] || [];
+      const cities: Record<string, string[]> = {};
+      for (const province of provinces) {
+        const provinceCities = typedCityData
+          .filter(c => c.province === province)
+          .map(c => c.city)
+          .filter(Boolean);
+        cities[province] = [...new Set(provinceCities)].sort();
+      }
+      
+      metadataCache = { provinces, cities, types };
+      return metadataCache;
+    } catch (error) {
+      console.error("[Practitioners API] Supabase metadata error, falling back to JSON:", error);
+    }
+  }
   
-  // Extract cities grouped by province
+  // Fallback to JSON
+  const practitioners = await loadFromJSON();
+  const provinces = [...new Set(practitioners.map(p => p.province).filter(Boolean))].sort() as string[];
   const cities: Record<string, string[]> = {};
   for (const province of provinces) {
     const provincePractitioners = practitioners.filter(p => p.province === province);
-    cities[province] = [...new Set(provincePractitioners.map(p => p.city).filter(Boolean))].sort();
+    cities[province] = [...new Set(provincePractitioners.map(p => p.city).filter(Boolean))].sort() as string[];
   }
-  
-  // Extract unique practitioner types
   const types = [...new Set(practitioners.map(p => p.practitioner_type).filter(Boolean))].sort();
   
   metadataCache = { provinces, cities, types };
@@ -137,9 +178,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(metadata);
   }
 
-  const practitioners = await loadPractitioners();
-  
-  // Filter parameters
+  // Parse parameters
   const province = searchParams.get("province");
   const city = searchParams.get("city");
   const type = searchParams.get("type");
@@ -148,31 +187,109 @@ export async function GET(request: NextRequest) {
   const minRating = searchParams.get("minRating") ? parseFloat(searchParams.get("minRating")!) : null;
   const hasPhone = searchParams.get("hasPhone") === "true";
   const phoneSearch = searchParams.get("phone");
-  
-  // Pagination
   const page = parseInt(searchParams.get("page") || "1");
   const limit = parseInt(searchParams.get("limit") || "100");
   const offset = (page - 1) * limit;
 
-  // Apply filters
+  // Try Supabase first
+  const useSupabase = await checkSupabaseTable();
+  
+  if (useSupabase && supabaseAdmin) {
+    try {
+      // Build Supabase query
+      let query = supabaseAdmin
+        .from('practitioners')
+        .select('*', { count: 'exact' });
+
+      // Apply filters
+      if (province) {
+        query = query.eq('province', province);
+      }
+      if (city) {
+        query = query.eq('city', city);
+      }
+      if (type) {
+        query = query.eq('practitioner_type', type);
+      }
+      if (types && types.length > 0) {
+        query = query.in('practitioner_type', types);
+      }
+      if (search) {
+        // Use ilike for case-insensitive search
+        query = query.or(`name.ilike.%${search}%,address.ilike.%${search}%,city.ilike.%${search}%`);
+      }
+      if (minRating !== null) {
+        query = query.gte('rating', minRating);
+      }
+      if (hasPhone) {
+        query = query.not('phone', 'is', null).neq('phone', '');
+      }
+      if (phoneSearch) {
+        // Normalize phone for search
+        const normalizedPhone = phoneSearch.replace(/\D/g, "");
+        query = query.like('phone', `%${normalizedPhone.slice(-10)}%`);
+      }
+
+      // Apply pagination and ordering
+      const { data, count, error } = await query
+        .order('rating', { ascending: false, nullsFirst: false })
+        .range(offset, offset + limit - 1);
+
+      if (error) {
+        console.error("[Practitioners API] Supabase query error:", error);
+        throw error;
+      }
+
+      // Parse enrichment JSONB back to object
+      const practitioners = (data || []).map((p: Record<string, unknown>) => ({
+        ...p,
+        enrichment: typeof p.enrichment === 'string' ? JSON.parse(p.enrichment as string) : p.enrichment,
+      })) as Practitioner[];
+
+      return NextResponse.json({
+        practitioners,
+        pagination: {
+          page,
+          limit,
+          total: count || 0,
+          totalPages: Math.ceil((count || 0) / limit),
+          hasMore: offset + limit < (count || 0),
+        },
+        filters: {
+          province,
+          city,
+          type,
+          types,
+          search,
+          minRating,
+          hasPhone,
+          phone: phoneSearch,
+        },
+        source: 'supabase',
+      });
+    } catch (error) {
+      console.error("[Practitioners API] Supabase failed, falling back to JSON:", error);
+    }
+  }
+
+  // Fallback to JSON file
+  const practitioners = await loadFromJSON();
+  
+  // Apply filters (client-side)
   let filtered = practitioners;
 
   if (province) {
     filtered = filtered.filter(p => p.province === province);
   }
-
   if (city) {
     filtered = filtered.filter(p => p.city === city);
   }
-
   if (type) {
     filtered = filtered.filter(p => p.practitioner_type === type);
   }
-
   if (types && types.length > 0) {
     filtered = filtered.filter(p => types.includes(p.practitioner_type));
   }
-
   if (search) {
     filtered = filtered.filter(p => 
       p.name.toLowerCase().includes(search) ||
@@ -180,32 +297,24 @@ export async function GET(request: NextRequest) {
       p.city?.toLowerCase().includes(search)
     );
   }
-
   if (minRating !== null) {
     filtered = filtered.filter(p => (p.rating || 0) >= minRating);
   }
-
   if (hasPhone) {
     filtered = filtered.filter(p => p.phone && p.phone.trim() !== "");
   }
-
-  // Phone number search - normalize and match
   if (phoneSearch) {
     const normalizedSearch = phoneSearch.replace(/\D/g, "");
     filtered = filtered.filter(p => {
       if (!p.phone) return false;
       const normalizedPhone = p.phone.replace(/\D/g, "");
-      // Match if the digits are the same (handles different formats)
       return normalizedPhone === normalizedSearch ||
              normalizedPhone.endsWith(normalizedSearch) ||
              normalizedSearch.endsWith(normalizedPhone);
     });
   }
 
-  // Get total before pagination
   const total = filtered.length;
-
-  // Apply pagination
   const paginated = filtered.slice(offset, offset + limit);
 
   return NextResponse.json({
@@ -227,5 +336,6 @@ export async function GET(request: NextRequest) {
       hasPhone,
       phone: phoneSearch,
     },
+    source: 'json',
   });
 }

@@ -20,7 +20,8 @@ import {
   Navigation,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { CampaignCallRecord, CallStatus } from "@/lib/campaign-storage";
+import { CampaignCallRecord } from "@/lib/campaign-storage";
+import { CallStatus } from "@/lib/db/types";
 
 // Dynamically import leaflet components to avoid SSR issues
 const MapContainer = dynamic(
@@ -48,6 +49,7 @@ const STATUS_MARKER_COLORS: Record<CallStatus | "default", string> = {
   completed: "#22c55e",
   booked: "#a855f7",
   calendar_sent: "#a855f7",
+  voicemail: "#f97316",
   failed: "#ef4444",
   default: "#6b7280",
 };
@@ -154,6 +156,7 @@ function clusterByLocation(
           completed: 0,
           booked: 0,
           calendar_sent: 0,
+          voicemail: 0,
           failed: 0,
           default: 0,
         },
@@ -184,6 +187,7 @@ function PractitionerPopup({
     completed: "Completed",
     booked: "Booked",
     calendar_sent: "Calendar Sent",
+    voicemail: "Voicemail",
     failed: "Failed",
     default: "Not Called",
   };

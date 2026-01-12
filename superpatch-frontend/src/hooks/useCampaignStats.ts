@@ -23,6 +23,7 @@ const DEFAULT_STATS: CampaignStats = {
   queued: 0,
   not_called: 0,
   calendar_sent: 0,
+  voicemail: 0,
   total_duration_seconds: 0,
   avg_duration_seconds: 0,
   success_rate: 0,

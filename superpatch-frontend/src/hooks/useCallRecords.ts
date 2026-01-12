@@ -46,6 +46,7 @@ export function useCallRecords(options: UseCallRecordsOptions = {}): UseCallReco
     queued: 0,
     not_called: 0,
     calendar_sent: 0,
+    voicemail: 0,
     total_duration_seconds: 0,
     avg_duration_seconds: 0,
     success_rate: 0,
@@ -254,15 +255,17 @@ export function useCallRecords(options: UseCallRecordsOptions = {}): UseCallReco
             
             if (payload.eventType === "INSERT" || payload.eventType === "UPDATE") {
               const record = payload.new as CallRecord;
+              const key = record.practitioner_id || record.id;  // Use id for unknown callers
               setRecords(prev => ({
                 ...prev,
-                [record.practitioner_id]: record,
+                [key]: record,
               }));
             } else if (payload.eventType === "DELETE") {
               const record = payload.old as CallRecord;
+              const key = record.practitioner_id || record.id;  // Use id for unknown callers
               setRecords(prev => {
                 const newRecords = { ...prev };
-                delete newRecords[record.practitioner_id];
+                delete newRecords[key];
                 return newRecords;
               });
             }

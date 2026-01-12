@@ -39,12 +39,12 @@ import {
 } from "lucide-react";
 import {
   CampaignCallRecord,
-  CallStatus,
   getCallRecord,
   createCallRecord,
   updateCallStatus,
   saveCallRecord,
 } from "@/lib/campaign-storage";
+import { CallStatus } from "@/lib/db/types";
 import { getBatchCaller, Practitioner } from "@/lib/batch-caller";
 
 // Enrichment data types
@@ -88,6 +88,7 @@ const STATUS_COLORS: Record<CallStatus, string> = {
   completed: "bg-green-100 text-green-800",
   booked: "bg-purple-100 text-purple-800",
   calendar_sent: "bg-teal-100 text-teal-800",
+  voicemail: "bg-orange-100 text-orange-800",
   failed: "bg-red-100 text-red-800",
 };
 
@@ -98,6 +99,7 @@ const STATUS_LABELS: Record<CallStatus, string> = {
   completed: "Completed",
   booked: "Booked",
   calendar_sent: "Calendar Sent",
+  voicemail: "Voicemail",
   failed: "Failed",
 };
 

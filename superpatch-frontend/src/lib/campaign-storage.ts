@@ -11,7 +11,8 @@ export type CallStatus =
   | 'completed' 
   | 'booked' 
   | 'calendar_sent' 
-  | 'failed';
+  | 'failed'
+  | 'voicemail';
 
 export interface CampaignCallRecord {
   practitioner_id: string;
@@ -46,6 +47,7 @@ export interface CampaignStats {
   queued: number;
   not_called: number;
   calendar_sent: number;
+  voicemail: number;
   total_duration_seconds: number;
   avg_duration_seconds: number;
   success_rate: number;
@@ -110,6 +112,7 @@ export function saveCallRecord(record: CampaignCallRecord): void {
 
 /**
  * Create a new call record for a practitioner
+ * Now syncs to Supabase via API
  */
 export function createCallRecord(practitioner: {
   id: string;
@@ -137,7 +140,27 @@ export function createCallRecord(practitioner: {
     updated_at: now,
   };
   
+  // Save to localStorage for immediate UI update
   saveCallRecord(record);
+  
+  // Also sync to Supabase via API (fire and forget)
+  if (isBrowser) {
+    fetch('/api/campaign/calls', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        practitioner_id: practitioner.id,
+        practitioner_name: practitioner.name,
+        practitioner_type: practitioner.practitioner_type,
+        phone: practitioner.phone,
+        address: practitioner.address,
+        city: practitioner.city,
+        province: practitioner.province,
+        status: 'not_called',
+      }),
+    }).catch(err => console.warn('Failed to sync call record to Supabase:', err));
+  }
+  
   return record;
 }
 
@@ -235,7 +258,7 @@ export function getRecordsByStatus(status: CallStatus): CampaignCallRecord[] {
  */
 export function getCampaignStats(): CampaignStats {
   const records = Object.values(getCallRecords());
-  
+
   const stats: CampaignStats = {
     total_calls: records.length,
     completed: 0,
@@ -245,14 +268,15 @@ export function getCampaignStats(): CampaignStats {
     queued: 0,
     not_called: 0,
     calendar_sent: 0,
+    voicemail: 0,
     total_duration_seconds: 0,
     avg_duration_seconds: 0,
     success_rate: 0,
     booking_rate: 0,
   };
-  
+
   let callsWithDuration = 0;
-  
+
   for (const record of records) {
     switch (record.status) {
       case 'completed':
@@ -264,6 +288,9 @@ export function getCampaignStats(): CampaignStats {
       case 'calendar_sent':
         stats.calendar_sent++;
         stats.booked++; // Also count as booked
+        break;
+      case 'voicemail':
+        stats.voicemail++;
         break;
       case 'failed':
         stats.failed++;
@@ -305,6 +332,35 @@ export function clearAllRecords(): void {
 
 /**
  * Export records as JSON
+ * First tries to fetch from Supabase API, falls back to localStorage
+ */
+export async function exportRecordsAsync(): Promise<string> {
+  try {
+    const response = await fetch('/api/campaign/calls');
+    if (response.ok) {
+      const data = await response.json();
+      const records = Object.values(data.records || {});
+      
+      // Calculate stats
+      const stats = getCampaignStats(); // Use localStorage stats for now
+      
+      return JSON.stringify({
+        exported_at: new Date().toISOString(),
+        stats,
+        records,
+        source: 'supabase',
+      }, null, 2);
+    }
+  } catch (err) {
+    console.warn('Failed to export from Supabase, using localStorage:', err);
+  }
+  
+  // Fallback to localStorage
+  return exportRecords();
+}
+
+/**
+ * Export records as JSON (synchronous, localStorage only)
  */
 export function exportRecords(): string {
   const records = getCallRecords();
@@ -314,6 +370,7 @@ export function exportRecords(): string {
     exported_at: new Date().toISOString(),
     stats,
     records: Object.values(records),
+    source: 'localStorage',
   }, null, 2);
 }
 

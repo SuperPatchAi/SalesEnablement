@@ -29,7 +29,8 @@ import {
   Minimize2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { CampaignCallRecord, CallStatus } from "@/lib/campaign-storage";
+import { CampaignCallRecord } from "@/lib/campaign-storage";
+import { CallStatus } from "@/lib/db/types";
 
 // Timeline event configuration
 const EVENT_CONFIG: Record<
@@ -82,6 +83,12 @@ const EVENT_CONFIG: Record<
     color: "text-red-500",
     bgColor: "bg-red-100 dark:bg-red-900/30",
     label: "Failed",
+  },
+  voicemail: {
+    icon: PhoneOff,
+    color: "text-orange-500",
+    bgColor: "bg-orange-100 dark:bg-orange-900/30",
+    label: "Voicemail",
   },
 };
 

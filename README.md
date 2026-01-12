@@ -53,6 +53,18 @@ Build an end-to-end sales enablement platform that:
 │   │  Database   │    │    Hooks    │    │  Management     │            │
 │   └─────────────┘    └─────────────┘    └─────────────────┘            │
 │                                                                         │
+│   PHASE 6: Voice Agent Enhancements                                     │
+│   ┌─────────────┐    ┌─────────────┐    ┌─────────────────┐            │
+│   │ Enrichment  │───▶│ Multilingual│───▶│  IVR + Voicemail│            │
+│   │   Data      │    │   Support   │    │   Handling      │            │
+│   └─────────────┘    └─────────────┘    └─────────────────┘            │
+│                                                                         │
+│   PHASE 7: Full Supabase Migration                                      │
+│   ┌─────────────┐    ┌─────────────┐    ┌─────────────────┐            │
+│   │Practitioners│───▶│  Real-time  │───▶│  Phone Lookup   │            │
+│   │   in DB     │    │   Updates   │    │   + Linking     │            │
+│   └─────────────┘    └─────────────┘    └─────────────────┘            │
+│                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -100,13 +112,16 @@ SalesEnablement/
 │   └── scripts/
 │       ├── canadian_practitioner_scraper.py  # Google Maps API scraper
 │       ├── enrich_practitioner_data.py       # Website data enrichment
+│       ├── migrate_to_supabase.py            # Practitioner DB migration
 │       └── test_canadian_practitioner_scraper.py
 │
 ├── 🤖 PHASE 3: Voice Agent Development
 │   └── b2b_sales_enablement/
 │       └── bland_ai_pathways/
-│           ├── [Practitioner]_contextual.json  # Live pathways
+│           ├── [Practitioner]_contextual.json  # Live pathways (40-41 nodes each)
 │           ├── deploy_pathways.py
+│           ├── deploy_updated_pathways.py      # Deploy all pathways at once
+│           ├── make_call_with_kb.py            # Python call script with enrichment
 │           ├── update_pathways_with_context.py
 │           ├── expanded_pathway_generator.py
 │           └── superpatch_knowledge_base.txt
@@ -144,7 +159,8 @@ SalesEnablement/
         │   │   └── empty-states.tsx
         │   └── ui/                    # Reusable UI components
         ├── src/hooks/                 # React hooks
-        │   ├── useCallRecords.ts      # Real-time call records
+        │   ├── useSupabaseCallRecords.ts  # Realtime call records (primary)
+        │   ├── useCallRecords.ts      # Legacy call records hook
         │   ├── useCallNotes.ts        # Notes management
         │   └── useCampaignStats.ts    # Campaign statistics
         ├── src/lib/
@@ -155,10 +171,11 @@ SalesEnablement/
         │       ├── analytics.ts
         │       └── migrate-localstorage.ts
         ├── supabase/
-        │   └── schema.sql             # Database schema
+        │   ├── schema.sql             # Full database schema
+        │   └── practitioners_table.sql  # Practitioners table schema
         └── public/
             └── data/
-                └── practitioners.json  # 40,000+ practitioner records
+                └── practitioners.json  # Backup JSON (data now in Supabase)
 ```
 
 ---
@@ -172,11 +189,11 @@ The Call Center is a comprehensive campaign management interface for running AI-
 ### Features
 
 #### 📋 Practitioner List
-- **40,000+ practitioners** from Google Maps API scraping
+- **12,492 practitioners** stored in Supabase database
 - **Virtualized table** with smooth scrolling (handles large datasets)
-- **Advanced filtering**: Province, city, practitioner type, rating, enrichment status
+- **Server-side filtering**: Province, city, practitioner type, rating, enrichment status
 - **Column sorting**: Click any column header to sort
-- **Enrichment indicators**: Visual badges for enriched data
+- **Enrichment indicators**: Visual badges for enriched data (JSONB)
 - **Quick actions**: One-click calling, view details, add to queue
 
 #### 🗺️ Interactive Map
@@ -231,31 +248,62 @@ The Call Center is a comprehensive campaign management interface for running AI-
 ┌─────────────────────┐      ┌─────────────────────┐
 │   Client (Browser)  │      │   Server (API)      │
 │                     │      │                     │
-│  useCallRecords ────┼─────▶│  /api/campaign/     │
-│  useCallNotes   ────┼─────▶│  calls, notes       │
-│  useCampaignStats ──┼─────▶│                     │
+│  useSupabaseCall ───┼─────▶│  /api/campaign/     │
+│  Records (realtime) │      │  calls, notes       │
+│                     │      │                     │
+│  Practitioners ─────┼─────▶│  /api/practitioners │
+│  (from Supabase)    │      │  (queries DB)       │
 │                     │      │         │           │
 │       ▲             │      │         ▼           │
 │       │ realtime    │      │  ┌─────────────┐    │
 │       │ updates     │◀─────┼──│  Supabase   │    │
 │       │             │      │  │  PostgreSQL │    │
-└───────┼─────────────┘      │  └─────────────┘    │
-        │                    │         ▲           │
-        └────────────────────┼─────────┤           │
+└───────┼─────────────┘      │  │             │    │
+        │                    │  │ practitioners│    │
+        └────────────────────┼──│ call_records │    │
+                             │  │ call_notes   │    │
+                             │  └─────────────┘    │
+                             │         ▲           │
                              │         │           │
                              │  /api/webhooks/     │
                              │  bland ─────────────┘
-                             │  (writes directly)
+                             │  (phone lookup +    │
+                             │   writes directly)  │
                              └─────────────────────┘
 ```
 
 ### Database Schema
 
 ```sql
--- Call Records (main table)
+-- Practitioners (12,492 records with enrichment data)
+CREATE TABLE practitioners (
+  id TEXT PRIMARY KEY,               -- Google Maps ID
+  name TEXT NOT NULL,
+  practitioner_type TEXT NOT NULL,
+  address TEXT,
+  city TEXT,
+  province TEXT,
+  phone TEXT,
+  website TEXT,
+  rating DECIMAL(2,1),
+  review_count INTEGER,
+  business_status TEXT,
+  google_maps_uri TEXT,
+  latitude DECIMAL(10,7),
+  longitude DECIMAL(10,7),
+  scraped_at TIMESTAMPTZ,
+  notes TEXT,
+  enrichment JSONB,                  -- Team members, emails, services, languages
+  enrichment_status TEXT DEFAULT 'pending',
+  enriched_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ,
+  updated_at TIMESTAMPTZ
+);
+
+-- Call Records (linked to practitioners via FK)
 CREATE TABLE call_records (
   id UUID PRIMARY KEY,
-  practitioner_id TEXT NOT NULL,
+  practitioner_id TEXT REFERENCES practitioners(id),  -- FK to practitioners
   practitioner_name TEXT NOT NULL,
   practitioner_type TEXT,
   phone TEXT NOT NULL,
@@ -263,7 +311,7 @@ CREATE TABLE call_records (
   city TEXT,
   province TEXT,
   call_id TEXT UNIQUE,           -- Bland.ai call ID
-  status TEXT DEFAULT 'not_called',
+  status TEXT DEFAULT 'not_called',  -- Includes 'voicemail' status
   call_started_at TIMESTAMPTZ,
   call_ended_at TIMESTAMPTZ,
   duration_seconds INTEGER,
@@ -305,9 +353,17 @@ CREATE TABLE campaign_analytics (
 
 | Hook | Purpose |
 |------|---------|
-| `useCallRecords` | Fetch & manage call records with real-time subscriptions |
+| `useSupabaseCallRecords` | **Primary hook** - Real-time call records with Supabase subscriptions |
+| `useCallRecords` | Legacy hook with polling fallback |
 | `useCallNotes` | CRUD operations for notes |
 | `useCampaignStats` | Aggregated campaign statistics |
+
+### Key Features
+
+- **Real-time Updates**: Call records update instantly via Supabase Realtime
+- **Phone Lookup**: Webhook automatically links calls to practitioners by phone number
+- **Practitioners in DB**: All 12,492 practitioners stored in Supabase (not JSON file)
+- **Fallback Support**: Falls back to localStorage if Supabase unavailable
 
 ### Setting Up Supabase
 
@@ -333,16 +389,24 @@ SUPABASE_SERVICE_ROLE_KEY=eyJhbG...
 
 ### Graceful Fallback
 
-The system works **without Supabase** using localStorage:
+The system works **without Supabase** using JSON files and localStorage:
 
-- If environment variables aren't set, all data is stored locally
-- Hooks detect Supabase availability and fall back automatically
-- Migration script available to move localStorage → Supabase
+- **Practitioners**: Falls back to `public/data/practitioners.json` if DB unavailable
+- **Call records**: Falls back to localStorage if Supabase not configured
+- **Real-time**: Falls back to polling (10s intervals) if subscriptions fail
 
 ```typescript
-// Automatic fallback in hooks
-if (!isSupabaseConfigured) {
-  // Uses localStorage via campaign-storage.ts
+// Automatic fallback in practitioners API
+const useSupabase = await checkSupabaseTable();
+if (!useSupabase) {
+  // Load from JSON file
+  return loadFromJSON();
+}
+
+// Automatic fallback in call records hook
+if (!isSupabaseConfigured || !realtimeConnected) {
+  // Use polling fallback
+  startPolling();
 }
 ```
 
@@ -475,7 +539,7 @@ We created comprehensive sales guides for 6 practitioner types, each with:
 
 ### Bland.ai Conversational Pathways
 
-We programmatically generated **6 intelligent voice agents**—one for each practitioner type—with **36-38 nodes** and **365-423 edges** enabling full dynamic routing:
+We programmatically generated **6 intelligent voice agents**—one for each practitioner type—with **40-41 nodes** and **382-440 edges** enabling full dynamic routing, including IVR navigation, multi-practitioner handling, and multilingual support:
 
 ```
 Conversation Flow (36-38 Nodes with Global Routing):
@@ -568,6 +632,210 @@ The voice agent workflow:
 **Production Webhook URL**:
 ```
 https://sales-enablement-six.vercel.app/api/webhooks/bland
+```
+
+---
+
+## 🎙️ Phase 6: Voice Agent Enhancements
+
+### Overview
+
+Based on Firecrawl research of Bland.ai documentation, we implemented 5 key enhancements that leverage enrichment data (13,000+ practitioners, 6,500+ emails, 1,700+ multilingual clinics).
+
+### 1. Pre-filled Email Confirmation
+
+When we have a clinic email from enrichment data, Jennifer confirms it rather than asking:
+
+```
+WITHOUT pre-filled email:
+"What email should I send the calendar invite to?"
+
+WITH pre-filled email:
+"I have info@clinic.com on file for the calendar invite - should I send it there?"
+```
+
+**Implementation:**
+- `clinic_email` passed via `request_data` from enrichment
+- Node 27 (Check Availability) uses conditional: `{% if clinic_email %}`
+
+### 2. Multi-Practitioner Handling (Lunch & Learn)
+
+Smart routing based on `team_count` from enrichment data:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    INTRODUCTION (Node 1)                     │
+│                                                              │
+│  Enrichment Data:                                            │
+│  - team_count: {{team_count}} practitioners                  │
+└─────────────────────────────────────────────────────────────┘
+                              │
+          ┌───────────────────┼───────────────────┐
+          ▼                   ▼                   ▼
+┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
+│  team_count > 2 │ │  team_count = 2 │ │ team_count = 1  │
+│  LARGE PRACTICE │ │ MEDIUM PRACTICE │ │   or unknown    │
+└────────┬────────┘ └────────┬────────┘ └────────┬────────┘
+         │                   │                   │
+         ▼                   ▼                   ▼
+┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
+│ Node 40: Find   │ │ Node 38: Multi- │ │  Normal flow    │
+│ Decision Maker  │ │ Prac Discovery  │ │  to Discovery   │
+│                 │ │ → Lunch & Learn │ │                 │
+└─────────────────┘ └─────────────────┘ └─────────────────┘
+```
+
+**New Nodes:**
+| Node | Name | Purpose |
+|------|------|---------|
+| 38 | Multi-Practitioner Discovery | Determines practice size via receptionist |
+| 39 | Lunch and Learn Offer | Offers catered group demo (30 min) |
+| 40 | Find Decision Maker | Routes to office manager/administrator |
+
+### 3. Multilingual Jennifer (French/Quebec Support)
+
+Jennifer automatically speaks French for Quebec and matches the prospect's language:
+
+```python
+# Language detection priority:
+1. Quebec province → French (fr-CA)
+2. Enrichment languages → Match first non-English language
+3. Default → English
+
+# French opening:
+"Bonjour, c'est Jennifer de SuperPatch. Est-ce que je parle à quelqu'un de {practice_name}?"
+```
+
+**Supported Languages:** French, Spanish, Mandarin, Cantonese, Korean, Japanese, Portuguese, Italian, German, Hindi, Punjabi, Vietnamese, Tagalog, Arabic
+
+**Implementation:**
+- `language` parameter set based on province/enrichment
+- All 191 nodes have multilingual instruction: "Respond in the same language the prospect is speaking"
+
+### 4. Voicemail Handling
+
+Configurable voicemail behavior with retry logic:
+
+```python
+payload["voicemail"] = {
+    "action": "leave_message",
+    "message": "Hi, this is Jennifer from SuperPatch...",
+}
+
+payload["retry"] = {
+    "wait": 60,  # Minutes before retry
+    "voicemail_action": "leave_message",
+    "voicemail_message": "Hi, Jennifer again from SuperPatch..."
+}
+```
+
+**Features:**
+- Personalized voicemail messages (English + French)
+- Automatic retry after 60 minutes
+- Webhook tracks voicemail status separately
+- New `voicemail` status in call records
+
+### 5. IVR Navigation (Phone Tree Navigation)
+
+Based on Firecrawl deep research of Bland.ai documentation:
+
+```python
+payload = {
+    # CRITICAL: Use base model - turbo doesn't support IVR
+    "model": "base",
+    
+    # IVR Settings
+    "wait_for_greeting": True,
+    "ignore_button_press": False,
+    
+    # Continue through IVR prompts
+    "voicemail": {
+        "action": "ignore",  # Don't hang up on IVR detection
+        "sensitive": True,
+    },
+    
+    # Extended duration for hold queues
+    "max_duration": 20,
+}
+```
+
+**New Node 41: IVR Navigation**
+
+Handles automated phone systems with:
+- Menu navigation (speaking "One", "Two", "Zero")
+- Hold queue patience
+- Voicemail detection
+- Human detection and routing
+
+### Updated Call Command
+
+```bash
+python3 make_call_with_kb.py \
+  --phone "+15551234567" \
+  --pathway chiropractors \
+  --practice-name "Clinique Santé" \
+  --address "123 Rue Principale, Montreal" \
+  --province "Quebec" \
+  --clinic-email "info@cliniquesante.ca" \
+  --languages "French,English" \
+  --team-count 3
+```
+
+### Pathway Statistics (Post-Enhancement)
+
+| Pathway | Nodes | Edges |
+|---------|-------|-------|
+| Chiropractors | 41 | 410 |
+| Massage Therapists | 40 | 383 |
+| Naturopaths | 41 | 440 |
+| Integrative Medicine | 40 | 382 |
+| Functional Medicine | 41 | 411 |
+| Acupuncturists | 41 | 415 |
+
+---
+
+## 🗄️ Phase 7: Full Supabase Migration
+
+### Overview
+
+Migrated all practitioner data and call records to Supabase as the single source of truth, enabling real-time updates, better performance, and automatic call-to-practitioner linking.
+
+### What Changed
+
+| Before | After |
+|--------|-------|
+| Practitioners in JSON file | Practitioners in Supabase `practitioners` table |
+| Call records in localStorage | Call records in Supabase with realtime subscriptions |
+| Manual practitioner lookup | Automatic phone-based practitioner linking |
+| Polling for updates | Real-time Supabase subscriptions |
+
+### Migration Stats
+
+| Metric | Count |
+|--------|-------|
+| Practitioners migrated | 12,492 |
+| With enrichment data | 10,818 |
+| With contact emails | 6,528 |
+| With team members | 4,638 |
+| Multilingual clinics | 1,739 |
+
+### New Features
+
+1. **Real-time Call Updates**: Call records update instantly across all clients
+2. **Phone Lookup**: Webhook automatically finds practitioner by phone number
+3. **Voicemail Status**: New `voicemail` status for call tracking
+4. **Database-backed Filtering**: Server-side filtering for better performance
+
+### Running the Migration
+
+```bash
+# 1. Run schema in Supabase SQL Editor
+# (copy contents of supabase/practitioners_table.sql)
+
+# 2. Run migration script
+cd /Users/cbsuperpatch/Desktop/SalesEnablement
+source .venv/bin/activate
+python scripts/migrate_to_supabase.py
 ```
 
 ---
@@ -694,11 +962,15 @@ python bland_cli.py list
 | Videos Analyzed | 44 |
 | Framework Extractions | 5,357 lines |
 | Word Track Documents | 6 (1,500+ lines each) |
-| Conversation Nodes | 221 (36-38 per pathway × 6) |
-| Conversation Edges | 2,339 total (365-423 per pathway) |
-| Practitioner Records | 40,000+ |
+| Conversation Nodes | 244 (40-41 per pathway × 6) |
+| Conversation Edges | 2,441 total (382-440 per pathway) |
+| **Practitioners in Supabase** | **12,492** |
+| **With Enrichment Data** | **10,818** |
 | Unique Objection Responses | 54+ |
 | Discovery Questions | 90+ |
+| Languages Supported | 14 |
+| **Enriched Emails** | **6,528** |
+| **Multilingual Clinics** | **1,739** |
 
 ### Voice Agent Capabilities
 
@@ -711,17 +983,25 @@ python bland_cli.py list
 - ✅ Calendar integration (Cal.com)
 - ✅ Knowledge base connected
 - ✅ Transcripts and summaries saved to database
+- ✅ **Multilingual support** (14 languages, French auto-detect for Quebec)
+- ✅ **IVR navigation** (phone tree, hold queues, operator routing)
+- ✅ **Voicemail handling** (leave message, auto-retry)
+- ✅ **Pre-filled data** (email confirmation from enrichment)
+- ✅ **Smart routing** (team_count → decision maker / Lunch & Learn)
+- ✅ **Multi-practitioner handling** (Lunch & Learn offers for large practices)
 
 ### Call Center Capabilities
 
-- ✅ 40,000+ practitioner database
+- ✅ 12,492 practitioners in Supabase database
 - ✅ Interactive map visualization
-- ✅ Real-time call status updates
+- ✅ **Real-time call updates** via Supabase subscriptions
 - ✅ Full analytics dashboard
 - ✅ Notes per practitioner
-- ✅ Enrichment data display
-- ✅ Advanced filtering and sorting
+- ✅ Enrichment data display (JSONB)
+- ✅ **Server-side filtering** (database queries)
 - ✅ Virtualized lists for performance
+- ✅ **Automatic phone-based practitioner linking**
+- ✅ **Voicemail status tracking**
 
 ---
 
@@ -734,23 +1014,35 @@ python bland_cli.py list
 - [x] Global routing (any node → any node)
 - [x] Knowledge base integration
 - [x] Canadian practitioner data collection tool
-- [x] **Call Center Dashboard with 40K+ practitioners**
+- [x] **Call Center Dashboard with 12K+ practitioners**
 - [x] **Interactive map with clustering**
 - [x] **Real-time analytics dashboard**
 - [x] **Supabase database integration**
 - [x] **Call timeline view**
 - [x] **Data enrichment pipeline**
 - [x] **Notes system per practitioner**
+- [x] **Multilingual support** (14 languages, Quebec French auto-detect)
+- [x] **IVR navigation** (phone tree, hold queue, operator routing)
+- [x] **Voicemail handling** (leave message, auto-retry after 60 min)
+- [x] **Pre-filled email confirmation** (from enrichment data)
+- [x] **Multi-practitioner handling** (Lunch & Learn for large practices)
+- [x] **Smart routing** (team_count-based decision maker routing)
+- [x] **Full Supabase Migration** (practitioners + call records in DB)
+- [x] **Real-time subscriptions** (instant call status updates)
+- [x] **Phone-based practitioner linking** (webhook auto-links calls)
+- [x] **Voicemail status tracking** (new status in call records)
 
 ### Planned
 - [ ] Add more practitioner types (Physical Therapists, Athletic Trainers)
 - [ ] SMS follow-up sequences
 - [ ] CRM integration (HubSpot, Salesforce)
 - [ ] A/B test different opening scripts
-- [ ] Multilingual support
 - [ ] Real-time call monitoring (live transcription)
 - [ ] Automated follow-up email sequences
 - [ ] Call outcome tracking and conversion metrics
+- [ ] Warm transfer to human agents
+- [ ] Call recording playback in dashboard
+- [ ] Sentiment analysis on transcripts
 
 ---
 
@@ -766,5 +1058,5 @@ Built with AI assistance for SuperPatch sales enablement.
 
 ---
 
-*Last Updated: January 9, 2026*
+*Last Updated: January 12, 2026 (Full Supabase Migration)*
 

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/hover-card";
 import {
   Phone,
+  PhoneOff,
   Clock,
   MapPin,
   Star,
@@ -24,7 +25,8 @@ import {
   CalendarCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { CampaignCallRecord, CallStatus } from "@/lib/campaign-storage";
+import { CampaignCallRecord } from "@/lib/campaign-storage";
+import { CallStatus } from "@/lib/db/types";
 
 interface PipelineColumn {
   id: CallStatus;
@@ -75,6 +77,22 @@ const PIPELINE_COLUMNS: PipelineColumn[] = [
     color: "text-purple-600",
     bgColor: "bg-purple-50 dark:bg-purple-900/20",
     borderColor: "border-purple-200 dark:border-purple-800",
+  },
+  {
+    id: "calendar_sent",
+    title: "Calendar Sent",
+    icon: Calendar,
+    color: "text-teal-600",
+    bgColor: "bg-teal-50 dark:bg-teal-900/20",
+    borderColor: "border-teal-200 dark:border-teal-800",
+  },
+  {
+    id: "voicemail",
+    title: "Voicemail",
+    icon: PhoneOff,
+    color: "text-orange-600",
+    bgColor: "bg-orange-50 dark:bg-orange-900/20",
+    borderColor: "border-orange-200 dark:border-orange-800",
   },
   {
     id: "failed",
@@ -220,6 +238,7 @@ export function PipelineBoard({ records, onCardClick }: PipelineBoardProps) {
       completed: [],
       booked: [],
       calendar_sent: [],
+      voicemail: [],
       failed: [],
     };
 

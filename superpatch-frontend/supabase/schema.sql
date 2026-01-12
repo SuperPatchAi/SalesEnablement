@@ -98,3 +98,77 @@ CREATE TRIGGER call_records_updated_at
 
 -- Enable realtime for call_records table
 ALTER PUBLICATION supabase_realtime ADD TABLE call_records;
+
+-- ============================================
+-- 4. Practitioners Table (main practitioner data)
+-- ============================================
+CREATE TABLE IF NOT EXISTS practitioners (
+  id TEXT PRIMARY KEY,  -- Use existing ID from JSON data
+  name TEXT NOT NULL,
+  practitioner_type TEXT NOT NULL,
+  address TEXT,
+  city TEXT,
+  province TEXT,
+  phone TEXT,
+  website TEXT,
+  rating DECIMAL(2,1),
+  review_count INTEGER,
+  business_status TEXT,
+  google_maps_uri TEXT,
+  latitude DECIMAL(10,7),
+  longitude DECIMAL(10,7),
+  scraped_at TIMESTAMPTZ,
+  notes TEXT,
+  
+  -- Enrichment data (JSONB for flexibility)
+  -- Contains: practitioners, services, emails, languages, etc.
+  enrichment JSONB,
+  enrichment_status TEXT DEFAULT 'pending', -- pending, success, failed, skipped
+  enriched_at TIMESTAMPTZ,
+  
+  -- Metadata
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Indexes for common practitioner queries
+CREATE INDEX IF NOT EXISTS idx_practitioners_province ON practitioners(province);
+CREATE INDEX IF NOT EXISTS idx_practitioners_city ON practitioners(city);
+CREATE INDEX IF NOT EXISTS idx_practitioners_type ON practitioners(practitioner_type);
+CREATE INDEX IF NOT EXISTS idx_practitioners_phone ON practitioners(phone);
+CREATE INDEX IF NOT EXISTS idx_practitioners_rating ON practitioners(rating DESC NULLS LAST);
+CREATE INDEX IF NOT EXISTS idx_practitioners_enrichment_status ON practitioners(enrichment_status);
+
+-- Full-text search index for name and address
+CREATE INDEX IF NOT EXISTS idx_practitioners_name_trgm ON practitioners USING gin(name gin_trgm_ops);
+CREATE INDEX IF NOT EXISTS idx_practitioners_address_trgm ON practitioners USING gin(address gin_trgm_ops);
+
+-- Enable trigram extension for fuzzy search (run once)
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
+-- Enable Row Level Security
+ALTER TABLE practitioners ENABLE ROW LEVEL SECURITY;
+
+-- Allow all operations (no auth yet)
+DROP POLICY IF EXISTS "Allow all operations on practitioners" ON practitioners;
+CREATE POLICY "Allow all operations on practitioners" ON practitioners FOR ALL USING (true);
+
+-- Auto-update updated_at trigger for practitioners
+DROP TRIGGER IF EXISTS practitioners_updated_at ON practitioners;
+CREATE TRIGGER practitioners_updated_at
+  BEFORE UPDATE ON practitioners
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- ============================================
+-- Call records can exist without a practitioner
+-- ============================================
+-- Note: practitioner_id can be:
+-- 1. A valid practitioners.id (for known practitioners)
+-- 2. NULL (for unknown callers - data still tracked from call)
+-- We DO NOT use a foreign key to allow tracking calls to unknown numbers
+
+-- Remove FK constraint if it exists (we want to allow unknown callers)
+ALTER TABLE call_records DROP CONSTRAINT IF EXISTS fk_practitioner;
+
+-- Make practitioner_id nullable for unknown callers
+ALTER TABLE call_records ALTER COLUMN practitioner_id DROP NOT NULL;
