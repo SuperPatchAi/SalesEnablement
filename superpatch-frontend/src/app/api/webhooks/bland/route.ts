@@ -348,20 +348,23 @@ async function bookCalComAppointment(data: {
     data.summary || 'No summary available',
   ].join('\n');
   
+  // Build a title with practice name for easy identification
+  const bookingTitle = `SuperPatch Demo - ${data.practiceName || data.name}`;
+  
   const bookingPayload = {
     eventTypeId: CAL_EVENT_TYPE_ID,
     start: start.toISOString(),
     end: end.toISOString(),
-    responses: {
-      name: data.name,
-      email: data.email,
-      location: {
-        value: "inPerson",
-        optionValue: data.address || "TBD",
+    name: data.name,
+    email: data.email,
+    // Custom inputs array for additional fields (including notes)
+    customInputs: [
+      {
+        label: "Notes",
+        value: notes,
       },
-    },
-    // Notes field for "Additional notes" system question
-    notes: notes,
+    ],
+    location: data.address || "TBD",
     timeZone: "America/New_York",
     language: "en",
     metadata: {
@@ -371,7 +374,6 @@ async function bookCalComAppointment(data: {
       practitioner_type: data.practitionerType,
       practitioner_phone: data.phone,
       products_interested: data.products,
-      // Also store notes in metadata for backup
       call_summary: data.summary,
       full_context: notes,
     },
