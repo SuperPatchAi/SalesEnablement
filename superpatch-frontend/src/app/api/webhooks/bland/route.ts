@@ -326,11 +326,6 @@ export async function POST(request: NextRequest) {
       status: "ok",
       message: "Call completed - no booking requested",
       record_saved: !!savedRecord,
-      debug: {
-        supabase_configured: isSupabaseConfigured,
-        has_admin_client: !!supabaseAdmin,
-        practitioner_id: callRecord.practitioner_id || null,
-      },
     });
     
   } catch (error) {

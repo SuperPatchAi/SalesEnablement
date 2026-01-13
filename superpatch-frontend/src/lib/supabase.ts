@@ -9,16 +9,6 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 // Check if Supabase is configured
 export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
 
-// Debug: Log configuration status at module load (remove in production)
-if (typeof window === 'undefined') {
-  console.log('🔧 Supabase config check:', {
-    hasUrl: !!supabaseUrl,
-    hasAnonKey: !!supabaseAnonKey,
-    hasServiceKey: !!supabaseServiceKey,
-    isConfigured: isSupabaseConfigured,
-  });
-}
-
 // Type for our Supabase client
 export type TypedSupabaseClient = SupabaseClient<Database>;
 
