@@ -191,10 +191,12 @@ The Call Center is a comprehensive campaign management interface for running AI-
 #### 📋 Practitioner List
 - **12,492 practitioners** stored in Supabase database
 - **Virtualized table** with smooth scrolling (handles large datasets)
+- **Compact Inter font layout** for data density
 - **Server-side filtering**: Province, city, practitioner type, rating, enrichment status
 - **Column sorting**: Click any column header to sort
 - **Enrichment indicators**: Visual badges for enriched data (JSONB)
 - **Quick actions**: One-click calling, view details, add to queue
+- **Call data columns**: Last Called, Call Count, Duration, Voicemail (VM), Appointment, Summary
 
 #### 🗺️ Interactive Map
 - **Leaflet-based map** with practitioner markers
@@ -225,6 +227,7 @@ The Call Center is a comprehensive campaign management interface for running AI-
 - **Search practitioners**: Find by name, phone, or city
 - **Pathway selection**: Choose conversation type per practitioner
 - **Direct dialing**: Start calls with one click
+- **Request data passthrough**: Enrichment data passed to voice agent for personalization
 
 ### Call Center UI Components
 
@@ -625,7 +628,10 @@ The voice agent workflow:
 // Receives call completion data from Bland.ai
 // Extracts: name, email, preferred_time, address, practice_name
 // Books: Cal.com appointment for in-person sales visit
+//   - Uses 'description' field for booking notes (practice info + call summary)
 // Saves: Call record with transcript to Supabase
+//   - Upserts by call_id first (most reliable), then practitioner_id
+// Links: Automatically finds practitioner by phone number
 // Fallback: Logs for manual follow-up if booking fails
 ```
 
@@ -1002,6 +1008,8 @@ python bland_cli.py list
 - ✅ Virtualized lists for performance
 - ✅ **Automatic phone-based practitioner linking**
 - ✅ **Voicemail status tracking**
+- ✅ **Call data columns** (Last Called, Duration, VM indicator, Appointment, Summary)
+- ✅ **Cal.com booking with notes** (practice info + call summary in description)
 
 ---
 
@@ -1031,6 +1039,10 @@ python bland_cli.py list
 - [x] **Real-time subscriptions** (instant call status updates)
 - [x] **Phone-based practitioner linking** (webhook auto-links calls)
 - [x] **Voicemail status tracking** (new status in call records)
+- [x] **Call data columns** (Last Called, Duration, VM, Appointment, Summary)
+- [x] **Cal.com booking notes** (practice info + call summary in description field)
+- [x] **Improved webhook reliability** (call_id upsert strategy)
+- [x] **Compact table typography** (Inter font, optimized row height)
 
 ### Planned
 - [ ] Add more practitioner types (Physical Therapists, Athletic Trainers)
@@ -1058,5 +1070,5 @@ Built with AI assistance for SuperPatch sales enablement.
 
 ---
 
-*Last Updated: January 12, 2026 (Full Supabase Migration)*
+*Last Updated: January 13, 2026 (Call Data Columns + Cal.com Notes)*
 
