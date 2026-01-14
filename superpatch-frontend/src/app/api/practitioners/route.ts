@@ -132,44 +132,40 @@ async function getMetadata(forceRefresh: boolean = false): Promise<{ provinces: 
   
   if (useSupabase && supabaseAdmin) {
     try {
-      // Get distinct provinces - Supabase JS client defaults to 1000 rows, we need all
-      const { data: provinceData, error: provinceError } = await supabaseAdmin
-        .from('practitioners')
-        .select('province')
-        .not('province', 'is', null)
-        .limit(50000);  // Ensure we get all records for unique extraction
+      // Use RPC functions for efficient distinct value retrieval
+      // These functions use SELECT DISTINCT at the database level
+      const provinceResult = await supabaseAdmin.rpc('get_distinct_provinces');
+      const provinceData = provinceResult.data as { province: string }[] | null;
+      const provinceError = provinceResult.error;
       
-      console.log(`[Practitioners API] Province query: ${provinceData?.length || 0} rows, error=${provinceError?.message || 'none'}`);
+      console.log(`[Practitioners API] Province RPC: ${provinceData?.length || 0} rows, error=${provinceError?.message || 'none'}`);
       
-      const provinces = [...new Set(
-        (provinceData as { province: string }[] || [])
-          .map(p => p.province)
-          .filter(Boolean)
-      )].sort();
+      const provinces = (provinceData || [])
+        .map(p => p.province)
+        .filter(Boolean)
+        .sort();
       
-      console.log(`[Practitioners API] Unique provinces: ${provinces.join(', ')}`);
+      console.log(`[Practitioners API] Provinces: ${provinces.join(', ')}`);
       
-      // Get distinct types
-      const { data: typeData, error: typeError } = await supabaseAdmin
-        .from('practitioners')
-        .select('practitioner_type')
-        .not('practitioner_type', 'is', null)
-        .limit(50000);  // Ensure we get all records for unique extraction
+      // Get distinct types via RPC
+      const typeResult = await supabaseAdmin.rpc('get_distinct_practitioner_types');
+      const typeData = typeResult.data as { practitioner_type: string }[] | null;
+      const typeError = typeResult.error;
       
-      console.log(`[Practitioners API] Type query: ${typeData?.length || 0} rows, error=${typeError?.message || 'none'}`);
+      console.log(`[Practitioners API] Type RPC: ${typeData?.length || 0} rows, error=${typeError?.message || 'none'}`);
       
-      const types = [...new Set(
-        (typeData as { practitioner_type: string }[] || [])
-          .map(t => t.practitioner_type)
-          .filter(Boolean)
-      )].sort();
+      const types = (typeData || [])
+        .map(t => t.practitioner_type)
+        .filter(Boolean)
+        .sort();
       
-      // Get cities by province - need all records
+      // Get cities by province - still need to do this with regular query
+      // but limit is high enough to get all
       const { data: cityData } = await supabaseAdmin
         .from('practitioners')
         .select('province, city')
         .not('city', 'is', null)
-        .limit(50000);  // Ensure we get all records for unique extraction
+        .limit(50000);
       
       const typedCityData = cityData as { province: string; city: string }[] || [];
       const cities: Record<string, string[]> = {};
