@@ -34,6 +34,11 @@ export interface CampaignCallRecord {
   calendar_invite_sent: boolean;
   practitioner_email?: string;
   notes?: string;
+  // Call intelligence fields
+  sentiment_label?: string;
+  sentiment_score?: number;
+  lead_score?: number;
+  recording_url?: string;
   created_at: string;
   updated_at: string;
 }

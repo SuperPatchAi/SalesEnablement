@@ -37,6 +37,11 @@ export interface NormalizedCallRecord {
   practitioner_email?: string;
   booking_id?: string;
   notes?: string;
+  // Call intelligence fields
+  sentiment_label?: string;
+  sentiment_score?: number;
+  lead_score?: number;
+  recording_url?: string;
   created_at: string;
   updated_at: string;
   is_unknown_caller?: boolean;  // Flag to identify calls from unknown numbers
@@ -69,6 +74,11 @@ function normalizeRecord(record: CallRecord): NormalizedCallRecord {
     practitioner_email: record.practitioner_email || undefined,
     booking_id: record.booking_id || undefined,
     notes: record.notes || undefined,
+    // Call intelligence fields
+    sentiment_label: record.sentiment_label || undefined,
+    sentiment_score: record.sentiment_score || undefined,
+    lead_score: record.lead_score || 0,
+    recording_url: record.recording_url || undefined,
     created_at: record.created_at,
     updated_at: record.updated_at,
     is_unknown_caller: isUnknownCaller,

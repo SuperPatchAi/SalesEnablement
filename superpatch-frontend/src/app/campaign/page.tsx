@@ -18,7 +18,8 @@ import {
   Search, Play, Pause, Square,
   Clock, Loader2, Download, RefreshCw,
   ListChecks, BarChart3, Phone, Zap,
-  PanelLeftClose, PanelLeft, Filter, Kanban, MapPin, History, Package
+  PanelLeftClose, PanelLeft, Filter, Kanban, MapPin, History, Package,
+  Smile, Meh, Frown, TrendingUp
 } from "lucide-react";
 import {
   CampaignCallRecord,
@@ -664,6 +665,18 @@ function CampaignPageContent() {
   const getCallSummary = (practitionerId: string): string | null => {
     const record = callRecords[practitionerId];
     return record?.summary || null;
+  };
+
+  // Get sentiment label for a practitioner
+  const getSentimentLabel = (practitionerId: string): string | null => {
+    const record = callRecords[practitionerId];
+    return record?.sentiment_label || null;
+  };
+
+  // Get lead score for a practitioner
+  const getLeadScore = (practitionerId: string): number => {
+    const record = callRecords[practitionerId];
+    return record?.lead_score || 0;
   };
 
   // Format relative time (e.g., "2h ago", "3d ago")
@@ -1869,10 +1882,45 @@ function CampaignPageContent() {
                         </div>
                       )}
                       {visibleColumns.find(c => c.id === "status") && (
-                        <div className="w-[100px] text-center">
+                        <div className="w-[100px] text-center flex flex-col items-center gap-0.5">
                           <Badge className={`${STATUS_COLORS[status]} text-[11px]`}>
                             {STATUS_LABELS[status]}
                           </Badge>
+                          {/* Sentiment and Lead Score indicators */}
+                          {(getSentimentLabel(practitioner.id) || getLeadScore(practitioner.id) > 0) && (
+                            <div className="flex items-center gap-1">
+                              {getSentimentLabel(practitioner.id) && (
+                                <span 
+                                  className={`w-4 h-4 rounded-full flex items-center justify-center ${
+                                    getSentimentLabel(practitioner.id) === 'positive' 
+                                      ? 'bg-green-100 text-green-600' 
+                                      : getSentimentLabel(practitioner.id) === 'negative'
+                                        ? 'bg-red-100 text-red-600'
+                                        : 'bg-gray-100 text-gray-600'
+                                  }`}
+                                  title={`Sentiment: ${getSentimentLabel(practitioner.id)}`}
+                                >
+                                  {getSentimentLabel(practitioner.id) === 'positive' && <Smile className="w-3 h-3" />}
+                                  {getSentimentLabel(practitioner.id) === 'negative' && <Frown className="w-3 h-3" />}
+                                  {getSentimentLabel(practitioner.id) === 'neutral' && <Meh className="w-3 h-3" />}
+                                </span>
+                              )}
+                              {getLeadScore(practitioner.id) > 0 && (
+                                <span 
+                                  className={`text-[9px] font-bold px-1 rounded ${
+                                    getLeadScore(practitioner.id) >= 70 
+                                      ? 'bg-purple-100 text-purple-700' 
+                                      : getLeadScore(practitioner.id) >= 40
+                                        ? 'bg-blue-100 text-blue-700'
+                                        : 'bg-gray-100 text-gray-700'
+                                  }`}
+                                  title={`Lead Score: ${getLeadScore(practitioner.id)}`}
+                                >
+                                  {getLeadScore(practitioner.id)}
+                                </span>
+                              )}
+                            </div>
+                          )}
                         </div>
                       )}
                       {/* Row Actions */}

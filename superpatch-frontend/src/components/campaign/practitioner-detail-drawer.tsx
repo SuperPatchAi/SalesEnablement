@@ -36,6 +36,14 @@ import {
   Sparkles,
   Copy,
   CheckCheck,
+  Brain,
+  TrendingUp,
+  Smile,
+  Meh,
+  Frown,
+  Play,
+  Pause,
+  Volume2,
 } from "lucide-react";
 import {
   CampaignCallRecord,
@@ -115,6 +123,15 @@ export function PractitionerDetailDrawer({
   const [blandCalls, setBlandCalls] = useState<any[]>([]);
   const [loadingBlandCalls, setLoadingBlandCalls] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
+  // New state for call intelligence
+  const [callIntelligence, setCallIntelligence] = useState<{
+    sentiment_label?: string;
+    sentiment_score?: number;
+    lead_score?: number;
+    recording_url?: string;
+  } | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audioRef, setAudioRef] = useState<HTMLAudioElement | null>(null);
 
   // Helper to copy email to clipboard
   const copyEmail = async (email: string) => {
@@ -132,6 +149,7 @@ export function PractitionerDetailDrawer({
       setCallRecord(null);
       setNotes("");
       setBlandCalls([]);
+      setCallIntelligence(null);
       return;
     }
 
@@ -167,6 +185,14 @@ export function PractitionerDetailDrawer({
         };
         setCallRecord(record);
         setNotes(record.notes || "");
+        
+        // Set call intelligence data
+        setCallIntelligence({
+          sentiment_label: data.record.sentiment_label,
+          sentiment_score: data.record.sentiment_score,
+          lead_score: data.record.lead_score,
+          recording_url: data.record.recording_url,
+        });
       } else {
         // Fallback to localStorage
         const localRecord = getCallRecord(practitioner.id);
@@ -215,8 +241,15 @@ export function PractitionerDetailDrawer({
   useEffect(() => {
     if (open) {
       loadCallData();
+    } else {
+      // Cleanup audio when drawer closes
+      if (audioRef) {
+        audioRef.pause();
+        setAudioRef(null);
+        setIsPlaying(false);
+      }
     }
-  }, [open, practitioner, loadCallData]);
+  }, [open, practitioner, loadCallData, audioRef]);
 
   // Save notes when they change (debounced) - uses API with localStorage fallback
   useEffect(() => {
@@ -608,6 +641,92 @@ export function PractitionerDetailDrawer({
                           </pre>
                         </ScrollArea>
                       </details>
+                    )}
+
+                    {/* Call Intelligence Section */}
+                    {callIntelligence && (callIntelligence.sentiment_label || callIntelligence.lead_score || callIntelligence.recording_url) && (
+                      <div className="mt-4 pt-3 border-t">
+                        <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">
+                          <Brain className="w-3 h-3" />
+                          Call Intelligence
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {/* Sentiment Badge */}
+                          {callIntelligence.sentiment_label && (
+                            <Badge 
+                              className={
+                                callIntelligence.sentiment_label === 'positive' 
+                                  ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
+                                  : callIntelligence.sentiment_label === 'negative'
+                                    ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                                    : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'
+                              }
+                            >
+                              {callIntelligence.sentiment_label === 'positive' && <Smile className="w-3 h-3 mr-1" />}
+                              {callIntelligence.sentiment_label === 'negative' && <Frown className="w-3 h-3 mr-1" />}
+                              {callIntelligence.sentiment_label === 'neutral' && <Meh className="w-3 h-3 mr-1" />}
+                              {callIntelligence.sentiment_label}
+                            </Badge>
+                          )}
+                          
+                          {/* Lead Score Badge */}
+                          {callIntelligence.lead_score !== undefined && callIntelligence.lead_score > 0 && (
+                            <Badge 
+                              className={
+                                callIntelligence.lead_score >= 70 
+                                  ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400' 
+                                  : callIntelligence.lead_score >= 40
+                                    ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                                    : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'
+                              }
+                            >
+                              <TrendingUp className="w-3 h-3 mr-1" />
+                              Score: {callIntelligence.lead_score}
+                            </Badge>
+                          )}
+                        </div>
+
+                        {/* Audio Player for Recording */}
+                        {callIntelligence.recording_url && (
+                          <div className="mt-3 p-2 bg-muted/50 rounded-md">
+                            <p className="text-xs font-medium mb-2 flex items-center gap-1">
+                              <Volume2 className="w-3 h-3" />
+                              Call Recording
+                            </p>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-8 w-8 p-0"
+                                onClick={() => {
+                                  if (!audioRef) {
+                                    const audio = new Audio(callIntelligence.recording_url);
+                                    audio.onended = () => setIsPlaying(false);
+                                    setAudioRef(audio);
+                                    audio.play();
+                                    setIsPlaying(true);
+                                  } else if (isPlaying) {
+                                    audioRef.pause();
+                                    setIsPlaying(false);
+                                  } else {
+                                    audioRef.play();
+                                    setIsPlaying(true);
+                                  }
+                                }}
+                              >
+                                {isPlaying ? (
+                                  <Pause className="w-4 h-4" />
+                                ) : (
+                                  <Play className="w-4 h-4" />
+                                )}
+                              </Button>
+                              <span className="text-xs text-muted-foreground">
+                                {isPlaying ? 'Playing...' : 'Play recording'}
+                              </span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     )}
                   </CardContent>
                 </Card>
