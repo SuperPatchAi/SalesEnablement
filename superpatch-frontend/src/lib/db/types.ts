@@ -17,6 +17,19 @@ export type CallStatus =
   | 'failed'
   | 'voicemail';
 
+export type SampleStatus = 'pending' | 'approved' | 'shipped' | 'delivered' | 'cancelled';
+
+export type SampleProduct = 
+  | 'freedom'
+  | 'liberty' 
+  | 'rem'
+  | 'focus'
+  | 'ignite'
+  | 'defend'
+  | 'victory'
+  | 'kick_it'
+  | 'joint_flex';
+
 export interface Database {
   public: {
     Tables: {
@@ -149,6 +162,73 @@ export interface Database {
           total_duration_seconds?: number;
         };
       };
+      sample_requests: {
+        Row: {
+          id: string;
+          call_record_id: string | null;
+          practitioner_id: string | null;
+          requester_name: string;
+          practice_name: string | null;
+          email: string | null;
+          phone: string;
+          shipping_address: string | null;
+          shipping_city: string | null;
+          shipping_province: string | null;
+          shipping_postal_code: string | null;
+          sample_type: string;
+          products_requested: string[] | null;
+          quantity: number;
+          notes: string | null;
+          status: SampleStatus;
+          tracking_number: string | null;
+          shipped_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          call_record_id?: string | null;
+          practitioner_id?: string | null;
+          requester_name: string;
+          practice_name?: string | null;
+          email?: string | null;
+          phone: string;
+          shipping_address?: string | null;
+          shipping_city?: string | null;
+          shipping_province?: string | null;
+          shipping_postal_code?: string | null;
+          sample_type?: string;
+          products_requested?: string[] | null;
+          quantity?: number;
+          notes?: string | null;
+          status?: SampleStatus;
+          tracking_number?: string | null;
+          shipped_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          call_record_id?: string | null;
+          practitioner_id?: string | null;
+          requester_name?: string;
+          practice_name?: string | null;
+          email?: string | null;
+          phone?: string;
+          shipping_address?: string | null;
+          shipping_city?: string | null;
+          shipping_province?: string | null;
+          shipping_postal_code?: string | null;
+          sample_type?: string;
+          products_requested?: string[] | null;
+          quantity?: number;
+          notes?: string | null;
+          status?: SampleStatus;
+          tracking_number?: string | null;
+          shipped_at?: string | null;
+          updated_at?: string;
+        };
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
@@ -165,6 +245,10 @@ export type CallNote = Database['public']['Tables']['call_notes']['Row'];
 export type CallNoteInsert = Database['public']['Tables']['call_notes']['Insert'];
 
 export type CampaignAnalytics = Database['public']['Tables']['campaign_analytics']['Row'];
+
+export type SampleRequest = Database['public']['Tables']['sample_requests']['Row'];
+export type SampleRequestInsert = Database['public']['Tables']['sample_requests']['Insert'];
+export type SampleRequestUpdate = Database['public']['Tables']['sample_requests']['Update'];
 
 // Stats type (computed from call_records)
 export interface CampaignStats {

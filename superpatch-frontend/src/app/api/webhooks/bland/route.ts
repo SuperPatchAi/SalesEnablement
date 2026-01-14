@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { serverUpsertCallRecord, serverUpdateByCallId } from "@/lib/db/call-records";
 import { supabaseAdmin, isSupabaseConfigured } from "@/lib/supabase";
-import type { CallStatus, CallRecordInsert } from "@/lib/db/types";
+import type { CallStatus, CallRecordInsert, SampleRequestInsert } from "@/lib/db/types";
 
 const CAL_API_KEY = process.env.CAL_API_KEY || "";
 const CAL_EVENT_TYPE_ID = Number(process.env.CAL_EVENT_TYPE_ID) || 4352394;
@@ -317,6 +317,70 @@ export async function POST(request: NextRequest) {
       console.error("❌ Failed to save call record to database - check Supabase connection");
     }
     
+    // Handle sample request if requested
+    const wantsSample = vars.wants_sample === "true" || vars.sample_requested === "true";
+    
+    if (wantsSample && isSupabaseConfigured && supabaseAdmin) {
+      console.log("📦 Sample request detected - creating sample request record...");
+      
+      // Parse products requested
+      const productsRaw = vars.sample_products || vars.products_requested || "";
+      let productsRequested: string[] | null = null;
+      
+      if (productsRaw && productsRaw !== "all" && productsRaw !== "standard_kit") {
+        productsRequested = productsRaw.split(",").map(p => p.trim().toLowerCase()).filter(Boolean);
+      }
+      
+      const sampleType = productsRaw === "all" || !productsRaw ? "standard_kit" : "custom";
+      
+      // Use shipping address if provided, otherwise use practice address
+      const shippingAddress = vars.sample_shipping_address || vars.shipping_address || resolvedAddress;
+      const shippingCity = vars.sample_shipping_city || vars.shipping_city || resolvedCity;
+      const shippingProvince = vars.sample_shipping_province || vars.shipping_province || resolvedProvince;
+      const shippingPostalCode = vars.sample_postal_code || vars.shipping_postal_code || meta.postal_code;
+      
+      const sampleRequest: SampleRequestInsert = {
+        call_record_id: savedRecord?.id || null,
+        practitioner_id: resolvedPractitionerId || null,
+        requester_name: contactName || resolvedPractitionerName || "Unknown",
+        practice_name: practiceName || resolvedPractitionerName,
+        email: practitionerEmail || meta.clinic_email || null,
+        phone: payload.to,
+        shipping_address: shippingAddress || null,
+        shipping_city: shippingCity || null,
+        shipping_province: shippingProvince || null,
+        shipping_postal_code: shippingPostalCode || null,
+        sample_type: sampleType,
+        products_requested: productsRequested,
+        quantity: parseInt(vars.sample_quantity || "1", 10) || 1,
+        notes: vars.sample_notes || null,
+        status: "pending",
+      };
+      
+      try {
+        // Use type assertion for new table not yet in Supabase types
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data: sampleData, error: sampleError } = await (supabaseAdmin as any)
+          .from("sample_requests")
+          .insert(sampleRequest)
+          .select()
+          .single();
+        
+        if (sampleError) {
+          console.error("❌ Failed to create sample request:", sampleError.message);
+        } else {
+          console.log("✅ Sample request created:", {
+            id: sampleData.id,
+            requester: sampleData.requester_name,
+            products: sampleData.products_requested || "standard_kit",
+            shipping_city: sampleData.shipping_city,
+          });
+        }
+      } catch (err) {
+        console.error("❌ Error creating sample request:", err);
+      }
+    }
+    
     // Log for manual follow-up if demo requested but booking failed
     if (wantsDemo && !bookingResult) {
       console.log("📝 MANUAL FOLLOW-UP NEEDED:");
@@ -513,6 +577,7 @@ export async function GET(request: NextRequest) {
       "Books to Cal.com if demo requested",
       "Stores transcripts and summaries",
       "Tracks voicemail status",
+      "Creates sample requests when requested",
     ],
     debug_endpoints: {
       test_supabase: "/api/webhooks/bland?test=supabase",
