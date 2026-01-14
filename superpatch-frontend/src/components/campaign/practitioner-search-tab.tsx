@@ -166,7 +166,7 @@ export function PractitionerSearchTab({ onPractitionerImported }: PractitionerSe
   }, [enrichPlace]);
 
   return (
-    <div className="flex flex-col h-full gap-4">
+    <div className="flex flex-col h-full gap-4 overflow-hidden">
       {/* Search Form */}
       <Card>
         <CardHeader className="pb-3">
@@ -330,9 +330,9 @@ export function PractitionerSearchTab({ onPractitionerImported }: PractitionerSe
             </div>
           </CardHeader>
           
-          <CardContent className="flex-1 min-h-0 flex flex-col">
+          <CardContent className="flex-1 min-h-0 flex flex-col overflow-hidden">
             {/* Results Table */}
-            <ScrollArea className="flex-1 border rounded-md">
+            <ScrollArea className="flex-1 min-h-0 border rounded-md">
               <div className="min-w-[800px]">
                 {/* Table Header */}
                 <div className="flex items-center gap-4 p-3 border-b bg-muted/50 font-medium text-sm sticky top-0">
