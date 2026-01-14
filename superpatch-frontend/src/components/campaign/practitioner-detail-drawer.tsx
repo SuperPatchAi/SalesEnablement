@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -38,6 +39,7 @@ import {
   FileText,
   Building2,
   Plus,
+  Brain,
 } from "lucide-react";
 import {
   CampaignCallRecord,
@@ -442,7 +444,7 @@ export function PractitionerDetailDrawer({
           </TabsList>
 
           {/* Tab Contents */}
-          <ScrollArea className="flex-1">
+          <ScrollArea className="flex-1 h-0">
             {/* Overview Tab */}
             <TabsContent value="overview" className="m-0 p-6 space-y-4">
               {/* Practice Information */}
@@ -609,13 +611,32 @@ export function PractitionerDetailDrawer({
             </TabsContent>
 
             {/* Notes Tab */}
-            <TabsContent value="notes" className="m-0 p-6 h-full">
+            <TabsContent value="notes" className="m-0 p-6 space-y-4">
+              {/* Call Summary (read-only) */}
+              {callRecord?.summary && (
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium flex items-center gap-2">
+                      <Brain className="w-4 h-4" />
+                      Call Summary
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                      {callRecord.summary}
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Your Notes (editable) */}
               <div className="space-y-2">
+                <Label className="text-sm font-medium">Your Notes</Label>
                 <Textarea
                   placeholder="Add notes about this practitioner..."
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="min-h-[300px] resize-none"
+                  className="min-h-[200px] resize-none"
                 />
                 <p className="text-xs text-muted-foreground">
                   Notes are saved automatically
