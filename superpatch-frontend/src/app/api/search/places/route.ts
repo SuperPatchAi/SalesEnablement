@@ -51,6 +51,7 @@ export interface PlacesSearchRequest {
   };
   country: "CA" | "US";
   pageToken?: string;
+  limit?: number; // Max results to return (default 20, max 100)
 }
 
 export interface PlacesSearchResponse {
@@ -103,6 +104,56 @@ function normalizePlaceData(place: GooglePlace, country: "CA" | "US") {
   };
 }
 
+// Helper function to make a single API request
+async function fetchPlacesPage(
+  query: string,
+  location: { lat: number; lng: number; radius: number },
+  country: string,
+  pageToken?: string
+): Promise<{ places: GooglePlace[]; nextPageToken?: string; error?: string }> {
+  const payload: Record<string, unknown> = {
+    textQuery: query,
+    locationBias: {
+      circle: {
+        center: {
+          latitude: location.lat,
+          longitude: location.lng,
+        },
+        radius: location.radius || 20000,
+      },
+    },
+    regionCode: country || "CA",
+    languageCode: "en",
+    pageSize: 20, // Google's max per request
+  };
+
+  if (pageToken) {
+    payload.pageToken = pageToken;
+  }
+
+  const response = await fetch(PLACES_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Goog-Api-Key": GOOGLE_MAPS_API_KEY,
+      "X-Goog-FieldMask": FIELD_MASK,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error(`[Places API] Error: ${response.status} - ${errorText}`);
+    return { places: [], error: `Google Maps API error: ${response.status}` };
+  }
+
+  const data = await response.json();
+  return {
+    places: data.places || [],
+    nextPageToken: data.nextPageToken,
+  };
+}
+
 // POST /api/search/places - Search Google Maps Places API
 export async function POST(request: NextRequest) {
   try {
@@ -118,7 +169,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: PlacesSearchRequest = await request.json();
-    const { query, location, country, pageToken } = body;
+    const { query, location, country, pageToken, limit = 20 } = body;
 
     // Validate required fields
     if (!query || !location) {
@@ -131,65 +182,82 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Build the search payload
-    const payload: Record<string, unknown> = {
-      textQuery: query,
-      locationBias: {
-        circle: {
-          center: {
-            latitude: location.lat,
-            longitude: location.lng,
-          },
-          radius: location.radius || 20000,
-        },
-      },
-      regionCode: country || "CA",
-      languageCode: "en",
-      pageSize: 20,
-    };
+    // Clamp limit between 1 and 100
+    const maxResults = Math.min(Math.max(limit, 1), 100);
+    
+    console.log(`[Places API] Searching: "${query}" near (${location.lat}, ${location.lng}), limit: ${maxResults}`);
 
+    // If a pageToken is provided, just fetch that single page (for manual pagination)
     if (pageToken) {
-      payload.pageToken = pageToken;
+      const result = await fetchPlacesPage(query, location, country, pageToken);
+      
+      if (result.error) {
+        return NextResponse.json({ places: [], error: result.error }, { status: 500 });
+      }
+
+      const normalizedPlaces = result.places.map((place) => normalizePlaceData(place, country));
+      
+      return NextResponse.json({
+        places: normalizedPlaces,
+        nextPageToken: result.nextPageToken,
+        totalRequests: 1,
+      });
     }
 
-    console.log(`[Places API] Searching: "${query}" near (${location.lat}, ${location.lng})`);
+    // Auto-paginate to collect results up to the limit
+    const allPlaces: GooglePlace[] = [];
+    let nextToken: string | undefined;
+    let totalRequests = 0;
 
-    // Make the API request
-    const response = await fetch(PLACES_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Goog-Api-Key": GOOGLE_MAPS_API_KEY,
-        "X-Goog-FieldMask": FIELD_MASK,
-      },
-      body: JSON.stringify(payload),
-    });
+    while (allPlaces.length < maxResults) {
+      const result = await fetchPlacesPage(query, location, country, nextToken);
+      totalRequests++;
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`[Places API] Error: ${response.status} - ${errorText}`);
-      return NextResponse.json(
-        {
-          places: [],
-          error: `Google Maps API error: ${response.status}`,
-        },
-        { status: response.status }
-      );
+      if (result.error) {
+        // If we have some results, return them; otherwise return error
+        if (allPlaces.length > 0) {
+          console.log(`[Places API] Error on page ${totalRequests}, returning ${allPlaces.length} results collected so far`);
+          break;
+        }
+        return NextResponse.json({ places: [], error: result.error }, { status: 500 });
+      }
+
+      if (result.places.length === 0) {
+        // No more results available
+        console.log(`[Places API] No more results available after ${totalRequests} requests`);
+        break;
+      }
+
+      allPlaces.push(...result.places);
+      nextToken = result.nextPageToken;
+
+      console.log(`[Places API] Page ${totalRequests}: got ${result.places.length} places, total: ${allPlaces.length}, hasMore: ${!!nextToken}`);
+
+      // Stop if no more pages
+      if (!nextToken) {
+        break;
+      }
+
+      // Safety limit: max 5 API calls per search (100 results)
+      if (totalRequests >= 5) {
+        console.log(`[Places API] Reached max API calls (5), stopping pagination`);
+        break;
+      }
     }
 
-    const data = await response.json();
-    const rawPlaces: GooglePlace[] = data.places || [];
-    const nextToken: string | undefined = data.nextPageToken;
+    // Trim to requested limit and normalize
+    const trimmedPlaces = allPlaces.slice(0, maxResults);
+    const normalizedPlaces = trimmedPlaces.map((place) => normalizePlaceData(place, country));
+    
+    // Only report hasMore if we have a token AND we trimmed results
+    const hasMore = !!nextToken && allPlaces.length > maxResults;
 
-    // Normalize the place data
-    const normalizedPlaces = rawPlaces.map((place) => normalizePlaceData(place, country));
-
-    console.log(`[Places API] Found ${normalizedPlaces.length} places, nextToken: ${!!nextToken}`);
+    console.log(`[Places API] Returning ${normalizedPlaces.length} places after ${totalRequests} API calls`);
 
     return NextResponse.json({
       places: normalizedPlaces,
-      nextPageToken: nextToken,
-      totalRequests: 1,
+      nextPageToken: hasMore ? nextToken : undefined,
+      totalRequests,
     });
   } catch (error) {
     console.error("[Places API] Error:", error);

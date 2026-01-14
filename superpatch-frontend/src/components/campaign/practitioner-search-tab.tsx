@@ -29,6 +29,7 @@ import {
   NORTH_AMERICA_LOCATIONS,
   PRACTITIONER_TYPES,
   RADIUS_OPTIONS,
+  RESULTS_LIMIT_OPTIONS,
   getRegions,
   getCities,
   getCountryLabel,
@@ -50,6 +51,7 @@ export function PractitionerSearchTab({ onPractitionerImported }: PractitionerSe
   const [selectedCity, setSelectedCity] = useState<CityLocation | null>(null);
   const [practitionerType, setPractitionerType] = useState<string>("");
   const [radius, setRadius] = useState<number>(20000);
+  const [resultsLimit, setResultsLimit] = useState<number>(20);
 
   // Search hook
   const {
@@ -124,10 +126,11 @@ export function PractitionerSearchTab({ onPractitionerImported }: PractitionerSe
           radius,
         },
         country,
+        limit: resultsLimit,
       },
       typeLabel
     );
-  }, [selectedCity, practitionerType, region, country, radius, search]);
+  }, [selectedCity, practitionerType, region, country, radius, resultsLimit, search]);
 
   // Handle import
   const handleImport = useCallback(async () => {
@@ -180,7 +183,7 @@ export function PractitionerSearchTab({ onPractitionerImported }: PractitionerSe
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Country & Location Row */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             {/* Country */}
             <div className="space-y-2">
               <Label>Country</Label>
@@ -240,6 +243,23 @@ export function PractitionerSearchTab({ onPractitionerImported }: PractitionerSe
                   {PRACTITIONER_TYPES.map((type) => (
                     <SelectItem key={type.id} value={type.id}>
                       {type.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Results Limit */}
+            <div className="space-y-2">
+              <Label>Max Results</Label>
+              <Select value={resultsLimit.toString()} onValueChange={(v) => setResultsLimit(Number(v))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select limit" />
+                </SelectTrigger>
+                <SelectContent>
+                  {RESULTS_LIMIT_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value.toString()}>
+                      {option.label}
                     </SelectItem>
                   ))}
                 </SelectContent>

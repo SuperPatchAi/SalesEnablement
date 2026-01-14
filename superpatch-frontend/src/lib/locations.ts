@@ -49,6 +49,15 @@ export const RADIUS_OPTIONS = [
   { value: 50000, label: "50 km" },
 ] as const;
 
+// Results limit options
+export const RESULTS_LIMIT_OPTIONS = [
+  { value: 20, label: "20 results" },
+  { value: 40, label: "40 results" },
+  { value: 60, label: "60 results" },
+  { value: 80, label: "80 results" },
+  { value: 100, label: "100 results (max)" },
+] as const;
+
 // Canadian provinces and cities
 export const CANADA: CountryData = {
   name: "Canada",

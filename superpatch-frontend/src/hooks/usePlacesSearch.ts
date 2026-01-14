@@ -30,6 +30,7 @@ export interface SearchParams {
     radius: number;
   };
   country: "CA" | "US";
+  limit?: number; // Max results (default 20, max 100)
 }
 
 export interface EnrichmentResult {
