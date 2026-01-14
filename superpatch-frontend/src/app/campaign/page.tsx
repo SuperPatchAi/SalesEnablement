@@ -19,7 +19,7 @@ import {
   Clock, Loader2, Download, RefreshCw,
   ListChecks, BarChart3, Phone, Zap,
   PanelLeftClose, PanelLeft, Filter, Kanban, MapPin, History, Package,
-  Smile, Meh, Frown, TrendingUp, Globe2, Sparkles
+  Smile, Meh, Frown, TrendingUp, Globe2, Sparkles, Radio, RotateCcw
 } from "lucide-react";
 import {
   CampaignCallRecord,
@@ -61,6 +61,8 @@ import {
   KPIGrid 
 } from "@/components/campaign/enhanced-charts";
 import { PractitionerSearchTab } from "@/components/campaign/practitioner-search-tab";
+import { ActiveCallsMonitor } from "@/components/campaign/active-calls-monitor";
+import { RetryQueuePanel } from "@/components/campaign/retry-queue-panel";
 import dynamic from "next/dynamic";
 
 // Dynamically import map to avoid SSR issues with Leaflet
@@ -1416,18 +1418,26 @@ function CampaignPageContent() {
                 </SheetHeader>
                 <Tabs defaultValue="queue" className="mt-4">
                   <div className="px-6">
-                    <TabsList className="grid w-full grid-cols-2">
-                      <TabsTrigger value="queue" className="gap-2">
-                        <ListChecks className="w-4 h-4" />
+                    <TabsList className="grid w-full grid-cols-4">
+                      <TabsTrigger value="queue" className="gap-1 text-xs">
+                        <ListChecks className="w-3.5 h-3.5" />
                         Queue
                         {(queuedCalls.length + activeCalls.length) > 0 && (
-                          <Badge variant="secondary" className="ml-1 h-5 px-1.5">
+                          <Badge variant="secondary" className="ml-0.5 h-4 px-1 text-[10px]">
                             {queuedCalls.length + activeCalls.length}
                           </Badge>
                         )}
                       </TabsTrigger>
-                      <TabsTrigger value="activity" className="gap-2">
-                        <BarChart3 className="w-4 h-4" />
+                      <TabsTrigger value="live" className="gap-1 text-xs">
+                        <Radio className="w-3.5 h-3.5" />
+                        Live
+                      </TabsTrigger>
+                      <TabsTrigger value="retries" className="gap-1 text-xs">
+                        <RotateCcw className="w-3.5 h-3.5" />
+                        Retries
+                      </TabsTrigger>
+                      <TabsTrigger value="activity" className="gap-1 text-xs">
+                        <BarChart3 className="w-3.5 h-3.5" />
                         Activity
                       </TabsTrigger>
                     </TabsList>
@@ -1509,6 +1519,14 @@ function CampaignPageContent() {
                         />
                       )}
                     </div>
+                  </TabsContent>
+
+                  <TabsContent value="live" className="mt-0 px-4 pb-4">
+                    <ActiveCallsMonitor />
+                  </TabsContent>
+
+                  <TabsContent value="retries" className="mt-0 px-4 pb-4">
+                    <RetryQueuePanel />
                   </TabsContent>
 
                   <TabsContent value="activity" className="mt-0 h-[calc(100vh-200px)]">
