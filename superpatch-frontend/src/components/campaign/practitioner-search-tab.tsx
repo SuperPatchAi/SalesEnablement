@@ -325,8 +325,8 @@ export function PractitionerSearchTab({ onPractitionerImported }: PractitionerSe
 
       {/* Results */}
       {places.length > 0 && (
-        <Card className="flex-1 flex flex-col min-h-0">
-          <CardHeader className="pb-3 flex-shrink-0">
+        <Card>
+          <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="text-lg">
@@ -350,9 +350,9 @@ export function PractitionerSearchTab({ onPractitionerImported }: PractitionerSe
             </div>
           </CardHeader>
           
-          <CardContent className="flex-1 min-h-0 flex flex-col overflow-hidden p-0 pt-0">
+          <CardContent>
             {/* Results Table */}
-            <ScrollArea className="h-0 flex-1 border rounded-md mx-6 mb-6">
+            <ScrollArea className="h-[calc(100vh-450px)] min-h-[300px] border rounded-md">
               <div className="min-w-[800px]">
                 {/* Table Header */}
                 <div className="flex items-center gap-4 p-3 border-b bg-muted/50 font-medium text-sm sticky top-0">
@@ -502,7 +502,7 @@ export function PractitionerSearchTab({ onPractitionerImported }: PractitionerSe
             </ScrollArea>
 
             {/* Load More & Import Actions */}
-            <div className="flex items-center justify-between pt-4 border-t mx-6 mb-6 flex-shrink-0">
+            <div className="flex items-center justify-between pt-4 border-t mt-4">
               <div>
                 {hasMore && (
                   <Button variant="outline" onClick={loadMore} disabled={isSearching}>
