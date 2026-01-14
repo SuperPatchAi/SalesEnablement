@@ -19,7 +19,7 @@ import {
   Clock, Loader2, Download, RefreshCw,
   ListChecks, BarChart3, Phone, Zap,
   PanelLeftClose, PanelLeft, Filter, Kanban, MapPin, History, Package,
-  Smile, Meh, Frown, TrendingUp, Globe2
+  Smile, Meh, Frown, TrendingUp, Globe2, Sparkles
 } from "lucide-react";
 import {
   CampaignCallRecord,
@@ -243,6 +243,10 @@ function CampaignPageContent() {
   // Map state - track if all practitioners are loaded
   const [allPractitionersLoaded, setAllPractitionersLoaded] = useState(false);
   const [loadingAllPractitioners, setLoadingAllPractitioners] = useState(false);
+
+  // Bulk enrichment state
+  const [isEnrichingBulk, setIsEnrichingBulk] = useState(false);
+  const [enrichmentProgress, setEnrichmentProgress] = useState({ current: 0, total: 0, currentName: "" });
 
   // Refs
   const parentRef = useRef<HTMLDivElement>(null);
@@ -806,6 +810,67 @@ function CampaignPageContent() {
       r => r.status === 'booked' || r.status === 'calendar_sent'
     ).length;
     callNotifications.campaignCompleted(bookedCount);
+  };
+
+  // Bulk enrich selected practitioners
+  const bulkEnrichSelected = async () => {
+    // Get selected practitioners with websites that need enrichment
+    const toEnrich = practitioners.filter(
+      p => selectedIds.has(p.id) && p.website && (!p.enrichment || p.enrichment?.data === null)
+    );
+
+    if (toEnrich.length === 0) {
+      alert("No selected practitioners need enrichment (must have website and not already enriched)");
+      return;
+    }
+
+    setIsEnrichingBulk(true);
+    setEnrichmentProgress({ current: 0, total: toEnrich.length, currentName: "" });
+
+    let successCount = 0;
+    let failCount = 0;
+
+    for (let i = 0; i < toEnrich.length; i++) {
+      const practitioner = toEnrich[i];
+      setEnrichmentProgress({ 
+        current: i + 1, 
+        total: toEnrich.length, 
+        currentName: practitioner.name 
+      });
+
+      try {
+        const response = await fetch("/api/search/enrich", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            practitionerId: practitioner.id,
+            websiteUrl: practitioner.website,
+          }),
+        });
+
+        if (response.ok) {
+          successCount++;
+          console.log(`[Bulk Enrich] Success: ${practitioner.name}`);
+        } else {
+          failCount++;
+          console.warn(`Enrichment failed for ${practitioner.name}: ${response.status}`);
+        }
+      } catch (err) {
+        failCount++;
+        console.error(`Enrichment error for ${practitioner.name}:`, err);
+      }
+
+      // Small delay to avoid rate limiting
+      await new Promise(resolve => setTimeout(resolve, 300));
+    }
+
+    setIsEnrichingBulk(false);
+    setEnrichmentProgress({ current: 0, total: 0, currentName: "" });
+    
+    // Refresh data to get updated enrichment status
+    loadPractitioners(1);
+    
+    alert(`Enrichment complete!\n✓ ${successCount} succeeded\n✗ ${failCount} failed`);
   };
 
   // Export data
@@ -2114,8 +2179,33 @@ function CampaignPageContent() {
         </div>
       </div>
 
+          {/* Enrichment Progress Bar */}
+          {isEnrichingBulk && (
+            <div className="border-t px-6 py-3 bg-purple-50">
+              <div className="flex items-center gap-4">
+                <Loader2 className="w-4 h-4 animate-spin text-purple-600" />
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm font-medium text-purple-700">
+                      Enriching: {enrichmentProgress.currentName}
+                    </span>
+                    <span className="text-sm text-purple-600">
+                      {enrichmentProgress.current} / {enrichmentProgress.total}
+                    </span>
+                  </div>
+                  <div className="w-full bg-purple-200 rounded-full h-2">
+                    <div 
+                      className="bg-purple-600 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${(enrichmentProgress.current / enrichmentProgress.total) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Selection Action Bar */}
-          {selectedIds.size > 0 && (
+          {selectedIds.size > 0 && !isEnrichingBulk && (
             <div className="border-t px-6 py-3 bg-blue-50 flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <span className="font-medium">
@@ -2126,6 +2216,17 @@ function CampaignPageContent() {
                 </Button>
               </div>
               <div className="flex items-center gap-2">
+                {/* Bulk Enrich Button */}
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={bulkEnrichSelected}
+                  disabled={isEnrichingBulk}
+                >
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Enrich Selected
+                </Button>
+                
                 {campaignRunning ? (
                   <>
                     {campaignPaused ? (
