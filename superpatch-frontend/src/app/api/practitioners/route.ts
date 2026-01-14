@@ -144,12 +144,12 @@ async function getMetadata(forceRefresh: boolean = false): Promise<{
   
   if (useSupabase && supabaseAdmin) {
     try {
-      // Get distinct countries
-      const { data: countryData } = await supabaseAdmin
-        .from('practitioners')
-        .select('country')
-        .not('country', 'is', null);
-      const countries = [...new Set((countryData || []).map((c: { country: string }) => c.country).filter(Boolean))].sort();
+      // Get distinct countries using RPC function
+      const { data: countryData } = await supabaseAdmin.rpc('get_distinct_countries');
+      const countries = ((countryData as { country: string }[] | null) || [])
+        .map((c) => c.country)
+        .filter(Boolean)
+        .sort();
       
       // Use RPC functions for efficient distinct value retrieval
       const provinceResult = await supabaseAdmin.rpc('get_distinct_provinces');
