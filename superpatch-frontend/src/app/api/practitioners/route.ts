@@ -131,7 +131,7 @@ async function getMetadata(forceRefresh: boolean = false): Promise<{ provinces: 
   
   if (useSupabase && supabaseAdmin) {
     try {
-      // Get distinct provinces - need high limit since Supabase defaults to 1000
+      // Get distinct provinces - Supabase JS client defaults to 1000 rows, we need all
       const { data: provinceData } = await supabaseAdmin
         .from('practitioners')
         .select('province')
