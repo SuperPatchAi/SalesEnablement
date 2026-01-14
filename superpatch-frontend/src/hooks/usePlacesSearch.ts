@@ -384,6 +384,7 @@ export function usePlacesSearch(): UsePlacesSearchReturn {
   }, [state.places, enrichPlace]);
 
   // Import and enrich selected places in one action
+  // Uses Supabase Edge Function for parallel enrichment (50 concurrent)
   const importAndEnrichSelected = useCallback(async (): Promise<ImportResult> => {
     const selectedPlaces = state.places.filter((p) => p.isSelected && !p.isImported);
     
@@ -393,95 +394,69 @@ export function usePlacesSearch(): UsePlacesSearchReturn {
 
     setState((prev) => ({ ...prev, isImporting: true, isEnriching: true, error: null }));
 
-    // Step 1: Enrich all selected places with websites (in parallel for speed)
-    const placesToEnrich = selectedPlaces.filter((p) => p.website && !p.enrichmentData);
-    
-    if (placesToEnrich.length > 0) {
-      console.log(`[usePlacesSearch] Enriching ${placesToEnrich.length} places before import`);
+    // Step 1: Import all selected places first
+    let importResult: ImportResult;
+    try {
+      const response = await fetch("/api/search/import", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ practitioners: selectedPlaces }),
+      });
+
+      importResult = await response.json();
+      console.log(`[usePlacesSearch] Imported ${importResult.imported} practitioners`);
+    } catch (err) {
+      console.error("[usePlacesSearch] Import error:", err);
+      setState((prev) => ({ ...prev, isImporting: false, isEnriching: false }));
+      return { imported: 0, duplicates: 0, errors: ["Import failed"], importedIds: [] };
+    }
+
+    setState((prev) => ({ ...prev, isImporting: false }));
+
+    // Step 2: Enrich imported practitioners via Supabase Edge Function (50 concurrent)
+    const practitionerIdsToEnrich = importResult.importedIds.filter((id) => {
+      const place = selectedPlaces.find((p) => p.id === id);
+      return place?.website; // Only enrich those with websites
+    });
+
+    if (practitionerIdsToEnrich.length > 0) {
+      console.log(`[usePlacesSearch] Triggering Edge Function enrichment for ${practitionerIdsToEnrich.length} practitioners`);
       
-      // Enrich in parallel (batches of 5 to avoid rate limits)
-      const batchSize = 5;
-      for (let i = 0; i < placesToEnrich.length; i += batchSize) {
-        const batch = placesToEnrich.slice(i, i + batchSize);
-        await Promise.all(
-          batch.map(async (place) => {
-            try {
-              const response = await fetch("/api/search/enrich", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ websiteUrl: place.website }),
-              });
-              
-              if (response.ok) {
-                const result = await response.json();
-                if (result.success) {
-                  // Update place with enrichment data in state
-                  setState((prev) => ({
-                    ...prev,
-                    places: prev.places.map((p) =>
-                      p.id === place.id
-                        ? {
-                            ...p,
-                            isEnriched: true,
-                            enrichmentData: {
-                              practitioners: result.practitioners || [],
-                              emails: result.emails || [],
-                              phones: result.phones || [],
-                              services: result.services || [],
-                              languages: result.languages || [],
-                              title: result.title,
-                              description: result.description,
-                            },
-                          }
-                        : p
-                    ),
-                  }));
-                }
-              }
-            } catch (err) {
-              console.error(`[usePlacesSearch] Enrichment error for ${place.name}:`, err);
-            }
-          })
-        );
+      try {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+        if (supabaseUrl && supabaseAnonKey) {
+          const enrichResponse = await fetch(`${supabaseUrl}/functions/v1/enrich-practitioners`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${supabaseAnonKey}`,
+            },
+            body: JSON.stringify({ practitionerIds: practitionerIdsToEnrich }),
+          });
+
+          if (enrichResponse.ok) {
+            const enrichResult = await enrichResponse.json();
+            console.log(`[usePlacesSearch] Edge Function enrichment complete: ${enrichResult.enriched} success, ${enrichResult.failed} failed`);
+          } else {
+            console.warn("[usePlacesSearch] Edge Function enrichment failed:", await enrichResponse.text());
+          }
+        }
+      } catch (err) {
+        console.error("[usePlacesSearch] Edge Function enrichment error:", err);
+        // Don't fail the whole operation - import succeeded
       }
     }
 
     setState((prev) => ({ ...prev, isEnriching: false }));
 
-    // Step 2: Get updated places with enrichment data and import
-    // Need to get fresh state
-    const currentPlaces = state.places.filter((p) => p.isSelected && !p.isImported);
-    
-    try {
-      const response = await fetch("/api/search/import", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ practitioners: currentPlaces }),
-      });
-
-      const result: ImportResult = await response.json();
-
-      // Mark imported places
-      if (result.importedIds.length > 0) {
-        markAsImported(result.importedIds);
-      }
-
-      setState((prev) => ({
-        ...prev,
-        isImporting: false,
-        error: result.errors.length > 0 ? result.errors.join(", ") : null,
-      }));
-
-      return result;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Import failed";
-      setState((prev) => ({
-        ...prev,
-        isImporting: false,
-        error: errorMessage,
-      }));
-      return { imported: 0, duplicates: 0, errors: [errorMessage], importedIds: [] };
+    // Mark imported places in state
+    if (importResult.importedIds.length > 0) {
+      markAsImported(importResult.importedIds);
     }
+
+    return importResult;
   }, [state.places, markAsImported]);
 
   // Count selected places with websites (for UI)
