@@ -56,6 +56,10 @@ export interface Database {
           practitioner_email: string | null;
           booking_id: string | null;
           notes: string | null;
+          sentiment_score: number | null;
+          sentiment_label: string | null;
+          recording_url: string | null;
+          lead_score: number;
           created_at: string;
           updated_at: string;
         };
@@ -81,6 +85,10 @@ export interface Database {
           practitioner_email?: string | null;
           booking_id?: string | null;
           notes?: string | null;
+          sentiment_score?: number | null;
+          sentiment_label?: string | null;
+          recording_url?: string | null;
+          lead_score?: number;
           created_at?: string;
           updated_at?: string;
         };
@@ -102,6 +110,10 @@ export interface Database {
           summary?: string | null;
           appointment_booked?: boolean;
           appointment_time?: string | null;
+          sentiment_score?: number | null;
+          sentiment_label?: string | null;
+          recording_url?: string | null;
+          lead_score?: number;
           calendar_invite_sent?: boolean;
           practitioner_email?: string | null;
           booking_id?: string | null;

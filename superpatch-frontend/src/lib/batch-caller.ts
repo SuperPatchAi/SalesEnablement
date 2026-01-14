@@ -35,6 +35,8 @@ const DEFAULT_PATHWAY = "cf2233ef-7fb2-49ff-af29-0eee47204e9f"; // Chiropractors
 const KB_ID = "b671527d-0c2d-4a21-9586-033dad3b0255";
 const VOICE_ID = "78c8543e-e5fe-448e-8292-20a7b8c45247";
 const WEBHOOK_URL = "https://sales-enablement-six.vercel.app/api/webhooks/bland";
+// Bland Memory Store ID for cross-call context retention
+const MEMORY_ID = process.env.NEXT_PUBLIC_BLAND_MEMORY_ID || "";
 
 export interface Practitioner {
   id: string;
@@ -187,7 +189,7 @@ export class BatchCaller {
 
     const pathwayId = getPathwayId(practitioner.practitioner_type);
 
-    const callPayload = {
+    const callPayload: Record<string, unknown> = {
       phone_number: phone,
       pathway_id: pathwayId,
       pathway_version: 1,
@@ -211,6 +213,11 @@ export class BatchCaller {
         province: practitioner.province || '',
       },
     };
+
+    // Add memory_id for cross-call context retention (if configured)
+    if (MEMORY_ID) {
+      callPayload.memory_id = MEMORY_ID;
+    }
 
     try {
       const response = await fetch('/api/bland/calls', {

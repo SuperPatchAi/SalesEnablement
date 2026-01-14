@@ -875,7 +875,9 @@ function CampaignPageContent() {
         practitioner_type: quickCallResult.practitioner_type || '',
       };
 
-      const callPayload = {
+      // Build call payload with memory_id for context retention
+      const memoryId = process.env.NEXT_PUBLIC_BLAND_MEMORY_ID;
+      const callPayload: Record<string, unknown> = {
         phone_number: formattedPhone,
         pathway_id: pathways[quickCallType] || pathways.chiropractor,
         pathway_version: 1,
@@ -898,6 +900,11 @@ function CampaignPageContent() {
           province: quickCallResult.province || '',
         },
       };
+
+      // Add memory_id for cross-call context (if configured)
+      if (memoryId) {
+        callPayload.memory_id = memoryId;
+      }
       
       const response = await fetch('/api/bland/calls', {
         method: 'POST',
@@ -1000,7 +1007,9 @@ function CampaignPageContent() {
         greeting_name: quickCallContactName || quickCallPracticeName || 'there',
       };
 
-      const callPayload = {
+      // Build call payload with memory_id for context retention
+      const memoryId = process.env.NEXT_PUBLIC_BLAND_MEMORY_ID;
+      const callPayload: Record<string, unknown> = {
         phone_number: formattedPhone,
         pathway_id: pathways[quickCallType] || pathways.chiropractor,
         pathway_version: 1,
@@ -1026,6 +1035,11 @@ function CampaignPageContent() {
           postal_code: quickCallPostalCode || undefined,
         },
       };
+
+      // Add memory_id for cross-call context (if configured)
+      if (memoryId) {
+        callPayload.memory_id = memoryId;
+      }
       
       const response = await fetch('/api/bland/calls', {
         method: 'POST',

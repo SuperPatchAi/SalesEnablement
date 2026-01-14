@@ -80,10 +80,14 @@ interface BlandWebhookPayload {
   created_at: string;
   ended_at: string;
   concatenated_transcript: string;
+  recording_url?: string;  // URL to call recording
   variables?: Record<string, string>;
   pathway_logs?: Record<string, unknown>[];
   analysis?: {
     summary?: string;
+    sentiment?: string;  // "positive", "neutral", "negative"
+    sentiment_score?: number;  // 0-1 score
+    keywords?: string[];
     [key: string]: unknown;
   };
   metadata?: {
@@ -104,6 +108,52 @@ interface BlandWebhookPayload {
   // Voicemail detection fields
   voicemail_detected?: boolean;
   answered_by?: "human" | "voicemail" | "unknown";
+}
+
+// Calculate lead score based on call outcomes
+function calculateLeadScore(payload: BlandWebhookPayload, callStatus: string): number {
+  let score = 0;
+  
+  // Answered by human: +30
+  if (payload.answered_by === "human") {
+    score += 30;
+  }
+  
+  // Call duration > 2 minutes: +20
+  if (payload.call_length > 120) {
+    score += 20;
+  }
+  
+  // Demo booked: +50
+  if (callStatus === "booked" || callStatus === "calendar_sent") {
+    score += 50;
+  }
+  
+  // Sample requested: +25
+  const vars = payload.variables || {};
+  if (vars.wants_sample === "true" || vars.sample_requested === "true") {
+    score += 25;
+  }
+  
+  // Sentiment: +15 positive, -10 negative
+  const sentiment = payload.analysis?.sentiment?.toLowerCase();
+  if (sentiment === "positive") {
+    score += 15;
+  } else if (sentiment === "negative") {
+    score -= 10;
+  }
+  
+  // Voicemail: -20
+  if (payload.voicemail_detected || payload.answered_by === "voicemail") {
+    score -= 20;
+  }
+  
+  // Failed call: -30
+  if (!payload.completed || payload.status === "failed") {
+    score -= 30;
+  }
+  
+  return Math.max(0, score); // Don't go below 0
 }
 
 // POST /api/webhooks/bland - Handle Bland.ai call completion webhooks
@@ -263,6 +313,20 @@ export async function POST(request: NextRequest) {
       }
     }
     
+    // Extract sentiment data from analysis
+    const sentimentLabel = payload.analysis?.sentiment?.toLowerCase() || null;
+    const sentimentScore = payload.analysis?.sentiment_score || null;
+    
+    // Calculate lead score based on call outcomes
+    const leadScore = calculateLeadScore(payload, callStatus);
+    
+    console.log("📊 Call analysis:", {
+      sentiment: sentimentLabel,
+      sentiment_score: sentimentScore,
+      lead_score: leadScore,
+      recording_url: payload.recording_url ? "present" : "none",
+    });
+
     // Save to database - use resolved practitioner data
     const callRecord: CallRecordInsert = {
       practitioner_id: resolvedPractitionerId,
@@ -284,6 +348,11 @@ export async function POST(request: NextRequest) {
       calendar_invite_sent: callStatus === "calendar_sent",
       practitioner_email: practitionerEmail || meta.clinic_email,
       booking_id: bookingResult?.id,
+      // New sentiment and scoring fields
+      sentiment_label: sentimentLabel,
+      sentiment_score: sentimentScore,
+      recording_url: payload.recording_url || null,
+      lead_score: leadScore,
     };
     
     // Try to update existing record by call_id first, then upsert

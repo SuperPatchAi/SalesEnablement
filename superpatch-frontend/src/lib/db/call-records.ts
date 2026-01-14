@@ -489,6 +489,10 @@ function convertLocalStorageRecord(record: localStorage.CampaignCallRecord): Cal
     practitioner_email: record.practitioner_email || null,
     booking_id: null,
     notes: record.notes || null,
+    sentiment_score: null,
+    sentiment_label: null,
+    recording_url: null,
+    lead_score: 0,
     created_at: record.created_at,
     updated_at: record.updated_at,
   };
