@@ -1,5 +1,16 @@
 import { useState, useCallback } from "react";
 
+// Enrichment data structure for caching
+export interface EnrichmentData {
+  practitioners: Array<{ name: string; credentials: string }>;
+  emails: string[];
+  phones: string[];
+  services: string[];
+  languages: string[];
+  title?: string;
+  description?: string;
+}
+
 export interface SearchPlace {
   id: string;
   name: string;
@@ -20,6 +31,8 @@ export interface SearchPlace {
   isSelected?: boolean;
   isImported?: boolean;
   isEnriched?: boolean;
+  // Cached enrichment data (preserved for import)
+  enrichmentData?: EnrichmentData;
 }
 
 export interface SearchParams {
@@ -69,9 +82,11 @@ interface UsePlacesSearchReturn extends UsePlacesSearchState {
   selectAll: () => void;
   deselectAll: () => void;
   importSelected: () => Promise<ImportResult>;
+  importAndEnrichSelected: () => Promise<ImportResult>;
   enrichPlace: (placeId: string) => Promise<EnrichmentResult | null>;
   enrichSelected: () => Promise<void>;
   markAsImported: (placeIds: string[]) => void;
+  selectedWithWebsites: number;
 }
 
 export function usePlacesSearch(): UsePlacesSearchReturn {
@@ -301,7 +316,7 @@ export function usePlacesSearch(): UsePlacesSearchReturn {
     }
   }, [state.places, markAsImported]);
 
-  // Enrich a single place
+  // Enrich a single place and cache the data
   const enrichPlace = useCallback(async (placeId: string): Promise<EnrichmentResult | null> => {
     const place = state.places.find((p) => p.id === placeId);
     if (!place?.website) return null;
@@ -318,14 +333,25 @@ export function usePlacesSearch(): UsePlacesSearchReturn {
         }),
       });
 
-      const result: EnrichmentResult = await response.json();
+      const result: EnrichmentResult & { title?: string; description?: string } = await response.json();
 
-      // Mark place as enriched
+      // Cache enrichment data on the place object for later import
+      const enrichmentData: EnrichmentData = {
+        practitioners: result.practitioners || [],
+        emails: result.emails || [],
+        phones: result.phones || [],
+        services: result.services || [],
+        languages: result.languages || [],
+        title: result.title,
+        description: result.description,
+      };
+
+      // Mark place as enriched AND store the data
       setState((prev) => ({
         ...prev,
         isEnriching: false,
         places: prev.places.map((p) =>
-          p.id === placeId ? { ...p, isEnriched: true } : p
+          p.id === placeId ? { ...p, isEnriched: true, enrichmentData } : p
         ),
       }));
 
@@ -357,6 +383,112 @@ export function usePlacesSearch(): UsePlacesSearchReturn {
     setState((prev) => ({ ...prev, isEnriching: false }));
   }, [state.places, enrichPlace]);
 
+  // Import and enrich selected places in one action
+  const importAndEnrichSelected = useCallback(async (): Promise<ImportResult> => {
+    const selectedPlaces = state.places.filter((p) => p.isSelected && !p.isImported);
+    
+    if (selectedPlaces.length === 0) {
+      return { imported: 0, duplicates: 0, errors: ["No places selected"], importedIds: [] };
+    }
+
+    setState((prev) => ({ ...prev, isImporting: true, isEnriching: true, error: null }));
+
+    // Step 1: Enrich all selected places with websites (in parallel for speed)
+    const placesToEnrich = selectedPlaces.filter((p) => p.website && !p.enrichmentData);
+    
+    if (placesToEnrich.length > 0) {
+      console.log(`[usePlacesSearch] Enriching ${placesToEnrich.length} places before import`);
+      
+      // Enrich in parallel (batches of 5 to avoid rate limits)
+      const batchSize = 5;
+      for (let i = 0; i < placesToEnrich.length; i += batchSize) {
+        const batch = placesToEnrich.slice(i, i + batchSize);
+        await Promise.all(
+          batch.map(async (place) => {
+            try {
+              const response = await fetch("/api/search/enrich", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ websiteUrl: place.website }),
+              });
+              
+              if (response.ok) {
+                const result = await response.json();
+                if (result.success) {
+                  // Update place with enrichment data in state
+                  setState((prev) => ({
+                    ...prev,
+                    places: prev.places.map((p) =>
+                      p.id === place.id
+                        ? {
+                            ...p,
+                            isEnriched: true,
+                            enrichmentData: {
+                              practitioners: result.practitioners || [],
+                              emails: result.emails || [],
+                              phones: result.phones || [],
+                              services: result.services || [],
+                              languages: result.languages || [],
+                              title: result.title,
+                              description: result.description,
+                            },
+                          }
+                        : p
+                    ),
+                  }));
+                }
+              }
+            } catch (err) {
+              console.error(`[usePlacesSearch] Enrichment error for ${place.name}:`, err);
+            }
+          })
+        );
+      }
+    }
+
+    setState((prev) => ({ ...prev, isEnriching: false }));
+
+    // Step 2: Get updated places with enrichment data and import
+    // Need to get fresh state
+    const currentPlaces = state.places.filter((p) => p.isSelected && !p.isImported);
+    
+    try {
+      const response = await fetch("/api/search/import", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ practitioners: currentPlaces }),
+      });
+
+      const result: ImportResult = await response.json();
+
+      // Mark imported places
+      if (result.importedIds.length > 0) {
+        markAsImported(result.importedIds);
+      }
+
+      setState((prev) => ({
+        ...prev,
+        isImporting: false,
+        error: result.errors.length > 0 ? result.errors.join(", ") : null,
+      }));
+
+      return result;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Import failed";
+      setState((prev) => ({
+        ...prev,
+        isImporting: false,
+        error: errorMessage,
+      }));
+      return { imported: 0, duplicates: 0, errors: [errorMessage], importedIds: [] };
+    }
+  }, [state.places, markAsImported]);
+
+  // Count selected places with websites (for UI)
+  const selectedWithWebsites = state.places.filter(
+    (p) => p.isSelected && !p.isImported && p.website
+  ).length;
+
   return {
     ...state,
     search,
@@ -366,8 +498,10 @@ export function usePlacesSearch(): UsePlacesSearchReturn {
     selectAll,
     deselectAll,
     importSelected,
+    importAndEnrichSelected,
     enrichPlace,
     enrichSelected,
     markAsImported,
+    selectedWithWebsites,
   };
 }

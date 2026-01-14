@@ -1,6 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin, isSupabaseConfigured } from "@/lib/supabase";
 
+const FIRECRAWL_API_KEY = process.env.FIRECRAWL_API_KEY || "";
+
+// Enrichment data structure (matches hook's EnrichmentData)
+interface EnrichmentData {
+  practitioners: Array<{ name: string; credentials: string }>;
+  emails: string[];
+  phones: string[];
+  services: string[];
+  languages: string[];
+  title?: string;
+  description?: string;
+}
+
 interface SearchResultPractitioner {
   id: string; // Google Place ID
   name: string;
@@ -17,6 +30,8 @@ interface SearchResultPractitioner {
   latitude: number | null;
   longitude: number | null;
   practitioner_type?: string;
+  // Pre-enriched data (if enriched before import)
+  enrichmentData?: EnrichmentData;
 }
 
 interface ImportRequest {
@@ -79,6 +94,46 @@ async function checkExisting(
   }
 }
 
+// Async enrichment helper - calls enrich API for each practitioner
+async function enrichPractitionersAsync(practitioners: SearchResultPractitioner[]): Promise<void> {
+  const ENRICH_URL = process.env.NEXT_PUBLIC_VERCEL_URL 
+    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/search/enrich`
+    : "/api/search/enrich";
+
+  for (const practitioner of practitioners) {
+    if (!practitioner.website) continue;
+
+    try {
+      // Use internal fetch for local, or construct URL for deployed
+      const baseUrl = process.env.VERCEL_URL 
+        ? `https://${process.env.VERCEL_URL}`
+        : process.env.NEXT_PUBLIC_VERCEL_URL
+          ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+          : "http://localhost:3000";
+      
+      const response = await fetch(`${baseUrl}/api/search/enrich`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          practitionerId: practitioner.id,
+          websiteUrl: practitioner.website,
+        }),
+      });
+
+      if (response.ok) {
+        console.log(`[Import API] Async enrichment completed for ${practitioner.name}`);
+      } else {
+        console.warn(`[Import API] Async enrichment failed for ${practitioner.name}: ${response.status}`);
+      }
+    } catch (err) {
+      console.error(`[Import API] Async enrichment error for ${practitioner.name}:`, err);
+    }
+
+    // Small delay between requests to avoid rate limiting
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
+}
+
 // POST /api/search/import - Bulk import practitioners from search results
 export async function POST(request: NextRequest) {
   try {
@@ -132,7 +187,8 @@ export async function POST(request: NextRequest) {
         }
 
         // Build the practitioner record
-        const record = {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const record: Record<string, any> = {
           id: practitioner.id, // Use Google Place ID as primary ID
           name: practitioner.name,
           practitioner_type: practitioner.practitioner_type || "Unknown",
@@ -152,6 +208,18 @@ export async function POST(request: NextRequest) {
           do_not_call: false,
           notes: `Imported from Google Maps search. Country: ${practitioner.country}`,
         };
+
+        // If enrichment data was provided (pre-enriched), include it
+        if (practitioner.enrichmentData) {
+          record.enrichment = {
+            scraped_at: new Date().toISOString(),
+            success: true,
+            data: practitioner.enrichmentData,
+          };
+          record.enrichment_status = "enriched";
+          record.enriched_at = new Date().toISOString();
+          console.log(`[Import API] Including pre-enriched data for ${practitioner.name}`);
+        }
 
         // Insert into database
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -183,11 +251,23 @@ export async function POST(request: NextRequest) {
 
     console.log(`[Import API] Complete: ${result.imported} imported, ${result.duplicates} duplicates, ${result.errors.length} errors`);
 
-    // If enrichAfterImport is true, trigger enrichment for imported practitioners
-    // This would be done asynchronously in a real implementation
+    // Auto-enrich practitioners that have websites but no pre-enriched data
+    const needsEnrichment = practitioners.filter(
+      (p) => p.website && !p.enrichmentData && result.importedIds.includes(p.id)
+    );
+
+    if (needsEnrichment.length > 0 && FIRECRAWL_API_KEY) {
+      console.log(`[Import API] Auto-enriching ${needsEnrichment.length} practitioners with websites`);
+      
+      // Fire async enrichment (non-blocking) - don't await
+      enrichPractitionersAsync(needsEnrichment).catch((err) => {
+        console.error("[Import API] Async enrichment error:", err);
+      });
+    }
+
+    // Legacy support for explicit enrichAfterImport flag
     if (enrichAfterImport && result.importedIds.length > 0) {
-      console.log(`[Import API] Enrichment requested for ${result.importedIds.length} practitioners (async)`);
-      // Note: In a production system, this would queue background jobs for enrichment
+      console.log(`[Import API] Enrichment flag was set (handled by auto-enrich)`);
     }
 
     return NextResponse.json(result);

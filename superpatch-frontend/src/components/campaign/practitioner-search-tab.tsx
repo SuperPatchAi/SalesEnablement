@@ -63,6 +63,7 @@ export function PractitionerSearchTab({ onPractitionerImported }: PractitionerSe
     hasMore,
     totalSearches,
     selectedCount,
+    selectedWithWebsites,
     search,
     loadMore,
     clearResults,
@@ -70,6 +71,7 @@ export function PractitionerSearchTab({ onPractitionerImported }: PractitionerSe
     selectAll,
     deselectAll,
     importSelected,
+    importAndEnrichSelected,
     enrichPlace,
   } = usePlacesSearch();
 
@@ -151,6 +153,28 @@ export function PractitionerSearchTab({ onPractitionerImported }: PractitionerSe
       toast.error(`${result.errors.length} errors during import`);
     }
   }, [importSelected, onPractitionerImported]);
+
+  // Handle import and enrich in one action
+  const handleImportAndEnrich = useCallback(async () => {
+    toast.info(`Enriching ${selectedWithWebsites} practitioners with websites...`);
+    
+    const result = await importAndEnrichSelected();
+    
+    if (result.imported > 0) {
+      toast.success(`Successfully imported & enriched ${result.imported} practitioners`);
+      if (onPractitionerImported) {
+        onPractitionerImported();
+      }
+    }
+    
+    if (result.duplicates > 0) {
+      toast.info(`${result.duplicates} practitioners already in database`);
+    }
+    
+    if (result.errors.length > 0) {
+      toast.error(`${result.errors.length} errors during import`);
+    }
+  }, [importAndEnrichSelected, selectedWithWebsites, onPractitionerImported]);
 
   // Handle enrich
   const handleEnrich = useCallback(async (place: SearchPlace) => {
@@ -517,10 +541,11 @@ export function PractitionerSearchTab({ onPractitionerImported }: PractitionerSe
               </div>
               <div className="flex gap-2">
                 <Button
+                  variant="outline"
                   onClick={handleImport}
-                  disabled={isImporting || selectedCount === 0}
+                  disabled={isImporting || isEnriching || selectedCount === 0}
                 >
-                  {isImporting ? (
+                  {isImporting && !isEnriching ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Importing...
@@ -528,7 +553,23 @@ export function PractitionerSearchTab({ onPractitionerImported }: PractitionerSe
                   ) : (
                     <>
                       <Download className="mr-2 h-4 w-4" />
-                      Import Selected ({selectedCount})
+                      Import Only ({selectedCount})
+                    </>
+                  )}
+                </Button>
+                <Button
+                  onClick={handleImportAndEnrich}
+                  disabled={isImporting || isEnriching || selectedCount === 0}
+                >
+                  {isImporting || isEnriching ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {isEnriching ? "Enriching..." : "Importing..."}
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="mr-2 h-4 w-4" />
+                      Import & Enrich ({selectedWithWebsites})
                     </>
                   )}
                 </Button>
