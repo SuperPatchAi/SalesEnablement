@@ -350,7 +350,7 @@ export function PractitionerDetailDrawer({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-[500px] sm:w-[580px] p-0 flex flex-col z-[1100]">
+      <SheetContent className="w-[600px] sm:w-[700px] p-0 flex flex-col z-[1100]">
         {/* Sticky Header */}
         <div className="sticky top-0 z-10 bg-background border-b px-6 py-4">
           <div className="flex items-start gap-4">
@@ -455,12 +455,21 @@ export function PractitionerDetailDrawer({
                 <CardContent className="space-y-3">
                   <div className="flex items-start gap-2">
                     <MapPin className="w-4 h-4 mt-0.5 text-muted-foreground" />
-                    <div>
-                      <p className="text-sm">{practitioner.address}</p>
-                      <p className="text-sm text-muted-foreground">
+                    <a
+                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                        `${practitioner.address}, ${practitioner.city}, ${practitioner.province}`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group"
+                    >
+                      <p className="text-sm group-hover:text-blue-600 group-hover:underline">
+                        {practitioner.address}
+                      </p>
+                      <p className="text-sm text-muted-foreground group-hover:text-blue-500">
                         {practitioner.city}, {practitioner.province}
                       </p>
-                    </div>
+                    </a>
                   </div>
 
                   <div className="flex items-center gap-2">
