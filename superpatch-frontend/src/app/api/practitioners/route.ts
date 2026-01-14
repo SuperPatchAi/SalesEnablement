@@ -128,15 +128,18 @@ async function getMetadata(forceRefresh: boolean = false): Promise<{ provinces: 
   }
 
   const useSupabase = await checkSupabaseTable();
+  console.log(`[Practitioners API] getMetadata: useSupabase=${useSupabase}, hasAdmin=${!!supabaseAdmin}`);
   
   if (useSupabase && supabaseAdmin) {
     try {
       // Get distinct provinces - Supabase JS client defaults to 1000 rows, we need all
-      const { data: provinceData } = await supabaseAdmin
+      const { data: provinceData, error: provinceError } = await supabaseAdmin
         .from('practitioners')
         .select('province')
         .not('province', 'is', null)
         .limit(50000);  // Ensure we get all records for unique extraction
+      
+      console.log(`[Practitioners API] Province query: ${provinceData?.length || 0} rows, error=${provinceError?.message || 'none'}`);
       
       const provinces = [...new Set(
         (provinceData as { province: string }[] || [])
@@ -144,12 +147,16 @@ async function getMetadata(forceRefresh: boolean = false): Promise<{ provinces: 
           .filter(Boolean)
       )].sort();
       
+      console.log(`[Practitioners API] Unique provinces: ${provinces.join(', ')}`);
+      
       // Get distinct types
-      const { data: typeData } = await supabaseAdmin
+      const { data: typeData, error: typeError } = await supabaseAdmin
         .from('practitioners')
         .select('practitioner_type')
         .not('practitioner_type', 'is', null)
         .limit(50000);  // Ensure we get all records for unique extraction
+      
+      console.log(`[Practitioners API] Type query: ${typeData?.length || 0} rows, error=${typeError?.message || 'none'}`);
       
       const types = [...new Set(
         (typeData as { practitioner_type: string }[] || [])
@@ -213,9 +220,17 @@ export async function GET(request: NextRequest) {
   // Check if requesting metadata only
   if (searchParams.get("metadata") === "true") {
     const forceRefresh = searchParams.get("refresh") === "true";
+    const useSupabase = await checkSupabaseTable();
     const metadata = await getMetadata(forceRefresh);
     return NextResponse.json({
       ...metadata,
+      _debug: {
+        useSupabase,
+        hasAdminClient: !!supabaseAdmin,
+        isConfigured: isSupabaseConfigured,
+        provinceCount: metadata.provinces.length,
+        typeCount: metadata.types.length,
+      },
       _cache: {
         refreshed: forceRefresh,
         ttl_ms: METADATA_CACHE_TTL,
