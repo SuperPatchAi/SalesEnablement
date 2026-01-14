@@ -89,6 +89,7 @@ interface BlandWebhookPayload {
   metadata?: {
     practitioner_id?: string;
     practice_name?: string;
+    contact_name?: string;  // Contact/Dr name for manual quick calls
     practitioner_type?: string;
     campaign?: string;
     source?: string;
@@ -97,6 +98,7 @@ interface BlandWebhookPayload {
     province?: string;
     clinic_email?: string;
     call_language?: string;
+    selected_pathway?: string;  // For manual quick calls
   };
   // Voicemail detection fields
   voicemail_detected?: boolean;
@@ -131,12 +133,14 @@ export async function POST(request: NextRequest) {
     // Look for scheduling intent and data
     const wantsDemo = vars.wants_demo === "true" || vars.schedule_demo === "true";
     const appointmentTime = vars.appointment_time || vars.preferred_time || vars.start_time;
-    const practitionerName = vars.practitioner_name || vars.name || vars.contact_name || meta.practice_name;
+    // For practitioner name, check: call variables > metadata practice_name > metadata contact_name
+    const practitionerName = vars.practitioner_name || vars.name || vars.contact_name || meta.practice_name || meta.contact_name;
     const practitionerEmail = vars.email || vars.practitioner_email;
     const practitionerPhone = vars.best_phone || vars.phone || payload.to;
     const practiceAddress = vars.address || vars.practice_address || meta.address;
     const practiceName = vars.practice_name || meta.practice_name;
-    const practitionerType = vars.practitioner_type || meta.practitioner_type;
+    const contactName = meta.contact_name || vars.contact_name;  // Specific contact person
+    const practitionerType = vars.practitioner_type || meta.practitioner_type || meta.selected_pathway;
     const productsInterested = vars.products_interested || vars.products;
     const practitionerId = meta.practitioner_id || vars.practitioner_id;
     
@@ -170,14 +174,32 @@ export async function POST(request: NextRequest) {
         console.log(`✅ Linked call to practitioner: ${foundPractitioner.name} (${foundPractitioner.id})`);
       } else {
         // Unknown caller - practitioner_id will be NULL
-        // Extract whatever info we can from the call variables
+        // Extract whatever info we can from the call variables and metadata
         resolvedPractitionerId = undefined; // Will be NULL in DB
-        resolvedPractitionerName = resolvedPractitionerName || vars.business_name || vars.company_name || "Unknown Caller";
-        resolvedPractitionerType = resolvedPractitionerType || vars.business_type || "Unknown";
+        
+        // For manual quick calls, use the practice name or contact name from metadata
+        const manualPracticeName = meta.practice_name || vars.practice_name;
+        const manualContactName = meta.contact_name || vars.contact_name;
+        
+        // Build a display name from available info
+        if (manualPracticeName) {
+          resolvedPractitionerName = manualContactName 
+            ? `${manualPracticeName} (${manualContactName})`
+            : manualPracticeName;
+        } else {
+          resolvedPractitionerName = resolvedPractitionerName || vars.business_name || vars.company_name || "Unknown Caller";
+        }
+        
+        resolvedPractitionerType = resolvedPractitionerType || meta.practitioner_type || vars.business_type || meta.selected_pathway || "Unknown";
         resolvedAddress = resolvedAddress || vars.location || undefined;
+        resolvedCity = resolvedCity || meta.city || undefined;
+        resolvedProvince = resolvedProvince || meta.province || undefined;
         
         console.log(`📝 Recording call from unknown number: ${payload.to}`);
-        console.log(`   Name from call: ${resolvedPractitionerName}`);
+        console.log(`   Name: ${resolvedPractitionerName}`);
+        console.log(`   Type: ${resolvedPractitionerType}`);
+        console.log(`   Location: ${resolvedCity}, ${resolvedProvince}`);
+        console.log(`   Source: ${meta.source}`);
       }
     }
     

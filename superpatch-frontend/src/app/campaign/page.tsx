@@ -207,6 +207,11 @@ function CampaignPageContent() {
   const [quickCallResult, setQuickCallResult] = useState<PractitionerData | null>(null);
   const [quickCallNotFound, setQuickCallNotFound] = useState(false);
   const [quickCallMaking, setQuickCallMaking] = useState(false);
+  // Manual quick call info (for calls to unknown numbers)
+  const [quickCallPracticeName, setQuickCallPracticeName] = useState("");
+  const [quickCallContactName, setQuickCallContactName] = useState("");
+  const [quickCallCity, setQuickCallCity] = useState("");
+  const [quickCallProvince, setQuickCallProvince] = useState("");
 
   // Map state - track if all practitioners are loaded
   const [allPractitionersLoaded, setAllPractitionersLoaded] = useState(false);
@@ -844,18 +849,18 @@ function CampaignPageContent() {
   // Quick call: make manual call (no practitioner context)
   const handleQuickCallManual = async () => {
     if (!quickCallPhone.trim()) return;
-    
+
     setQuickCallMaking(true);
-    
+
     try {
       // Format phone number
       const phoneDigits = quickCallPhone.replace(/\D/g, '');
-      const formattedPhone = phoneDigits.length === 10 
-        ? `+1${phoneDigits}` 
+      const formattedPhone = phoneDigits.length === 10
+        ? `+1${phoneDigits}`
         : phoneDigits.length === 11 && phoneDigits.startsWith('1')
           ? `+${phoneDigits}`
           : `+${phoneDigits}`;
-      
+
       // Get pathway ID
       const pathways: Record<string, string> = {
         chiropractor: "cf2233ef-7fb2-49ff-af29-0eee47204e9f",
@@ -865,7 +870,26 @@ function CampaignPageContent() {
         functional: "236dbd85-c74d-4774-a7af-4b5812015c68",
         acupuncturist: "154f93f4-54a5-4900-92e8-0fa217508127",
       };
-      
+
+      // Get practitioner type label for display
+      const pathwayLabels: Record<string, string> = {
+        chiropractor: "Chiropractor",
+        massage: "Massage Therapist",
+        naturopath: "Naturopath",
+        integrative: "Integrative Medicine",
+        functional: "Functional Medicine",
+        acupuncturist: "Acupuncturist",
+      };
+
+      // Build request_data for pathway variable substitution (even for manual calls)
+      const requestData = {
+        practice_name: quickCallPracticeName || 'your practice',
+        contact_name: quickCallContactName || '',
+        practice_city: quickCallCity || '',
+        practice_province: quickCallProvince || '',
+        practitioner_type: pathwayLabels[quickCallType] || quickCallType,
+      };
+
       const callPayload = {
         phone_number: formattedPhone,
         pathway_id: pathways[quickCallType] || pathways.chiropractor,
@@ -876,10 +900,17 @@ function CampaignPageContent() {
         record: true,
         max_duration: 15,
         webhook: "https://sales-enablement-six.vercel.app/api/webhooks/bland",
+        request_data: requestData,
         metadata: {
           campaign: 'quick_call',
           source: 'manual_dial',
           selected_pathway: quickCallType,
+          // Include practice info for call record creation
+          practice_name: quickCallPracticeName || undefined,
+          contact_name: quickCallContactName || undefined,
+          practitioner_type: pathwayLabels[quickCallType] || quickCallType,
+          city: quickCallCity || undefined,
+          province: quickCallProvince || undefined,
         },
       };
       
@@ -892,8 +923,17 @@ function CampaignPageContent() {
       const result = await response.json();
       
       if (result.status === 'success') {
-        alert(`Call started! ID: ${result.call_id}`);
+        const callTarget = quickCallPracticeName || formattedPhone;
+        alert(`Call started to ${callTarget}!\nCall ID: ${result.call_id}`);
+        // Clear all fields on success
         setQuickCallPhone('');
+        setQuickCallPracticeName('');
+        setQuickCallContactName('');
+        setQuickCallCity('');
+        setQuickCallProvince('');
+        setQuickCallNotFound(false);
+        // Refresh call records to show the new call
+        loadCallRecords();
       } else {
         alert(`Call failed: ${result.message}`);
       }
@@ -1844,6 +1884,11 @@ function CampaignPageContent() {
                           setQuickCallPhone(e.target.value);
                           setQuickCallResult(null);
                           setQuickCallNotFound(false);
+                          // Clear manual entry fields when phone changes
+                          setQuickCallPracticeName("");
+                          setQuickCallContactName("");
+                          setQuickCallCity("");
+                          setQuickCallProvince("");
                         }}
                         className="flex-1"
                       />
@@ -1929,10 +1974,71 @@ function CampaignPageContent() {
                           No practitioner found with this phone number
                         </p>
                         <p className="text-sm text-muted-foreground mb-4">
-                          You can still make a manual call. Select the appropriate conversational pathway below.
+                          Enter the practice details below to make a call and track it properly.
                         </p>
 
-                        <div className="space-y-3">
+                        <div className="space-y-4">
+                          {/* Practice Info */}
+                          <div className="grid grid-cols-2 gap-3">
+                            <div>
+                              <Label htmlFor="quick-practice-name">Practice Name *</Label>
+                              <Input
+                                id="quick-practice-name"
+                                placeholder="ABC Wellness Clinic"
+                                value={quickCallPracticeName}
+                                onChange={(e) => setQuickCallPracticeName(e.target.value)}
+                                className="mt-1 bg-white"
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="quick-contact-name">Contact Name</Label>
+                              <Input
+                                id="quick-contact-name"
+                                placeholder="Dr. Smith"
+                                value={quickCallContactName}
+                                onChange={(e) => setQuickCallContactName(e.target.value)}
+                                className="mt-1 bg-white"
+                              />
+                            </div>
+                          </div>
+
+                          {/* Location */}
+                          <div className="grid grid-cols-2 gap-3">
+                            <div>
+                              <Label htmlFor="quick-city">City</Label>
+                              <Input
+                                id="quick-city"
+                                placeholder="Toronto"
+                                value={quickCallCity}
+                                onChange={(e) => setQuickCallCity(e.target.value)}
+                                className="mt-1 bg-white"
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="quick-province">Province</Label>
+                              <Select value={quickCallProvince} onValueChange={setQuickCallProvince}>
+                                <SelectTrigger className="mt-1 bg-white">
+                                  <SelectValue placeholder="Select province" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Alberta">Alberta</SelectItem>
+                                  <SelectItem value="British Columbia">British Columbia</SelectItem>
+                                  <SelectItem value="Manitoba">Manitoba</SelectItem>
+                                  <SelectItem value="New Brunswick">New Brunswick</SelectItem>
+                                  <SelectItem value="Newfoundland and Labrador">Newfoundland and Labrador</SelectItem>
+                                  <SelectItem value="Nova Scotia">Nova Scotia</SelectItem>
+                                  <SelectItem value="Ontario">Ontario</SelectItem>
+                                  <SelectItem value="Prince Edward Island">Prince Edward Island</SelectItem>
+                                  <SelectItem value="Quebec">Quebec</SelectItem>
+                                  <SelectItem value="Saskatchewan">Saskatchewan</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+
+                          <Separator />
+
+                          {/* Pathway Selection */}
                           <div>
                             <Label htmlFor="quick-type">Conversational Pathway</Label>
                             <p className="text-xs text-muted-foreground mb-2">Select the script/pathway to use for this call</p>
@@ -1953,7 +2059,7 @@ function CampaignPageContent() {
 
                           <Button 
                             onClick={handleQuickCallManual}
-                            disabled={quickCallMaking}
+                            disabled={quickCallMaking || !quickCallPracticeName.trim()}
                             className="w-full"
                           >
                             {quickCallMaking ? (
@@ -1961,8 +2067,14 @@ function CampaignPageContent() {
                             ) : (
                               <Phone className="w-4 h-4 mr-2" />
                             )}
-                            Call with Selected Pathway
+                            Call {quickCallPracticeName || 'Practice'}
                           </Button>
+
+                          {!quickCallPracticeName.trim() && (
+                            <p className="text-xs text-yellow-700 text-center">
+                              Please enter a practice name to make the call
+                            </p>
+                          )}
                         </div>
                       </CardContent>
                     </Card>
