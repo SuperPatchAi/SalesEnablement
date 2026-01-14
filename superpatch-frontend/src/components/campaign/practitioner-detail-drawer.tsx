@@ -4,17 +4,15 @@ import { useState, useEffect, useCallback } from "react";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Phone,
   PhoneCall,
@@ -24,11 +22,7 @@ import {
   ExternalLink,
   Clock,
   Calendar,
-  FileText,
   Loader2,
-  CheckCircle,
-  XCircle,
-  MessageSquare,
   Users,
   Mail,
   Stethoscope,
@@ -36,24 +30,25 @@ import {
   Sparkles,
   Copy,
   CheckCheck,
-  Brain,
-  TrendingUp,
   Smile,
   Meh,
   Frown,
-  Play,
-  Pause,
-  Volume2,
+  MoreHorizontal,
+  History,
+  FileText,
+  Building2,
+  Plus,
 } from "lucide-react";
 import {
   CampaignCallRecord,
   getCallRecord,
   createCallRecord,
-  updateCallStatus,
   saveCallRecord,
 } from "@/lib/campaign-storage";
 import { CallStatus } from "@/lib/db/types";
 import { getBatchCaller, Practitioner } from "@/lib/batch-caller";
+import { LeadScoreGauge } from "./lead-score-gauge";
+import { DrawerCallTimeline } from "./drawer-call-timeline";
 
 // Enrichment data types
 interface EnrichmentPractitioner {
@@ -90,14 +85,14 @@ interface PractitionerDetailDrawerProps {
 }
 
 const STATUS_COLORS: Record<CallStatus, string> = {
-  not_called: "bg-gray-100 text-gray-800",
-  queued: "bg-yellow-100 text-yellow-800",
-  in_progress: "bg-blue-100 text-blue-800",
-  completed: "bg-green-100 text-green-800",
-  booked: "bg-purple-100 text-purple-800",
-  calendar_sent: "bg-teal-100 text-teal-800",
-  voicemail: "bg-orange-100 text-orange-800",
-  failed: "bg-red-100 text-red-800",
+  not_called: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
+  queued: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
+  in_progress: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
+  completed: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
+  booked: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300",
+  calendar_sent: "bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300",
+  voicemail: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300",
+  failed: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
 };
 
 const STATUS_LABELS: Record<CallStatus, string> = {
@@ -123,15 +118,13 @@ export function PractitionerDetailDrawer({
   const [blandCalls, setBlandCalls] = useState<any[]>([]);
   const [loadingBlandCalls, setLoadingBlandCalls] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
-  // New state for call intelligence
+  const [activeTab, setActiveTab] = useState("overview");
   const [callIntelligence, setCallIntelligence] = useState<{
     sentiment_label?: string;
     sentiment_score?: number;
     lead_score?: number;
     recording_url?: string;
   } | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [audioRef, setAudioRef] = useState<HTMLAudioElement | null>(null);
 
   // Helper to copy email to clipboard
   const copyEmail = async (email: string) => {
@@ -142,6 +135,16 @@ export function PractitionerDetailDrawer({
 
   // Get enrichment data
   const enrichment = practitioner?.enrichment?.data;
+
+  // Get initials for avatar
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
   // Load call record and Bland API history when practitioner changes
   const loadCallData = useCallback(async () => {
@@ -159,7 +162,6 @@ export function PractitionerDetailDrawer({
       const data = await response.json();
       
       if (data.record) {
-        // Convert API record to CampaignCallRecord format
         const record: CampaignCallRecord = {
           practitioner_id: data.record.practitioner_id,
           practitioner_name: data.record.practitioner_name,
@@ -186,7 +188,6 @@ export function PractitionerDetailDrawer({
         setCallRecord(record);
         setNotes(record.notes || "");
         
-        // Set call intelligence data
         setCallIntelligence({
           sentiment_label: data.record.sentiment_label,
           sentiment_score: data.record.sentiment_score,
@@ -194,23 +195,20 @@ export function PractitionerDetailDrawer({
           recording_url: data.record.recording_url,
         });
       } else {
-        // Fallback to localStorage
         const localRecord = getCallRecord(practitioner.id);
         setCallRecord(localRecord);
         setNotes(localRecord?.notes || "");
       }
     } catch {
-      // Fallback to localStorage on error
       const localRecord = getCallRecord(practitioner.id);
       setCallRecord(localRecord);
       setNotes(localRecord?.notes || "");
     }
 
-    // Load calls from Bland API by phone number
+    // Load calls from Bland API
     if (practitioner.phone) {
       setLoadingBlandCalls(true);
       try {
-        // Format phone for search
         const phoneDigits = practitioner.phone.replace(/\D/g, "");
         const formattedPhone =
           phoneDigits.length === 10
@@ -222,7 +220,6 @@ export function PractitionerDetailDrawer({
         const response = await fetch(`/api/bland/calls?limit=10`);
         const data = await response.json();
 
-        // Filter calls to this phone number
         const matchingCalls = (data.calls || []).filter(
           (call: any) =>
             call.to === formattedPhone ||
@@ -241,23 +238,16 @@ export function PractitionerDetailDrawer({
   useEffect(() => {
     if (open) {
       loadCallData();
-    } else {
-      // Cleanup audio when drawer closes
-      if (audioRef) {
-        audioRef.pause();
-        setAudioRef(null);
-        setIsPlaying(false);
-      }
+      setActiveTab("overview");
     }
-  }, [open, practitioner, loadCallData, audioRef]);
+  }, [open, practitioner, loadCallData]);
 
-  // Save notes when they change (debounced) - uses API with localStorage fallback
+  // Save notes when they change (debounced)
   useEffect(() => {
     if (!practitioner || !callRecord) return;
 
     const timeout = setTimeout(async () => {
       if (notes !== callRecord.notes) {
-        // Try API first
         try {
           const response = await fetch("/api/campaign/calls", {
             method: "PATCH",
@@ -269,14 +259,11 @@ export function PractitionerDetailDrawer({
           });
           
           if (response.ok) {
-            // Update local state
             setCallRecord(prev => prev ? { ...prev, notes } : null);
           } else {
-            // Fallback to localStorage
             saveCallRecord({ ...callRecord, notes });
           }
         } catch {
-          // Fallback to localStorage on error
           saveCallRecord({ ...callRecord, notes });
         }
       }
@@ -291,7 +278,6 @@ export function PractitionerDetailDrawer({
     setIsCalling(true);
 
     try {
-      // Ensure call record exists
       let record = getCallRecord(practitioner.id);
       if (!record) {
         record = createCallRecord({
@@ -305,12 +291,10 @@ export function PractitionerDetailDrawer({
         });
       }
 
-      // Make the call using batch caller
       const batchCaller = getBatchCaller();
       const result = await batchCaller.makeCall(practitioner);
 
       if (result.success && result.call_id) {
-        // Refresh call record
         const updatedRecord = getCallRecord(practitioner.id);
         setCallRecord(updatedRecord);
         onCallStarted?.(result.call_id);
@@ -325,18 +309,6 @@ export function PractitionerDetailDrawer({
     setIsCalling(false);
   };
 
-  const formatDuration = (seconds: number | undefined) => {
-    if (!seconds) return "N/A";
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}m ${secs}s`;
-  };
-
-  const formatDate = (dateStr: string | undefined) => {
-    if (!dateStr) return "N/A";
-    return new Date(dateStr).toLocaleString();
-  };
-
   if (!practitioner) return null;
 
   const hasPhone = !!practitioner.phone;
@@ -345,456 +317,384 @@ export function PractitionerDetailDrawer({
     (!callRecord ||
       ["not_called", "failed", "completed"].includes(callRecord.status));
 
+  const status = callRecord?.status || "not_called";
+  const leadScore = callIntelligence?.lead_score || 0;
+  const sentiment = callIntelligence?.sentiment_label;
+
+  // Build timeline items
+  const timelineItems = [];
+  if (callRecord && callRecord.status !== "not_called" && callRecord.status !== "queued") {
+    timelineItems.push({
+      id: callRecord.call_id || "local",
+      date: callRecord.call_started_at || callRecord.created_at,
+      status: callRecord.status,
+      duration: callRecord.duration_seconds,
+      summary: callRecord.summary,
+      transcript: callRecord.transcript,
+      recording_url: callIntelligence?.recording_url,
+      sentiment_label: callIntelligence?.sentiment_label,
+      appointment_booked: callRecord.appointment_booked,
+    });
+  }
+  // Add Bland API calls
+  blandCalls.forEach((call) => {
+    timelineItems.push({
+      id: call.call_id,
+      date: call.created_at,
+      status: call.status,
+      duration: call.call_length,
+    });
+  });
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-[500px] sm:w-[600px] overflow-y-auto z-[1100]">
-        <SheetHeader>
-          <SheetTitle className="flex items-center gap-2 flex-wrap">
-            {practitioner.name}
-            {callRecord && (
-              <Badge className={STATUS_COLORS[callRecord.status]}>
-                {STATUS_LABELS[callRecord.status]}
-              </Badge>
-            )}
-            {enrichment && (
-              <Badge 
-                variant="outline" 
-                className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/50 dark:to-blue-950/50 border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 gap-1"
-              >
-                <Sparkles className="w-3 h-3" />
-                Enriched
-              </Badge>
-            )}
-          </SheetTitle>
-          <SheetDescription className="flex items-center gap-2">
-            {practitioner.practitioner_type}
-            {enrichment && (
-              <span className="text-xs text-muted-foreground">
-                • Scraped {new Date(practitioner.enrichment?.scraped_at || '').toLocaleDateString()}
-              </span>
-            )}
-          </SheetDescription>
-        </SheetHeader>
+      <SheetContent className="w-[500px] sm:w-[580px] p-0 flex flex-col z-[1100]">
+        {/* Sticky Header */}
+        <div className="sticky top-0 z-10 bg-background border-b px-6 py-4">
+          <div className="flex items-start gap-4">
+            {/* Avatar */}
+            <Avatar className="h-14 w-14 shrink-0">
+              <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-lg font-semibold">
+                {getInitials(practitioner.name)}
+              </AvatarFallback>
+            </Avatar>
 
-        <div className="mt-6 space-y-6">
-          {/* Practitioner Info Card */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium">
-                Practice Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {/* Address */}
-              <div className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 mt-0.5 text-muted-foreground" />
-                <div>
-                  <p className="text-sm">{practitioner.address}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {practitioner.city}, {practitioner.province}
-                  </p>
-                </div>
-              </div>
-
-              {/* Phone */}
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-muted-foreground" />
-                <p className="text-sm">
-                  {practitioner.phone || (
-                    <span className="text-muted-foreground">
-                      No phone available
-                    </span>
-                  )}
-                </p>
-              </div>
-
-              {/* Rating */}
-              {practitioner.rating && (
-                <div className="flex items-center gap-2">
-                  <Star className="w-4 h-4 text-yellow-500" />
-                  <p className="text-sm">
-                    {practitioner.rating} stars
-                    {practitioner.review_count &&
-                      ` (${practitioner.review_count} reviews)`}
-                  </p>
-                </div>
-              )}
-
-              {/* Website */}
-              {practitioner.website && (
-                <div className="flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-muted-foreground" />
-                  <a
-                    href={practitioner.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-blue-600 hover:underline flex items-center gap-1"
+            {/* Name & Info */}
+            <div className="flex-1 min-w-0">
+              <h2 className="text-lg font-semibold truncate">{practitioner.name}</h2>
+              <p className="text-sm text-muted-foreground flex items-center gap-1.5">
+                <Building2 className="w-3.5 h-3.5" />
+                {practitioner.practitioner_type}
+              </p>
+              
+              {/* Badges Row */}
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                <Badge className={STATUS_COLORS[status]}>
+                  {STATUS_LABELS[status]}
+                </Badge>
+                {enrichment && (
+                  <Badge 
+                    variant="outline" 
+                    className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/50 dark:to-blue-950/50 border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300"
                   >
-                    Website
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Enrichment Data - Team Members */}
-          {enrichment?.practitioners && enrichment.practitioners.length > 0 && (
-            <Card className="border-purple-200 bg-purple-50/50 dark:bg-purple-950/20 dark:border-purple-800">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium flex items-center gap-2 text-purple-700 dark:text-purple-300">
-                  <Users className="w-4 h-4" />
-                  Team Members ({enrichment.practitioners.length})
-                  <Badge variant="outline" className="ml-auto text-[10px] border-purple-300 text-purple-600">
                     <Sparkles className="w-3 h-3 mr-1" />
                     Enriched
                   </Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {enrichment.practitioners.map((prac, idx) => (
-                  <div key={idx} className="flex items-center justify-between py-1.5 px-2 bg-white/60 dark:bg-white/10 rounded-md">
-                    <div>
-                      <p className="text-sm font-medium">{prac.name}</p>
-                      <p className="text-xs text-muted-foreground">{prac.credentials}</p>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Enrichment Data - Contact Emails */}
-          {enrichment?.emails && enrichment.emails.length > 0 && (
-            <Card className="border-blue-200 bg-blue-50/50 dark:bg-blue-950/20 dark:border-blue-800">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium flex items-center gap-2 text-blue-700 dark:text-blue-300">
-                  <Mail className="w-4 h-4" />
-                  Contact Emails ({enrichment.emails.length})
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {enrichment.emails.map((email, idx) => (
-                  <div key={idx} className="flex items-center justify-between py-1.5 px-2 bg-white/60 dark:bg-white/10 rounded-md">
-                    <a
-                      href={`mailto:${email}`}
-                      className="text-sm text-blue-600 hover:underline"
-                    >
-                      {email}
-                    </a>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-7 w-7 p-0"
-                      onClick={() => copyEmail(email)}
-                    >
-                      {copiedEmail === email ? (
-                        <CheckCheck className="w-3.5 h-3.5 text-green-500" />
-                      ) : (
-                        <Copy className="w-3.5 h-3.5" />
-                      )}
-                    </Button>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Enrichment Data - Services */}
-          {enrichment?.services && enrichment.services.length > 0 && (
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <Stethoscope className="w-4 h-4" />
-                  Services Offered
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-1.5">
-                  {enrichment.services.map((service, idx) => (
-                    <Badge key={idx} variant="secondary" className="text-xs">
-                      {service}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Enrichment Data - Languages */}
-          {enrichment?.languages && enrichment.languages.length > 0 && (
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <Languages className="w-4 h-4" />
-                  Languages Spoken
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-1.5">
-                  {enrichment.languages.map((lang, idx) => (
-                    <Badge key={idx} variant="outline" className="text-xs">
-                      {lang}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Call Now Button */}
-          <div className="flex gap-2">
-            <Button
-              onClick={handleCallNow}
-              disabled={!canCall || isCalling}
-              className="flex-1"
-              size="lg"
-            >
-              {isCalling ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Initiating Call...
-                </>
-              ) : callRecord?.status === "in_progress" ? (
-                <>
-                  <PhoneCall className="w-4 h-4 mr-2 animate-pulse" />
-                  Call In Progress
-                </>
-              ) : (
-                <>
-                  <Phone className="w-4 h-4 mr-2" />
-                  Call Now
-                </>
-              )}
-            </Button>
+                )}
+                {sentiment && (
+                  <Badge
+                    variant="secondary"
+                    className={
+                      sentiment === "positive"
+                        ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
+                        : sentiment === "negative"
+                        ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
+                        : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
+                    }
+                  >
+                    {sentiment === "positive" && <Smile className="w-3 h-3 mr-1" />}
+                    {sentiment === "negative" && <Frown className="w-3 h-3 mr-1" />}
+                    {sentiment === "neutral" && <Meh className="w-3 h-3 mr-1" />}
+                    {sentiment}
+                  </Badge>
+                )}
+              </div>
+            </div>
           </div>
 
-          {!hasPhone && (
-            <p className="text-sm text-muted-foreground text-center">
-              Cannot call - no phone number available
-            </p>
+          {/* Quick Stats Row */}
+          {leadScore > 0 && (
+            <div className="mt-3 pt-3 border-t">
+              <LeadScoreGauge score={leadScore} size="md" />
+            </div>
           )}
+        </div>
 
-          <Separator />
+        {/* Tabs Navigation */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
+          <TabsList className="w-full justify-start rounded-none border-b bg-transparent h-auto p-0 px-6">
+            <TabsTrigger 
+              value="overview" 
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-3"
+            >
+              <Building2 className="w-4 h-4 mr-2" />
+              Overview
+            </TabsTrigger>
+            <TabsTrigger 
+              value="history" 
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-3"
+            >
+              <History className="w-4 h-4 mr-2" />
+              History
+              {timelineItems.length > 0 && (
+                <Badge variant="secondary" className="ml-2 h-5 px-1.5 text-[10px]">
+                  {timelineItems.length}
+                </Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger 
+              value="notes" 
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-3"
+            >
+              <FileText className="w-4 h-4 mr-2" />
+              Notes
+            </TabsTrigger>
+          </TabsList>
 
-          {/* Call History Section */}
-          <div>
-            <h3 className="font-medium mb-3 flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              Call History
-            </h3>
-
-            {/* Local Call Record */}
-            {callRecord &&
-              callRecord.status !== "not_called" &&
-              callRecord.status !== "queued" && (
-                <Card className="mb-3">
-                  <CardContent className="pt-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        {callRecord.status === "completed" ||
-                        callRecord.status === "booked" ||
-                        callRecord.status === "calendar_sent" ? (
-                          <CheckCircle className="w-4 h-4 text-green-500" />
-                        ) : callRecord.status === "failed" ? (
-                          <XCircle className="w-4 h-4 text-red-500" />
-                        ) : (
-                          <Clock className="w-4 h-4 text-blue-500" />
-                        )}
-                        <span className="text-sm font-medium">
-                          {formatDate(callRecord.call_started_at)}
-                        </span>
-                      </div>
-                      <Badge className={STATUS_COLORS[callRecord.status]}>
-                        {STATUS_LABELS[callRecord.status]}
-                      </Badge>
+          {/* Tab Contents */}
+          <ScrollArea className="flex-1">
+            {/* Overview Tab */}
+            <TabsContent value="overview" className="m-0 p-6 space-y-4">
+              {/* Practice Information */}
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-medium">Practice Information</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-start gap-2">
+                    <MapPin className="w-4 h-4 mt-0.5 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm">{practitioner.address}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {practitioner.city}, {practitioner.province}
+                      </p>
                     </div>
+                  </div>
 
-                    <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
-                      <div>
-                        Duration: {formatDuration(callRecord.duration_seconds)}
-                      </div>
-                      {callRecord.appointment_booked && (
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-3 h-3" />
-                          Appointment booked
-                        </div>
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-4 h-4 text-muted-foreground" />
+                    <p className="text-sm">
+                      {practitioner.phone || (
+                        <span className="text-muted-foreground">No phone available</span>
                       )}
+                    </p>
+                  </div>
+
+                  {practitioner.rating && (
+                    <div className="flex items-center gap-2">
+                      <Star className="w-4 h-4 text-yellow-500" />
+                      <p className="text-sm">
+                        {practitioner.rating} stars
+                        {practitioner.review_count && ` (${practitioner.review_count} reviews)`}
+                      </p>
                     </div>
+                  )}
 
-                    {callRecord.summary && (
-                      <div className="mt-3 p-2 bg-muted rounded text-sm">
-                        <p className="font-medium mb-1">Summary:</p>
-                        <p>{callRecord.summary}</p>
-                      </div>
-                    )}
+                  {practitioner.website && (
+                    <div className="flex items-center gap-2">
+                      <Globe className="w-4 h-4 text-muted-foreground" />
+                      <a
+                        href={practitioner.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-600 hover:underline flex items-center gap-1"
+                      >
+                        Website
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
 
-                    {callRecord.transcript && (
-                      <details className="mt-3">
-                        <summary className="cursor-pointer text-sm text-blue-600 flex items-center gap-1">
-                          <FileText className="w-3 h-3" />
-                          View Transcript
-                        </summary>
-                        <ScrollArea className="h-[200px] mt-2 p-2 bg-muted rounded">
-                          <pre className="text-xs whitespace-pre-wrap">
-                            {callRecord.transcript}
-                          </pre>
-                        </ScrollArea>
-                      </details>
-                    )}
-
-                    {/* Call Intelligence Section */}
-                    {callIntelligence && (callIntelligence.sentiment_label || callIntelligence.lead_score || callIntelligence.recording_url) && (
-                      <div className="mt-4 pt-3 border-t">
-                        <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">
-                          <Brain className="w-3 h-3" />
-                          Call Intelligence
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          {/* Sentiment Badge */}
-                          {callIntelligence.sentiment_label && (
-                            <Badge 
-                              className={
-                                callIntelligence.sentiment_label === 'positive' 
-                                  ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
-                                  : callIntelligence.sentiment_label === 'negative'
-                                    ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-                                    : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'
-                              }
-                            >
-                              {callIntelligence.sentiment_label === 'positive' && <Smile className="w-3 h-3 mr-1" />}
-                              {callIntelligence.sentiment_label === 'negative' && <Frown className="w-3 h-3 mr-1" />}
-                              {callIntelligence.sentiment_label === 'neutral' && <Meh className="w-3 h-3 mr-1" />}
-                              {callIntelligence.sentiment_label}
-                            </Badge>
-                          )}
-                          
-                          {/* Lead Score Badge */}
-                          {callIntelligence.lead_score !== undefined && callIntelligence.lead_score > 0 && (
-                            <Badge 
-                              className={
-                                callIntelligence.lead_score >= 70 
-                                  ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400' 
-                                  : callIntelligence.lead_score >= 40
-                                    ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                                    : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'
-                              }
-                            >
-                              <TrendingUp className="w-3 h-3 mr-1" />
-                              Score: {callIntelligence.lead_score}
-                            </Badge>
-                          )}
+              {/* Team Members */}
+              {enrichment?.practitioners && enrichment.practitioners.length > 0 && (
+                <Card className="border-purple-200 bg-purple-50/50 dark:bg-purple-950/20 dark:border-purple-800">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium flex items-center gap-2 text-purple-700 dark:text-purple-300">
+                      <Users className="w-4 h-4" />
+                      Team Members ({enrichment.practitioners.length})
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    {enrichment.practitioners.map((prac, idx) => (
+                      <div key={idx} className="flex items-center gap-2 py-1.5 px-2 bg-white/60 dark:bg-white/10 rounded-md">
+                        <Avatar className="h-7 w-7">
+                          <AvatarFallback className="text-[10px] bg-purple-100 text-purple-700">
+                            {getInitials(prac.name)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="text-sm font-medium">{prac.name}</p>
+                          <p className="text-xs text-muted-foreground">{prac.credentials}</p>
                         </div>
-
-                        {/* Audio Player for Recording */}
-                        {callIntelligence.recording_url && (
-                          <div className="mt-3 p-2 bg-muted/50 rounded-md">
-                            <p className="text-xs font-medium mb-2 flex items-center gap-1">
-                              <Volume2 className="w-3 h-3" />
-                              Call Recording
-                            </p>
-                            <div className="flex items-center gap-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="h-8 w-8 p-0"
-                                onClick={() => {
-                                  if (!audioRef) {
-                                    const audio = new Audio(callIntelligence.recording_url);
-                                    audio.onended = () => setIsPlaying(false);
-                                    setAudioRef(audio);
-                                    audio.play();
-                                    setIsPlaying(true);
-                                  } else if (isPlaying) {
-                                    audioRef.pause();
-                                    setIsPlaying(false);
-                                  } else {
-                                    audioRef.play();
-                                    setIsPlaying(true);
-                                  }
-                                }}
-                              >
-                                {isPlaying ? (
-                                  <Pause className="w-4 h-4" />
-                                ) : (
-                                  <Play className="w-4 h-4" />
-                                )}
-                              </Button>
-                              <span className="text-xs text-muted-foreground">
-                                {isPlaying ? 'Playing...' : 'Play recording'}
-                              </span>
-                            </div>
-                          </div>
-                        )}
                       </div>
-                    )}
+                    ))}
                   </CardContent>
                 </Card>
               )}
 
-            {/* Bland API Calls */}
-            {loadingBlandCalls ? (
-              <div className="flex items-center justify-center py-4">
-                <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                <span className="text-sm text-muted-foreground">
-                  Loading call history...
-                </span>
-              </div>
-            ) : blandCalls.length > 0 ? (
-              <div className="space-y-2">
-                <p className="text-xs text-muted-foreground mb-2">
-                  From Bland.ai API:
-                </p>
-                {blandCalls.map((call: any) => (
-                  <Card key={call.call_id} className="bg-muted/50">
-                    <CardContent className="py-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">
-                          {new Date(call.created_at).toLocaleDateString()}
-                        </span>
-                        <Badge variant="outline">{call.status}</Badge>
+              {/* Contact Emails */}
+              {enrichment?.emails && enrichment.emails.length > 0 && (
+                <Card className="border-blue-200 bg-blue-50/50 dark:bg-blue-950/20 dark:border-blue-800">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium flex items-center gap-2 text-blue-700 dark:text-blue-300">
+                      <Mail className="w-4 h-4" />
+                      Contact Emails ({enrichment.emails.length})
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    {enrichment.emails.map((email, idx) => (
+                      <div key={idx} className="flex items-center justify-between py-1.5 px-2 bg-white/60 dark:bg-white/10 rounded-md">
+                        <a
+                          href={`mailto:${email}`}
+                          className="text-sm text-blue-600 hover:underline truncate"
+                        >
+                          {email}
+                        </a>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 w-7 p-0 shrink-0"
+                          onClick={() => copyEmail(email)}
+                        >
+                          {copiedEmail === email ? (
+                            <CheckCheck className="w-3.5 h-3.5 text-green-500" />
+                          ) : (
+                            <Copy className="w-3.5 h-3.5" />
+                          )}
+                        </Button>
                       </div>
-                      {call.call_length && (
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Duration: {formatDuration(call.call_length)}
-                        </p>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              !callRecord ||
-              (callRecord.status === "not_called" && (
-                <p className="text-sm text-muted-foreground text-center py-4">
-                  No calls recorded yet
+                    ))}
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Services */}
+              {enrichment?.services && enrichment.services.length > 0 && (
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium flex items-center gap-2">
+                      <Stethoscope className="w-4 h-4" />
+                      Services Offered
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-1.5">
+                      {enrichment.services.map((service, idx) => (
+                        <Badge key={idx} variant="secondary" className="text-xs">
+                          {service}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Languages */}
+              {enrichment?.languages && enrichment.languages.length > 0 && (
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium flex items-center gap-2">
+                      <Languages className="w-4 h-4" />
+                      Languages Spoken
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-1.5">
+                      {enrichment.languages.map((lang, idx) => (
+                        <Badge key={idx} variant="outline" className="text-xs">
+                          {lang}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+
+            {/* History Tab */}
+            <TabsContent value="history" className="m-0 p-6">
+              <DrawerCallTimeline items={timelineItems} loading={loadingBlandCalls} />
+            </TabsContent>
+
+            {/* Notes Tab */}
+            <TabsContent value="notes" className="m-0 p-6 h-full">
+              <div className="space-y-2">
+                <Textarea
+                  placeholder="Add notes about this practitioner..."
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  className="min-h-[300px] resize-none"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Notes are saved automatically
                 </p>
-              ))
-            )}
+              </div>
+            </TabsContent>
+          </ScrollArea>
+        </Tabs>
+
+        {/* Sticky Action Bar */}
+        <div className="sticky bottom-0 border-t bg-background p-4">
+          <div className="flex items-center gap-2">
+            <TooltipProvider>
+              <Button
+                onClick={handleCallNow}
+                disabled={!canCall || isCalling}
+                className="flex-1"
+                size="lg"
+              >
+                {isCalling ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Calling...
+                  </>
+                ) : status === "in_progress" ? (
+                  <>
+                    <PhoneCall className="w-4 h-4 mr-2 animate-pulse" />
+                    In Progress
+                  </>
+                ) : (
+                  <>
+                    <Phone className="w-4 h-4 mr-2" />
+                    Call Now
+                  </>
+                )}
+              </Button>
+
+              {enrichment?.emails && enrichment.emails.length > 0 && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="outline" size="lg" asChild>
+                      <a href={`mailto:${enrichment.emails[0]}`}>
+                        <Mail className="w-4 h-4" />
+                      </a>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Send Email</TooltipContent>
+                </Tooltip>
+              )}
+
+              {practitioner.website && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="outline" size="lg" asChild>
+                      <a href={practitioner.website} target="_blank" rel="noopener noreferrer">
+                        <Globe className="w-4 h-4" />
+                      </a>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Open Website</TooltipContent>
+                </Tooltip>
+              )}
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="outline" size="lg">
+                    <MoreHorizontal className="w-4 h-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>More Actions</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
 
-          <Separator />
-
-          {/* Notes Section */}
-          <div>
-            <Label
-              htmlFor="notes"
-              className="mb-2 flex items-center gap-2 font-medium"
-            >
-              <MessageSquare className="w-4 h-4" />
-              Notes
-            </Label>
-            <Textarea
-              id="notes"
-              placeholder="Add notes about this practitioner..."
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              className="min-h-[100px]"
-            />
-            <p className="text-xs text-muted-foreground mt-1">
-              Notes are saved automatically
+          {!hasPhone && (
+            <p className="text-xs text-muted-foreground text-center mt-2">
+              Cannot call - no phone number available
             </p>
-          </div>
+          )}
         </div>
       </SheetContent>
     </Sheet>
