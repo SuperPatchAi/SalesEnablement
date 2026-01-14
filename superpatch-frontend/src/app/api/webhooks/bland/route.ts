@@ -437,7 +437,7 @@ export async function GET(request: NextRequest) {
     
     try {
       // Try to read from call_records
-      const { data, error, count } = await supabaseAdmin
+      const { error, count } = await supabaseAdmin
         .from('call_records')
         .select('*', { count: 'exact' })
         .limit(5);
@@ -451,49 +451,13 @@ export async function GET(request: NextRequest) {
         });
       }
       
-      // Try a test insert (will be deleted)
-      const testId = `test-${Date.now()}`;
-      const { data: insertData, error: insertError } = await supabaseAdmin
-        .from('call_records')
-        .insert({
-          call_id: testId,
-          practitioner_name: "Webhook Test",
-          phone: "+10000000000",
-          status: "completed",
-        })
-        .select()
-        .single();
-      
-      let insertSuccess = false;
-      let deleteSuccess = false;
-      
-      if (!insertError && insertData) {
-        insertSuccess = true;
-        // Delete the test record
-        const { error: deleteError } = await supabaseAdmin
-          .from('call_records')
-          .delete()
-          .eq('call_id', testId);
-        deleteSuccess = !deleteError;
-      }
-      
       return NextResponse.json({
         status: "ok",
         message: "Supabase connection working",
         test_results: {
           read_success: true,
           records_found: count,
-          insert_success: insertSuccess,
-          insert_error: insertError?.message || null,
-          cleanup_success: deleteSuccess,
         },
-        sample_records: data?.slice(0, 2).map(r => ({
-          id: r.id,
-          call_id: r.call_id,
-          practitioner_name: r.practitioner_name,
-          status: r.status,
-          created_at: r.created_at,
-        })),
       });
     } catch (err) {
       return NextResponse.json({
