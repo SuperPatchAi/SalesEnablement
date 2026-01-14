@@ -280,7 +280,7 @@ export function FilterPanel({ metadata, filters, onFilterChange, onClearAll }: F
       )}
 
       {/* Filter Groups */}
-      <ScrollArea className="flex-1 h-0 -mx-1 px-1">
+      <ScrollArea className="flex-1 min-h-0 -mx-1 px-1">
         <div className="space-y-1 py-3">
           {/* Search */}
           <FilterGroup title="Search" icon={Search} defaultOpen={true}>

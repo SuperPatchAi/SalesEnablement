@@ -1459,7 +1459,7 @@ function CampaignPageContent() {
       <div className="flex-1 flex overflow-hidden">
         {/* Filter Panel Sidebar - Desktop */}
         {filterPanelOpen && (
-          <div className="hidden lg:flex w-72 border-r bg-muted/20 p-4 flex-shrink-0">
+          <div className="hidden lg:flex w-72 border-r bg-muted/20 p-4 flex-shrink-0 overflow-hidden">
             <FilterPanel
               metadata={metadata}
               filters={filterState}
