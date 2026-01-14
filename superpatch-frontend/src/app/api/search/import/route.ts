@@ -203,10 +203,11 @@ export async function POST(request: NextRequest) {
           google_maps_uri: practitioner.google_maps_uri || null,
           latitude: practitioner.latitude || null,
           longitude: practitioner.longitude || null,
+          country: practitioner.country || null, // Store country properly
           scraped_at: new Date().toISOString(),
           is_user_added: false,
           do_not_call: false,
-          notes: `Imported from Google Maps search. Country: ${practitioner.country}`,
+          notes: `Imported from Google Maps search`,
         };
 
         // If enrichment data was provided (pre-enriched), include it

@@ -114,9 +114,11 @@ interface PractitionerData extends Practitioner {
 }
 
 interface FilterMetadata {
+  countries: string[];
   provinces: string[];
   cities: Record<string, string[]>;
   types: string[];
+  provincesByCountry: Record<string, string[]>;
 }
 
 interface PaginatedResponse {
@@ -163,6 +165,7 @@ function CampaignPageContent() {
   const [pagination, setPagination] = useState({ page: 1, total: 0, hasMore: false });
 
   // Filter state
+  const [country, setCountry] = useState<string>("");
   const [province, setProvince] = useState<string>("");
   const [city, setCity] = useState<string>("");
   const [practitionerType, setPractitionerType] = useState<string>("");
@@ -1171,6 +1174,7 @@ function CampaignPageContent() {
   // Filter state object for FilterPanel
   const filterState: FilterState = {
     search,
+    country,
     province,
     city,
     practitionerType,
@@ -1191,6 +1195,12 @@ function CampaignPageContent() {
   // Handle filter changes from FilterPanel
   const handleFilterChange = (changes: Partial<FilterState>) => {
     if (changes.search !== undefined) setSearch(changes.search);
+    if (changes.country !== undefined) {
+      setCountry(changes.country);
+      // Reset province and city when country changes
+      if (!changes.province) setProvince("");
+      if (!changes.city) setCity("");
+    }
     if (changes.province !== undefined) {
       setProvince(changes.province);
       if (!changes.city) setCity("");
@@ -1216,6 +1226,7 @@ function CampaignPageContent() {
   // Clear all filters
   const clearAllFilters = () => {
     setSearch("");
+    setCountry("");
     setProvince("");
     setCity("");
     setPractitionerType("");
@@ -1236,6 +1247,7 @@ function CampaignPageContent() {
   // Count active filters
   const activeFilterCount = [
     search,
+    country,
     province,
     city,
     practitionerType,

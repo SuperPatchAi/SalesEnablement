@@ -46,7 +46,13 @@ interface PractitionerData {
 
 // Cache for JSON fallback (only used if Supabase fails)
 let jsonCache: Practitioner[] | null = null;
-let metadataCache: { provinces: string[]; cities: Record<string, string[]>; types: string[] } | null = null;
+let metadataCache: { 
+  countries: string[]; 
+  provinces: string[]; 
+  cities: Record<string, string[]>; 
+  types: string[];
+  provincesByCountry: Record<string, string[]>;
+} | null = null;
 let metadataCacheTime: number = 0;
 const METADATA_CACHE_TTL = 5 * 60 * 1000; // 5 minutes TTL
 
@@ -110,7 +116,13 @@ function clearMetadataCache() {
 }
 
 // Get metadata for filters
-async function getMetadata(forceRefresh: boolean = false): Promise<{ provinces: string[]; cities: Record<string, string[]>; types: string[] }> {
+async function getMetadata(forceRefresh: boolean = false): Promise<{ 
+  countries: string[]; 
+  provinces: string[]; 
+  cities: Record<string, string[]>; 
+  types: string[];
+  provincesByCountry: Record<string, string[]>;
+}> {
   // Check if cache is valid (not expired and not force refresh)
   const now = Date.now();
   const cacheValid = metadataCache && (now - metadataCacheTime) < METADATA_CACHE_TTL;
@@ -132,8 +144,14 @@ async function getMetadata(forceRefresh: boolean = false): Promise<{ provinces: 
   
   if (useSupabase && supabaseAdmin) {
     try {
+      // Get distinct countries
+      const { data: countryData } = await supabaseAdmin
+        .from('practitioners')
+        .select('country')
+        .not('country', 'is', null);
+      const countries = [...new Set((countryData || []).map((c: { country: string }) => c.country).filter(Boolean))].sort();
+      
       // Use RPC functions for efficient distinct value retrieval
-      // These functions use SELECT DISTINCT at the database level
       const provinceResult = await supabaseAdmin.rpc('get_distinct_provinces');
       const provinceData = provinceResult.data as { province: string }[] | null;
       const provinceError = provinceResult.error;
@@ -159,34 +177,45 @@ async function getMetadata(forceRefresh: boolean = false): Promise<{ provinces: 
         .filter(Boolean)
         .sort();
       
-      // Get cities by province - still need to do this with regular query
-      // but limit is high enough to get all
-      const { data: cityData } = await supabaseAdmin
+      // Get cities and provinces by country
+      const { data: locationData } = await supabaseAdmin
         .from('practitioners')
-        .select('province, city')
+        .select('country, province, city')
         .not('city', 'is', null)
         .limit(50000);
       
-      const typedCityData = cityData as { province: string; city: string }[] || [];
+      const typedLocationData = locationData as { country: string; province: string; city: string }[] || [];
+      
+      // Build cities by province
       const cities: Record<string, string[]> = {};
       for (const province of provinces) {
-        const provinceCities = typedCityData
+        const provinceCities = typedLocationData
           .filter(c => c.province === province)
           .map(c => c.city)
           .filter(Boolean);
         cities[province] = [...new Set(provinceCities)].sort();
       }
       
-      metadataCache = { provinces, cities, types };
+      // Build provinces by country
+      const provincesByCountry: Record<string, string[]> = {};
+      for (const country of countries) {
+        const countryProvinces = typedLocationData
+          .filter(c => c.country === country)
+          .map(c => c.province)
+          .filter(Boolean);
+        provincesByCountry[country] = [...new Set(countryProvinces)].sort();
+      }
+      
+      metadataCache = { countries, provinces, cities, types, provincesByCountry };
       metadataCacheTime = Date.now();
-      console.log(`[Practitioners API] Metadata cached: ${provinces.length} provinces, ${Object.keys(cities).length} city groups, ${types.length} types`);
+      console.log(`[Practitioners API] Metadata cached: ${countries.length} countries, ${provinces.length} provinces, ${Object.keys(cities).length} city groups, ${types.length} types`);
       return metadataCache;
     } catch (error) {
       console.error("[Practitioners API] Supabase metadata error, falling back to JSON:", error);
     }
   }
   
-  // Fallback to JSON
+  // Fallback to JSON (no country support in legacy data)
   const practitioners = await loadFromJSON();
   const provinces = [...new Set(practitioners.map(p => p.province).filter(Boolean))].sort() as string[];
   const cities: Record<string, string[]> = {};
@@ -196,7 +225,14 @@ async function getMetadata(forceRefresh: boolean = false): Promise<{ provinces: 
   }
   const types = [...new Set(practitioners.map(p => p.practitioner_type).filter(Boolean))].sort();
   
-  metadataCache = { provinces, cities, types };
+  // Default to CA for legacy JSON data
+  metadataCache = { 
+    countries: ['CA'], 
+    provinces, 
+    cities, 
+    types,
+    provincesByCountry: { 'CA': provinces }
+  };
   metadataCacheTime = Date.now();
   console.log(`[Practitioners API] Metadata cached from JSON: ${provinces.length} provinces, ${Object.keys(cities).length} city groups, ${types.length} types`);
   return metadataCache;

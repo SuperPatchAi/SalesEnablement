@@ -43,13 +43,16 @@ import { cn } from "@/lib/utils";
 import { CallStatus } from "@/lib/campaign-storage";
 
 interface FilterMetadata {
+  countries: string[];
   provinces: string[];
   cities: Record<string, string[]>;
   types: string[];
+  provincesByCountry: Record<string, string[]>;
 }
 
 export interface FilterState {
   search: string;
+  country: string;
   province: string;
   city: string;
   practitionerType: string;
@@ -171,14 +174,26 @@ export function FilterPanel({ metadata, filters, onFilterChange, onClearAll }: F
     });
   };
 
+  // Get available provinces for selected country
+  const availableProvinces = metadata && filters.country
+    ? metadata.provincesByCountry[filters.country] || []
+    : metadata?.provinces || [];
+
   // Get available cities for selected province
   const availableCities = metadata && filters.province
     ? metadata.cities[filters.province] || []
     : [];
 
+  // Country display names
+  const countryNames: Record<string, string> = {
+    'CA': 'Canada',
+    'US': 'United States',
+  };
+
   // Count active filters
   const activeFilterCount = [
     filters.search,
+    filters.country,
     filters.province,
     filters.city,
     filters.practitionerType,
@@ -244,6 +259,14 @@ export function FilterPanel({ metadata, filters, onFilterChange, onClearAll }: F
               </button>
             </Badge>
           )}
+          {filters.country && (
+            <Badge variant="secondary" className="gap-1 pr-1">
+              {countryNames[filters.country] || filters.country}
+              <button onClick={() => onFilterChange({ country: "", province: "", city: "" })}>
+                <X className="w-3 h-3" />
+              </button>
+            </Badge>
+          )}
           {filters.province && (
             <Badge variant="secondary" className="gap-1 pr-1">
               {filters.province}
@@ -298,25 +321,45 @@ export function FilterPanel({ metadata, filters, onFilterChange, onClearAll }: F
           <Separator />
 
           {/* Location */}
-          <FilterGroup title="Location" icon={MapPin} defaultOpen={true} badge={filters.province ? 1 : undefined}>
+          <FilterGroup title="Location" icon={MapPin} defaultOpen={true} badge={[filters.country, filters.province, filters.city].filter(Boolean).length || undefined}>
             <div className="space-y-3">
+              {/* Country */}
               <div>
-                <Label className="text-xs text-muted-foreground mb-1.5 block">Province</Label>
+                <Label className="text-xs text-muted-foreground mb-1.5 block">Country</Label>
+                <Select
+                  value={filters.country || "_all"}
+                  onValueChange={(v) => onFilterChange({ country: v === "_all" ? "" : v, province: "", city: "" })}
+                >
+                  <SelectTrigger className="h-9">
+                    <SelectValue placeholder="All countries" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="_all">All countries</SelectItem>
+                    {metadata?.countries?.map((c) => (
+                      <SelectItem key={c} value={c}>{countryNames[c] || c}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              {/* State/Province */}
+              <div>
+                <Label className="text-xs text-muted-foreground mb-1.5 block">State/Province</Label>
                 <Select
                   value={filters.province || "_all"}
                   onValueChange={(v) => onFilterChange({ province: v === "_all" ? "" : v, city: "" })}
                 >
                   <SelectTrigger className="h-9">
-                    <SelectValue placeholder="All provinces" />
+                    <SelectValue placeholder="All states/provinces" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="_all">All provinces</SelectItem>
-                    {metadata?.provinces.map((p) => (
+                    <SelectItem value="_all">All states/provinces</SelectItem>
+                    {availableProvinces.map((p) => (
                       <SelectItem key={p} value={p}>{p}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
+              {/* City */}
               <div>
                 <Label className="text-xs text-muted-foreground mb-1.5 block">City</Label>
                 <Select
@@ -325,7 +368,7 @@ export function FilterPanel({ metadata, filters, onFilterChange, onClearAll }: F
                   disabled={!filters.province}
                 >
                   <SelectTrigger className="h-9">
-                    <SelectValue placeholder={filters.province ? "Select city" : "Select province first"} />
+                    <SelectValue placeholder={filters.province ? "Select city" : "Select state/province first"} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="_all">All cities</SelectItem>
