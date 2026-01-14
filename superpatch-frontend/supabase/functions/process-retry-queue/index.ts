@@ -12,18 +12,41 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "
 // Batch size for concurrent calls (limit to avoid rate limits)
 const BATCH_SIZE = 10;
 
-// Default pathway ID for retry calls (should be configured)
-const DEFAULT_PATHWAY_ID = Deno.env.get("DEFAULT_PATHWAY_ID") || "";
+// Knowledge base and voice IDs (same as batch-caller.ts)
+const KB_ID = "b671527d-0c2d-4a21-9586-033dad3b0255";
+const VOICE_ID = "78c8543e-e5fe-448e-8292-20a7b8c45247";
+const WEBHOOK_URL = Deno.env.get("WEBHOOK_URL") || "https://sales-enablement-six.vercel.app/api/webhooks/bland";
 
-// Pathway mapping by practitioner type
-const PATHWAY_MAP: Record<string, string> = {
-  "chiropractor": Deno.env.get("PATHWAY_CHIROPRACTOR") || DEFAULT_PATHWAY_ID,
-  "massage_therapist": Deno.env.get("PATHWAY_MASSAGE") || DEFAULT_PATHWAY_ID,
-  "naturopath": Deno.env.get("PATHWAY_NATUROPATH") || DEFAULT_PATHWAY_ID,
-  "acupuncturist": Deno.env.get("PATHWAY_ACUPUNCTURE") || DEFAULT_PATHWAY_ID,
-  "physiotherapist": Deno.env.get("PATHWAY_PHYSIO") || DEFAULT_PATHWAY_ID,
-  "osteopath": Deno.env.get("PATHWAY_OSTEOPATH") || DEFAULT_PATHWAY_ID,
+// Pathway IDs for different practitioner types (same as batch-caller.ts)
+// Each practitioner type has its own conversation pathway
+const PATHWAYS: Record<string, string> = {
+  chiropractor: "cf2233ef-7fb2-49ff-af29-0eee47204e9f",
+  "massage therapist": "d202aad7-bcb6-478c-a211-b00877545e05",
+  massage_therapist: "d202aad7-bcb6-478c-a211-b00877545e05",
+  rmt: "d202aad7-bcb6-478c-a211-b00877545e05",
+  naturopath: "1d07d635-147e-4f69-a4cd-c124b33b073d",
+  "naturopathic doctor": "1d07d635-147e-4f69-a4cd-c124b33b073d",
+  "integrative medicine": "1c958dd7-e1ff-4f6d-b9a3-f80a369c26aa",
+  "integrative medicine doctor": "1c958dd7-e1ff-4f6d-b9a3-f80a369c26aa",
+  "integrative medicine practitioner": "1c958dd7-e1ff-4f6d-b9a3-f80a369c26aa",
+  "functional medicine": "236dbd85-c74d-4774-a7af-4b5812015c68",
+  "functional medicine doctor": "236dbd85-c74d-4774-a7af-4b5812015c68",
+  "functional medicine practitioner": "236dbd85-c74d-4774-a7af-4b5812015c68",
+  acupuncturist: "154f93f4-54a5-4900-92e8-0fa217508127",
 };
+
+// Default pathway (chiropractor) for unknown types
+const DEFAULT_PATHWAY = "cf2233ef-7fb2-49ff-af29-0eee47204e9f";
+
+/**
+ * Get pathway ID for a practitioner type
+ * Matches the logic in batch-caller.ts
+ */
+function getPathwayId(practitionerType: string | null): string {
+  if (!practitionerType) return DEFAULT_PATHWAY;
+  const typeKey = practitionerType.toLowerCase().trim();
+  return PATHWAYS[typeKey] || DEFAULT_PATHWAY;
+}
 
 interface RetryQueueEntry {
   id: string;
@@ -74,39 +97,39 @@ async function initiateCall(practitioner: RetryQueueEntry): Promise<CallResult> 
     };
   }
 
-  // Determine pathway based on practitioner type
-  const pathwayId = practitioner.practitioner_type 
-    ? (PATHWAY_MAP[practitioner.practitioner_type.toLowerCase()] || DEFAULT_PATHWAY_ID)
-    : DEFAULT_PATHWAY_ID;
+  // Determine pathway based on practitioner type (auto-selected, no env vars needed)
+  const pathwayId = getPathwayId(practitioner.practitioner_type);
 
-  if (!pathwayId) {
-    return {
-      practitioner_id: practitioner.id,
-      success: false,
-      error: "No pathway configured for this practitioner type",
-    };
-  }
+  console.log(`[RetryQueue] Using pathway ${pathwayId} for ${practitioner.practitioner_type || 'unknown type'}`);
 
-  // Build call payload
+  // Build call payload (same structure as batch-caller.ts)
   const callPayload = {
     phone_number: practitioner.phone,
     pathway_id: pathwayId,
-    voice: "maya", // Default voice, can be configured
+    pathway_version: 1,
+    knowledge_base: KB_ID,
+    voice: VOICE_ID,
     wait_for_greeting: true,
     record: true,
-    max_duration: 10, // 10 minutes max for retry calls
+    max_duration: 15, // 15 minutes max (same as batch-caller)
+    webhook: WEBHOOK_URL,
+    request_data: {
+      practice_name: practitioner.name || "your practice",
+      practice_city: practitioner.city || "",
+      practice_province: practitioner.province || "",
+      practitioner_type: practitioner.practitioner_type || "",
+    },
     metadata: {
+      campaign: "canadian_practitioners",
+      source: "retry_queue",
       practitioner_id: practitioner.id,
       practice_name: practitioner.name,
       practitioner_type: practitioner.practitioner_type,
       city: practitioner.city,
       province: practitioner.province,
-      source: "retry_queue",
       retry_count: practitioner.retry_count,
       retry_reason: practitioner.retry_reason,
     },
-    // Webhook for call completion
-    webhook: Deno.env.get("WEBHOOK_URL") || "",
   };
 
   try {
