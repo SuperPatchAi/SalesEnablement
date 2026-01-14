@@ -156,6 +156,77 @@ function calculateLeadScore(payload: BlandWebhookPayload, callStatus: string): n
   return Math.max(0, score); // Don't go below 0
 }
 
+// Do Not Call (DNC) phrases to detect in transcripts
+const DNC_PHRASES = [
+  "don't call",
+  "do not call",
+  "stop calling",
+  "remove me",
+  "take me off",
+  "not interested",
+  "never call again",
+  "unsubscribe",
+  "remove my number",
+  "don't contact",
+  "do not contact",
+  "no more calls",
+  "quit calling",
+];
+
+// Detect DNC request in transcript
+function detectDNCRequest(transcript: string): { detected: boolean; matchedPhrase: string | null } {
+  if (!transcript) {
+    return { detected: false, matchedPhrase: null };
+  }
+  
+  const lowerTranscript = transcript.toLowerCase();
+  
+  for (const phrase of DNC_PHRASES) {
+    if (lowerTranscript.includes(phrase)) {
+      console.log(`🚫 DNC phrase detected: "${phrase}"`);
+      return { detected: true, matchedPhrase: phrase };
+    }
+  }
+  
+  return { detected: false, matchedPhrase: null };
+}
+
+// Mark practitioner as Do Not Call
+async function markPractitionerAsDNC(
+  practitionerId: string,
+  reason: string,
+  source: 'ai_detected' | 'manual' = 'ai_detected'
+): Promise<boolean> {
+  if (!isSupabaseConfigured || !supabaseAdmin) {
+    console.error("Cannot mark DNC: Supabase not configured");
+    return false;
+  }
+  
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await (supabaseAdmin as any)
+      .from('practitioners')
+      .update({
+        do_not_call: true,
+        dnc_reason: reason,
+        dnc_detected_at: new Date().toISOString(),
+        dnc_source: source,
+      })
+      .eq('id', practitionerId);
+
+    if (error) {
+      console.error("Error marking practitioner as DNC:", error);
+      return false;
+    }
+
+    console.log(`✅ Practitioner ${practitionerId} marked as DNC (source: ${source})`);
+    return true;
+  } catch (error) {
+    console.error("Error marking practitioner as DNC:", error);
+    return false;
+  }
+}
+
 // POST /api/webhooks/bland - Handle Bland.ai call completion webhooks
 export async function POST(request: NextRequest) {
   console.log("🔔 WEBHOOK RECEIVED - Starting processing...");
@@ -460,6 +531,20 @@ export async function POST(request: NextRequest) {
         variables: vars,
         transcript_preview: payload.concatenated_transcript?.slice(0, 500),
       });
+    }
+    
+    // Check for Do Not Call (DNC) request in transcript
+    const dncResult = detectDNCRequest(payload.concatenated_transcript || "");
+    if (dncResult.detected && resolvedPractitionerId) {
+      console.log(`🚫 DNC request detected for ${resolvedPractitionerName} - marking as Do Not Call`);
+      const dncMarked = await markPractitionerAsDNC(
+        resolvedPractitionerId,
+        `AI detected phrase: "${dncResult.matchedPhrase}"`,
+        'ai_detected'
+      );
+      if (dncMarked) {
+        console.log(`✅ Practitioner ${resolvedPractitionerName} successfully marked as DNC`);
+      }
     }
     
     // Return appropriate response

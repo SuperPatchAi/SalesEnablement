@@ -105,6 +105,11 @@ interface PractitionerData extends Practitioner {
   enrichment?: EnrichmentData;
   // User-added flag
   is_user_added?: boolean;
+  // Do Not Call fields
+  do_not_call?: boolean;
+  dnc_reason?: string | null;
+  dnc_detected_at?: string | null;
+  dnc_source?: 'ai_detected' | 'manual' | null;
 }
 
 interface FilterMetadata {
@@ -175,6 +180,9 @@ function CampaignPageContent() {
   const [isMultilingual, setIsMultilingual] = useState(false);
   // User-added filter
   const [showUserAddedOnly, setShowUserAddedOnly] = useState(false);
+  // Do Not Call filter
+  const [hideDNC, setHideDNC] = useState(true); // Default: hide DNC practitioners
+  const [showDNCOnly, setShowDNCOnly] = useState(false);
 
   // Table state - column visibility and sorting
   const { columns, sortState, toggleColumn, resetColumns, handleSort, visibleColumns } = useTableState();
@@ -487,6 +495,13 @@ function CampaignPageContent() {
     if (showUserAddedOnly) {
       result = result.filter(p => p.is_user_added === true);
     }
+    // Do Not Call filters
+    if (hideDNC) {
+      result = result.filter(p => p.do_not_call !== true);
+    }
+    if (showDNCOnly) {
+      result = result.filter(p => p.do_not_call === true);
+    }
 
     // Apply sorting
     if (sortState.column && sortState.direction) {
@@ -582,7 +597,7 @@ function CampaignPageContent() {
     }
     
     return result;
-  }, [practitioners, hasEnrichment, hasEmails, hasTeamMembers, isMultilingual, showUserAddedOnly, sortState, callRecords]);
+  }, [practitioners, hasEnrichment, hasEmails, hasTeamMembers, isMultilingual, showUserAddedOnly, hideDNC, showDNCOnly, sortState, callRecords]);
 
   // Virtual list setup
   const rowVirtualizer = useVirtualizer({
@@ -1168,6 +1183,8 @@ function CampaignPageContent() {
     hasTeamMembers,
     isMultilingual,
     showUserAddedOnly,
+    hideDNC,
+    showDNCOnly,
   };
 
   // Handle filter changes from FilterPanel
@@ -1190,6 +1207,9 @@ function CampaignPageContent() {
     if (changes.hasTeamMembers !== undefined) setHasTeamMembers(changes.hasTeamMembers);
     if (changes.isMultilingual !== undefined) setIsMultilingual(changes.isMultilingual);
     if (changes.showUserAddedOnly !== undefined) setShowUserAddedOnly(changes.showUserAddedOnly);
+    // DNC filters
+    if (changes.hideDNC !== undefined) setHideDNC(changes.hideDNC);
+    if (changes.showDNCOnly !== undefined) setShowDNCOnly(changes.showDNCOnly);
   };
 
   // Clear all filters
@@ -1208,6 +1228,8 @@ function CampaignPageContent() {
     setHasTeamMembers(false);
     setIsMultilingual(false);
     setShowUserAddedOnly(false);
+    setHideDNC(true); // Reset to default (hide DNC)
+    setShowDNCOnly(false);
   };
 
   // Count active filters
@@ -1226,6 +1248,8 @@ function CampaignPageContent() {
     hasTeamMembers,
     isMultilingual,
     showUserAddedOnly,
+    !hideDNC, // Count if DNC is NOT hidden (showing DNC)
+    showDNCOnly,
   ].filter(Boolean).length;
 
   // Get queued/active calls
@@ -1764,6 +1788,8 @@ function CampaignPageContent() {
                 setHasTeamMembers(false);
                 setIsMultilingual(false);
                 setShowUserAddedOnly(false);
+                setHideDNC(true);
+                setShowDNCOnly(false);
               }}
             />
           ) : (
@@ -1792,7 +1818,11 @@ function CampaignPageContent() {
                         transform: `translateY(${virtualRow.start}px)`,
                       }}
                       className={`flex items-center px-6 border-b cursor-pointer transition-colors data-table-row ${
-                        isSelected ? 'bg-blue-50 dark:bg-blue-950/30' : 'hover:bg-muted/30'
+                        isSelected 
+                          ? 'bg-blue-50 dark:bg-blue-950/30' 
+                          : practitioner.do_not_call 
+                            ? 'bg-red-50/50 dark:bg-red-950/20 hover:bg-red-50 dark:hover:bg-red-950/30' 
+                            : 'hover:bg-muted/30'
                       }`}
                       onClick={() => handleRowClick(practitioner)}
                     >
@@ -1812,11 +1842,21 @@ function CampaignPageContent() {
                             <p className="practitioner-name truncate">{practitioner.name}</p>
                             {/* User Added badge */}
                             {practitioner.is_user_added && (
-                              <Badge 
-                                variant="outline" 
+                              <Badge
+                                variant="outline"
                                 className="text-[9px] px-1.5 py-0 h-4 bg-amber-50 border-amber-300 text-amber-700 dark:bg-amber-950/30 dark:border-amber-700 dark:text-amber-400 shrink-0"
                               >
                                 User Added
+                              </Badge>
+                            )}
+                            {/* Do Not Call badge */}
+                            {practitioner.do_not_call && (
+                              <Badge
+                                variant="outline"
+                                className="text-[9px] px-1.5 py-0 h-4 bg-red-50 border-red-300 text-red-700 dark:bg-red-950/30 dark:border-red-700 dark:text-red-400 shrink-0"
+                                title={practitioner.dnc_reason || "Do Not Call"}
+                              >
+                                DNC
                               </Badge>
                             )}
                             {/* Quick enrichment indicators (compact) */}

@@ -37,6 +37,7 @@ import {
   Users,
   Languages,
   UserPlus,
+  Ban,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CallStatus } from "@/lib/campaign-storage";
@@ -64,6 +65,9 @@ export interface FilterState {
   isMultilingual: boolean;
   // Source filter
   showUserAddedOnly: boolean;
+  // Do Not Call filter
+  hideDNC: boolean;
+  showDNCOnly: boolean;
 }
 
 interface FilterGroupProps {
@@ -188,6 +192,8 @@ export function FilterPanel({ metadata, filters, onFilterChange, onClearAll }: F
     filters.hasTeamMembers,
     filters.isMultilingual,
     filters.showUserAddedOnly,
+    !filters.hideDNC, // Count if DNC is NOT hidden (showing DNC)
+    filters.showDNCOnly,
   ].filter(Boolean).length;
 
   // Call status options
@@ -492,6 +498,48 @@ export function FilterPanel({ metadata, filters, onFilterChange, onClearAll }: F
                 />
                 <UserPlus className="w-3.5 h-3.5 text-amber-500" />
                 <span className="text-sm">User Added Only</span>
+              </label>
+            </div>
+          </FilterGroup>
+
+          <Separator />
+
+          {/* Do Not Call */}
+          <FilterGroup 
+            title="Do Not Call" 
+            icon={Ban} 
+            defaultOpen={false}
+            badge={filters.showDNCOnly ? 1 : (!filters.hideDNC ? 1 : undefined)}
+          >
+            <div className="space-y-2">
+              <p className="text-xs text-muted-foreground mb-2">
+                Filter practitioners by DNC status
+              </p>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={filters.hideDNC}
+                  onChange={(e) => onFilterChange({ 
+                    hideDNC: e.target.checked,
+                    showDNCOnly: e.target.checked ? false : filters.showDNCOnly 
+                  })}
+                  className="rounded"
+                />
+                <Ban className="w-3.5 h-3.5 text-gray-500" />
+                <span className="text-sm">Hide Do Not Call</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={filters.showDNCOnly}
+                  onChange={(e) => onFilterChange({ 
+                    showDNCOnly: e.target.checked,
+                    hideDNC: e.target.checked ? false : filters.hideDNC 
+                  })}
+                  className="rounded"
+                />
+                <Ban className="w-3.5 h-3.5 text-red-500" />
+                <span className="text-sm">Show Do Not Call Only</span>
               </label>
             </div>
           </FilterGroup>

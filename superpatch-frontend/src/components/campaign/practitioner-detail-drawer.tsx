@@ -55,6 +55,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
   CampaignCallRecord,
   getCallRecord,
   createCallRecord,
@@ -140,6 +150,14 @@ export function PractitionerDetailDrawer({
     lead_score?: number;
     recording_url?: string;
   } | null>(null);
+
+  // DNC dialog state
+  const [dncDialogOpen, setDncDialogOpen] = useState(false);
+  const [dncReason, setDncReason] = useState("");
+  const [dncLoading, setDncLoading] = useState(false);
+  const [restoreDialogOpen, setRestoreDialogOpen] = useState(false);
+  const [restoreConfirmed, setRestoreConfirmed] = useState(false);
+  const [restoreLoading, setRestoreLoading] = useState(false);
 
   // Helper to copy email to clipboard
   const copyEmail = async (email: string) => {
@@ -324,6 +342,70 @@ export function PractitionerDetailDrawer({
     setIsCalling(false);
   };
 
+  // Handle marking as Do Not Call
+  const handleMarkAsDNC = async () => {
+    if (!practitioner || !dncReason.trim()) return;
+    
+    setDncLoading(true);
+    try {
+      const response = await fetch(`/api/practitioners/${practitioner.id}/dnc`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'mark',
+          reason: dncReason.trim(),
+        }),
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        setDncDialogOpen(false);
+        setDncReason("");
+        // Close the drawer and let parent refresh
+        onOpenChange(false);
+      } else {
+        alert(`Failed to mark as DNC: ${result.error}`);
+      }
+    } catch (error) {
+      console.error("Error marking as DNC:", error);
+      alert("Failed to mark as Do Not Call");
+    }
+    setDncLoading(false);
+  };
+
+  // Handle restoring from Do Not Call
+  const handleRestoreFromDNC = async () => {
+    if (!practitioner || !restoreConfirmed) return;
+    
+    setRestoreLoading(true);
+    try {
+      const response = await fetch(`/api/practitioners/${practitioner.id}/dnc`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'restore',
+          confirmation: true,
+        }),
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        setRestoreDialogOpen(false);
+        setRestoreConfirmed(false);
+        // Close the drawer and let parent refresh
+        onOpenChange(false);
+      } else {
+        alert(`Failed to restore: ${result.error}`);
+      }
+    } catch (error) {
+      console.error("Error restoring from DNC:", error);
+      alert("Failed to restore practitioner");
+    }
+    setRestoreLoading(false);
+  };
+
   if (!practitioner) return null;
 
   const hasPhone = !!practitioner.phone;
@@ -394,6 +476,16 @@ export function PractitionerDetailDrawer({
                   >
                     <UserPlus className="w-3 h-3 mr-1" />
                     User Added
+                  </Badge>
+                )}
+                {practitioner.do_not_call && (
+                  <Badge
+                    variant="outline"
+                    className="bg-red-50 border-red-300 text-red-700 dark:bg-red-950/30 dark:border-red-700 dark:text-red-400"
+                    title={practitioner.dnc_reason || "Do Not Call"}
+                  >
+                    <Ban className="w-3 h-3 mr-1" />
+                    Do Not Call
                   </Badge>
                 )}
                 {enrichment && (
@@ -822,22 +914,28 @@ export function PractitionerDetailDrawer({
                   )}
                   
                   <DropdownMenuSeparator />
-                  
-                  <DropdownMenuItem
-                    className="text-orange-600 focus:text-orange-600"
-                    onClick={() => {
-                      // TODO: Implement do not call functionality
-                      console.log("Mark as do not call:", practitioner.id);
-                    }}
-                  >
-                    <Ban className="w-4 h-4 mr-2" />
-                    Mark as Do Not Call
-                  </DropdownMenuItem>
-                  
+
+                  {practitioner.do_not_call ? (
+                    <DropdownMenuItem
+                      className="text-green-600 focus:text-green-600"
+                      onClick={() => setRestoreDialogOpen(true)}
+                    >
+                      <UserPlus className="w-4 h-4 mr-2" />
+                      Restore to Active
+                    </DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem
+                      className="text-orange-600 focus:text-orange-600"
+                      onClick={() => setDncDialogOpen(true)}
+                    >
+                      <Ban className="w-4 h-4 mr-2" />
+                      Mark as Do Not Call
+                    </DropdownMenuItem>
+                  )}
+
                   <DropdownMenuItem
                     className="text-red-600 focus:text-red-600"
                     onClick={() => {
-                      // TODO: Implement delete functionality with confirmation
                       if (confirm(`Are you sure you want to delete ${practitioner.name}?`)) {
                         console.log("Delete practitioner:", practitioner.id);
                       }
@@ -857,6 +955,111 @@ export function PractitionerDetailDrawer({
             </p>
           )}
         </div>
+
+        {/* Mark as DNC Dialog */}
+        <Dialog open={dncDialogOpen} onOpenChange={setDncDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Mark as Do Not Call</DialogTitle>
+              <DialogDescription>
+                This will prevent {practitioner.name} from being called in future campaigns.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="py-4">
+              <Label htmlFor="dnc-reason" className="text-sm font-medium">
+                Reason for marking as Do Not Call
+              </Label>
+              <Input
+                id="dnc-reason"
+                placeholder="e.g., Requested to not be called"
+                value={dncReason}
+                onChange={(e) => setDncReason(e.target.value)}
+                className="mt-2"
+              />
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setDncDialogOpen(false);
+                  setDncReason("");
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={handleMarkAsDNC}
+                disabled={!dncReason.trim() || dncLoading}
+              >
+                {dncLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Marking...
+                  </>
+                ) : (
+                  "Mark as Do Not Call"
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Restore from DNC Dialog */}
+        <Dialog open={restoreDialogOpen} onOpenChange={setRestoreDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Restore to Active List</DialogTitle>
+              <DialogDescription>
+                This will remove {practitioner.name} from the Do Not Call list and allow them to be contacted again.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="py-4 space-y-4">
+              <div className="p-3 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-800 rounded-md">
+                <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                  <strong>Warning:</strong> Only restore this practitioner if they have explicitly given consent to be contacted again.
+                </p>
+              </div>
+              <div className="flex items-start space-x-3">
+                <Checkbox
+                  id="restore-confirm"
+                  checked={restoreConfirmed}
+                  onCheckedChange={(checked) => setRestoreConfirmed(checked === true)}
+                />
+                <label
+                  htmlFor="restore-confirm"
+                  className="text-sm text-muted-foreground cursor-pointer"
+                >
+                  I confirm this practitioner has given consent to be contacted
+                </label>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setRestoreDialogOpen(false);
+                  setRestoreConfirmed(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleRestoreFromDNC}
+                disabled={!restoreConfirmed || restoreLoading}
+              >
+                {restoreLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Restoring...
+                  </>
+                ) : (
+                  "Restore to Active"
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </SheetContent>
     </Sheet>
   );

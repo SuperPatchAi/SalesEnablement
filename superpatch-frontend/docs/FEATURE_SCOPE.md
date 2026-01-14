@@ -433,6 +433,113 @@ superpatch-frontend/
 
 ---
 
+## 📞 Call Center / Campaign Dialer
+
+### Overview
+AI-powered voice agent call center for outbound B2B practitioner outreach, integrated with Bland.ai for automated calling.
+
+### Core Features
+
+**Practitioner Management**
+- [x] Database of Canadian healthcare practitioners (chiropractors, naturopaths, massage therapists, etc.)
+- [x] User-added practitioners via Quick Call with "User Added" badge
+- [x] Enrichment data from website scraping (team members, emails, services)
+- [x] Filtering by province, city, type, rating, enrichment status
+- [x] Sortable columns with column visibility controls
+- [x] Virtual scrolling for large datasets
+
+**Campaign Dialer**
+- [x] Batch calling with queue management
+- [x] Pathway-based AI conversations (per practitioner type)
+- [x] Real-time call status tracking
+- [x] Sentiment analysis and lead scoring
+- [x] Call recording playback
+- [x] Bland.ai Memory for cross-call context
+
+**Quick Call**
+- [x] Manual phone entry with practitioner details
+- [x] Automatic practitioner creation on successful call
+- [x] Pathway selection for conversation context
+
+**Sample Request Tracking**
+- [x] Automatic detection from call transcripts
+- [x] Product-specific or sample kit requests
+- [x] Status workflow (pending → approved → shipped → delivered)
+- [x] CSV export functionality
+
+### Do Not Call (DNC) System
+
+**Automatic Detection**
+- AI analysis of call transcripts for DNC phrases:
+  - "don't call", "do not call", "stop calling"
+  - "remove me", "take me off", "not interested"
+  - "never call again", "unsubscribe"
+- Auto-flags practitioners when detected
+- Stores detection source and matched phrase
+
+**Manual Management**
+- Mark practitioner as DNC from drawer actions
+- Requires reason input for audit trail
+- 2-step confirmation for accidental prevention
+
+**Restore Process**
+- 2-step confirmation: Click → Confirm with consent checkbox
+- Clears DNC flag and restores to active list
+- Audit trail maintained
+
+**Filtering**
+- Hide DNC practitioners by default
+- Filter option to show DNC only for management
+- Visual badges and row styling for DNC practitioners
+
+### Practitioner Detail Drawer
+
+**Redesigned UI**
+- Sticky header with avatar, badges, and lead score
+- Tabbed navigation: Overview, History, Notes
+- Call timeline with expandable transcripts
+- Audio player for call recordings
+- Google Maps integration for addresses
+
+**Actions Menu**
+- Add to Queue
+- Copy Phone / Copy Address
+- Edit Practitioner
+- Export to CSV
+- Send Email
+- Mark as Do Not Call
+- Delete Practitioner
+
+### Bland.ai Integration
+
+**Webhooks**
+- Call completion webhook for status updates
+- Transcript and summary extraction
+- Sentiment analysis integration
+- Sample request detection
+- DNC phrase detection
+
+**Memory System**
+- Cross-call context retention
+- Practitioner history awareness
+- Conversation continuity
+
+### API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/practitioners` | GET | List practitioners with filters |
+| `/api/practitioners` | POST | Create user-added practitioner |
+| `/api/practitioners/[id]/dnc` | PATCH | Mark/restore DNC status |
+| `/api/campaign/calls` | GET/PATCH | Call record management |
+| `/api/bland/calls` | POST | Initiate call via Bland.ai |
+| `/api/bland/calls/[id]` | GET | Get call status |
+| `/api/webhooks/bland` | POST | Bland.ai webhook handler |
+| `/api/samples` | GET/PATCH | Sample request management |
+| `/api/memory` | GET/POST | Bland.ai memory management |
+
+---
+
 ## Next Steps
 
 1. **Review this scope** - Confirm features and priorities

@@ -50,6 +50,11 @@ export interface Practitioner {
   rating?: number | null;
   review_count?: number | null;
   is_user_added?: boolean;
+  // Do Not Call fields
+  do_not_call?: boolean;
+  dnc_reason?: string | null;
+  dnc_detected_at?: string | null;
+  dnc_source?: 'ai_detected' | 'manual' | null;
 }
 
 export interface CallResult {
