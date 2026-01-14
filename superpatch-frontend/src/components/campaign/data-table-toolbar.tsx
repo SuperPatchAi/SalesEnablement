@@ -50,6 +50,7 @@ export const DEFAULT_COLUMNS: ColumnDef[] = [
   { id: "reviews", label: "Reviews", visible: false, sortable: true, width: "w-[80px]" },
   { id: "phone", label: "Phone", visible: true, sortable: false, width: "w-[120px]" },
   { id: "enriched", label: "Enriched", visible: true, sortable: true, width: "w-[90px]" },
+  { id: "source", label: "Source", visible: false, sortable: true, width: "w-[90px]" },
   // Call data columns
   { id: "lastCalled", label: "Last Called", visible: true, sortable: true, width: "w-[110px]" },
   { id: "callCount", label: "Calls", visible: false, sortable: true, width: "w-[60px]" },

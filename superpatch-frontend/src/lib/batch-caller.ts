@@ -49,6 +49,7 @@ export interface Practitioner {
   website?: string | null;
   rating?: number | null;
   review_count?: number | null;
+  is_user_added?: boolean;
 }
 
 export interface CallResult {

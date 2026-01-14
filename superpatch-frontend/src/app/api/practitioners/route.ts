@@ -202,6 +202,105 @@ async function getMetadata(forceRefresh: boolean = false): Promise<{ provinces: 
   return metadataCache;
 }
 
+// POST - Create a new user-added practitioner
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    
+    // Validate required fields
+    if (!body.name || !body.phone) {
+      return NextResponse.json(
+        { error: "Name and phone are required" },
+        { status: 400 }
+      );
+    }
+
+    // Check Supabase availability
+    const useSupabase = await checkSupabaseTable();
+    
+    if (!useSupabase || !supabaseAdmin) {
+      return NextResponse.json(
+        { error: "Database not available" },
+        { status: 503 }
+      );
+    }
+
+    // Normalize phone number for duplicate check
+    const normalizedPhone = body.phone.replace(/\D/g, "");
+    
+    // Check if practitioner with this phone already exists
+    const { data: existing } = await supabaseAdmin
+      .from('practitioners')
+      .select('id, name, is_user_added')
+      .or(`phone.like.%${normalizedPhone.slice(-10)}%`)
+      .limit(1);
+
+    if (existing && existing.length > 0) {
+      // Return existing practitioner instead of creating duplicate
+      return NextResponse.json({
+        practitioner: existing[0],
+        created: false,
+        message: "Practitioner with this phone already exists"
+      });
+    }
+
+    // Generate a unique ID for the new practitioner
+    const id = `user_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+
+    // Create the practitioner record
+    const newPractitioner = {
+      id,
+      name: body.name,
+      practitioner_type: body.practitioner_type || 'Unknown',
+      address: body.address || null,
+      city: body.city || null,
+      province: body.province || null,
+      phone: body.phone,
+      website: body.website || null,
+      rating: null,
+      review_count: null,
+      business_status: 'OPERATIONAL',
+      google_maps_uri: null,
+      latitude: null,
+      longitude: null,
+      scraped_at: new Date().toISOString(),
+      notes: body.notes || null,
+      is_user_added: true,
+    };
+
+    // Cast to any to bypass strict type checking until types are regenerated
+    const { data, error } = await supabaseAdmin
+      .from('practitioners')
+      .insert(newPractitioner as any)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("[Practitioners API] Failed to create practitioner:", error);
+      return NextResponse.json(
+        { error: "Failed to create practitioner", details: error.message },
+        { status: 500 }
+      );
+    }
+
+    // Clear metadata cache since we added a new practitioner
+    clearMetadataCache();
+
+    return NextResponse.json({
+      practitioner: data,
+      created: true,
+      message: "Practitioner created successfully"
+    }, { status: 201 });
+
+  } catch (error) {
+    console.error("[Practitioners API] POST error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   

@@ -36,6 +36,7 @@ import {
   Mail,
   Users,
   Languages,
+  UserPlus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CallStatus } from "@/lib/campaign-storage";
@@ -61,6 +62,8 @@ export interface FilterState {
   hasEmails: boolean;
   hasTeamMembers: boolean;
   isMultilingual: boolean;
+  // Source filter
+  showUserAddedOnly: boolean;
 }
 
 interface FilterGroupProps {
@@ -184,6 +187,7 @@ export function FilterPanel({ metadata, filters, onFilterChange, onClearAll }: F
     filters.hasEmails,
     filters.hasTeamMembers,
     filters.isMultilingual,
+    filters.showUserAddedOnly,
   ].filter(Boolean).length;
 
   // Call status options
@@ -462,6 +466,32 @@ export function FilterPanel({ metadata, filters, onFilterChange, onClearAll }: F
                 />
                 <Languages className="w-3.5 h-3.5 text-green-500" />
                 <span className="text-sm">Multilingual clinic</span>
+              </label>
+            </div>
+          </FilterGroup>
+
+          <Separator />
+
+          {/* Source */}
+          <FilterGroup 
+            title="Source" 
+            icon={UserPlus} 
+            defaultOpen={false}
+            badge={filters.showUserAddedOnly ? 1 : undefined}
+          >
+            <div className="space-y-2">
+              <p className="text-xs text-muted-foreground mb-2">
+                Filter by how practitioners were added
+              </p>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={filters.showUserAddedOnly}
+                  onChange={(e) => onFilterChange({ showUserAddedOnly: e.target.checked })}
+                  className="rounded"
+                />
+                <UserPlus className="w-3.5 h-3.5 text-amber-500" />
+                <span className="text-sm">User Added Only</span>
               </label>
             </div>
           </FilterGroup>

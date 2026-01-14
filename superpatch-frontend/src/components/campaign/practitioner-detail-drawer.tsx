@@ -40,7 +40,20 @@ import {
   Building2,
   Plus,
   Brain,
+  UserPlus,
+  Edit,
+  Ban,
+  Trash2,
+  Download,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   CampaignCallRecord,
   getCallRecord,
@@ -374,9 +387,18 @@ export function PractitionerDetailDrawer({
                 <Badge className={STATUS_COLORS[status]}>
                   {STATUS_LABELS[status]}
                 </Badge>
+                {practitioner.is_user_added && (
+                  <Badge
+                    variant="outline"
+                    className="bg-amber-50 border-amber-300 text-amber-700 dark:bg-amber-950/30 dark:border-amber-700 dark:text-amber-400"
+                  >
+                    <UserPlus className="w-3 h-3 mr-1" />
+                    User Added
+                  </Badge>
+                )}
                 {enrichment && (
-                  <Badge 
-                    variant="outline" 
+                  <Badge
+                    variant="outline"
                     className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/50 dark:to-blue-950/50 border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300"
                   >
                     <Sparkles className="w-3 h-3 mr-1" />
@@ -709,14 +731,123 @@ export function PractitionerDetailDrawer({
                 </Tooltip>
               )}
 
-              <Tooltip>
-                <TooltipTrigger asChild>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="lg">
                     <MoreHorizontal className="w-4 h-4" />
                   </Button>
-                </TooltipTrigger>
-                <TooltipContent>More Actions</TooltipContent>
-              </Tooltip>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-[200px]">
+                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  
+                  <DropdownMenuItem
+                    onClick={() => {
+                      // Add to queue functionality
+                      console.log("Add to queue:", practitioner.id);
+                    }}
+                  >
+                    <UserPlus className="w-4 h-4 mr-2" />
+                    Add to Queue
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem
+                    onClick={async () => {
+                      if (practitioner.phone) {
+                        await navigator.clipboard.writeText(practitioner.phone);
+                      }
+                    }}
+                  >
+                    <Copy className="w-4 h-4 mr-2" />
+                    Copy Phone
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem
+                    onClick={async () => {
+                      const address = `${practitioner.address}, ${practitioner.city}, ${practitioner.province}`;
+                      await navigator.clipboard.writeText(address);
+                    }}
+                  >
+                    <MapPin className="w-4 h-4 mr-2" />
+                    Copy Address
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuSeparator />
+                  
+                  <DropdownMenuItem
+                    onClick={() => {
+                      // TODO: Implement edit practitioner modal
+                      console.log("Edit practitioner:", practitioner.id);
+                    }}
+                  >
+                    <Edit className="w-4 h-4 mr-2" />
+                    Edit Practitioner
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem
+                    onClick={() => {
+                      // Export single practitioner to CSV
+                      const headers = ["Name", "Type", "Phone", "Address", "City", "Province", "Website", "Rating"];
+                      const row = [
+                        practitioner.name,
+                        practitioner.practitioner_type,
+                        practitioner.phone || "",
+                        practitioner.address || "",
+                        practitioner.city || "",
+                        practitioner.province || "",
+                        practitioner.website || "",
+                        practitioner.rating?.toString() || "",
+                      ];
+                      const csv = [headers.join(","), row.map(v => `"${v}"`).join(",")].join("\n");
+                      const blob = new Blob([csv], { type: "text/csv" });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement("a");
+                      a.href = url;
+                      a.download = `${practitioner.name.replace(/[^a-z0-9]/gi, "_")}.csv`;
+                      a.click();
+                      URL.revokeObjectURL(url);
+                    }}
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Export to CSV
+                  </DropdownMenuItem>
+                  
+                  {enrichment?.emails && enrichment.emails.length > 0 && (
+                    <DropdownMenuItem asChild>
+                      <a href={`mailto:${enrichment.emails[0]}`}>
+                        <Mail className="w-4 h-4 mr-2" />
+                        Send Email
+                      </a>
+                    </DropdownMenuItem>
+                  )}
+                  
+                  <DropdownMenuSeparator />
+                  
+                  <DropdownMenuItem
+                    className="text-orange-600 focus:text-orange-600"
+                    onClick={() => {
+                      // TODO: Implement do not call functionality
+                      console.log("Mark as do not call:", practitioner.id);
+                    }}
+                  >
+                    <Ban className="w-4 h-4 mr-2" />
+                    Mark as Do Not Call
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem
+                    className="text-red-600 focus:text-red-600"
+                    onClick={() => {
+                      // TODO: Implement delete functionality with confirmation
+                      if (confirm(`Are you sure you want to delete ${practitioner.name}?`)) {
+                        console.log("Delete practitioner:", practitioner.id);
+                      }
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Delete Practitioner
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </TooltipProvider>
           </div>
 

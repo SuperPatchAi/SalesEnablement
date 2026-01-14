@@ -103,6 +103,8 @@ interface PractitionerData extends Practitioner {
   notes: string;
   // Enrichment data
   enrichment?: EnrichmentData;
+  // User-added flag
+  is_user_added?: boolean;
 }
 
 interface FilterMetadata {
@@ -171,7 +173,9 @@ function CampaignPageContent() {
   const [hasEmails, setHasEmails] = useState(false);
   const [hasTeamMembers, setHasTeamMembers] = useState(false);
   const [isMultilingual, setIsMultilingual] = useState(false);
-  
+  // User-added filter
+  const [showUserAddedOnly, setShowUserAddedOnly] = useState(false);
+
   // Table state - column visibility and sorting
   const { columns, sortState, toggleColumn, resetColumns, handleSort, visibleColumns } = useTableState();
   
@@ -480,7 +484,10 @@ function CampaignPageContent() {
     if (isMultilingual) {
       result = result.filter(p => p.enrichment?.data?.languages && p.enrichment.data.languages.length > 1);
     }
-    
+    if (showUserAddedOnly) {
+      result = result.filter(p => p.is_user_added === true);
+    }
+
     // Apply sorting
     if (sortState.column && sortState.direction) {
       result.sort((a, b) => {
@@ -516,6 +523,11 @@ function CampaignPageContent() {
             // Sort by enrichment status (enriched first when asc)
             aValue = a.enrichment?.success ? 1 : 0;
             bValue = b.enrichment?.success ? 1 : 0;
+            break;
+          case "source":
+            // Sort by source (user-added first when asc)
+            aValue = a.is_user_added ? 1 : 0;
+            bValue = b.is_user_added ? 1 : 0;
             break;
           case "lastCalled":
             // Sort by last call date (most recent first when desc)
@@ -570,7 +582,7 @@ function CampaignPageContent() {
     }
     
     return result;
-  }, [practitioners, hasEnrichment, hasEmails, hasTeamMembers, isMultilingual, sortState, callRecords]);
+  }, [practitioners, hasEnrichment, hasEmails, hasTeamMembers, isMultilingual, showUserAddedOnly, sortState, callRecords]);
 
   // Virtual list setup
   const rowVirtualizer = useVirtualizer({
@@ -1064,7 +1076,38 @@ function CampaignPageContent() {
       
       if (result.status === 'success') {
         const callTarget = quickCallPracticeName || formattedPhone;
-        alert(`Call started to ${callTarget}!\nCall ID: ${result.call_id}`);
+        
+        // Save the practitioner to database as "user added"
+        try {
+          const practitionerData = {
+            name: quickCallPracticeName || `Unknown (${formattedPhone})`,
+            phone: formattedPhone,
+            practitioner_type: pathwayLabels[quickCallType] || 'Unknown',
+            address: quickCallAddress || null,
+            city: quickCallCity || null,
+            province: quickCallProvince || null,
+            notes: quickCallContactName ? `Contact: ${quickCallContactName}` : null,
+          };
+          
+          const saveResponse = await fetch('/api/practitioners', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(practitionerData),
+          });
+          
+          const saveResult = await saveResponse.json();
+          
+          if (saveResult.created) {
+            console.log('User-added practitioner saved:', saveResult.practitioner.id);
+          } else if (saveResult.practitioner) {
+            console.log('Practitioner already exists:', saveResult.practitioner.id);
+          }
+        } catch (saveError) {
+          console.error('Failed to save practitioner (call still succeeded):', saveError);
+        }
+        
+        callNotifications.started(callTarget);
+        
         // Clear all fields on success
         setQuickCallPhone('');
         setQuickCallPracticeName('');
@@ -1075,10 +1118,12 @@ function CampaignPageContent() {
         setQuickCallProvince('');
         setQuickCallPostalCode('');
         setQuickCallNotFound(false);
-        // Refresh call records to show the new call
+        
+        // Refresh call records and practitioners to show the new data
         loadCallRecords();
+        loadPractitioners(1);
       } else {
-        alert(`Call failed: ${result.message}`);
+        callNotifications.failed(quickCallPracticeName || 'Unknown', result.message);
       }
     } catch (error) {
       console.error('Quick call failed:', error);
@@ -1122,6 +1167,7 @@ function CampaignPageContent() {
     hasEmails,
     hasTeamMembers,
     isMultilingual,
+    showUserAddedOnly,
   };
 
   // Handle filter changes from FilterPanel
@@ -1143,6 +1189,7 @@ function CampaignPageContent() {
     if (changes.hasEmails !== undefined) setHasEmails(changes.hasEmails);
     if (changes.hasTeamMembers !== undefined) setHasTeamMembers(changes.hasTeamMembers);
     if (changes.isMultilingual !== undefined) setIsMultilingual(changes.isMultilingual);
+    if (changes.showUserAddedOnly !== undefined) setShowUserAddedOnly(changes.showUserAddedOnly);
   };
 
   // Clear all filters
@@ -1160,6 +1207,7 @@ function CampaignPageContent() {
     setHasEmails(false);
     setHasTeamMembers(false);
     setIsMultilingual(false);
+    setShowUserAddedOnly(false);
   };
 
   // Count active filters
@@ -1173,6 +1221,11 @@ function CampaignPageContent() {
     hasWebsiteOnly,
     callStatusFilter.length > 0,
     minReviews > 0,
+    hasEnrichment,
+    hasEmails,
+    hasTeamMembers,
+    isMultilingual,
+    showUserAddedOnly,
   ].filter(Boolean).length;
 
   // Get queued/active calls
@@ -1617,10 +1670,19 @@ function CampaignPageContent() {
             )}
             {visibleColumns.find(c => c.id === "enriched") && (
               <div className="w-[90px] text-center">
-                <SortableHeader 
-                  column={columns.find(c => c.id === "enriched")!} 
-                  sortState={sortState} 
-                  onSort={handleSort} 
+                <SortableHeader
+                  column={columns.find(c => c.id === "enriched")!}
+                  sortState={sortState}
+                  onSort={handleSort}
+                />
+              </div>
+            )}
+            {visibleColumns.find(c => c.id === "source") && (
+              <div className="w-[90px] text-center">
+                <SortableHeader
+                  column={columns.find(c => c.id === "source")!}
+                  sortState={sortState}
+                  onSort={handleSort}
                 />
               </div>
             )}
@@ -1701,6 +1763,7 @@ function CampaignPageContent() {
                 setHasEmails(false);
                 setHasTeamMembers(false);
                 setIsMultilingual(false);
+                setShowUserAddedOnly(false);
               }}
             />
           ) : (
@@ -1747,6 +1810,15 @@ function CampaignPageContent() {
                         <div className="flex-1 min-w-[200px]">
                           <div className="flex items-center gap-2">
                             <p className="practitioner-name truncate">{practitioner.name}</p>
+                            {/* User Added badge */}
+                            {practitioner.is_user_added && (
+                              <Badge 
+                                variant="outline" 
+                                className="text-[9px] px-1.5 py-0 h-4 bg-amber-50 border-amber-300 text-amber-700 dark:bg-amber-950/30 dark:border-amber-700 dark:text-amber-400 shrink-0"
+                              >
+                                User Added
+                              </Badge>
+                            )}
                             {/* Quick enrichment indicators (compact) */}
                             {practitioner.enrichment?.success && practitioner.enrichment?.data && (
                               <div className="flex items-center gap-0.5 flex-shrink-0">
@@ -1825,6 +1897,20 @@ function CampaignPageContent() {
                             </span>
                           ) : (
                             <span className="text-xs text-muted-foreground">-</span>
+                          )}
+                        </div>
+                      )}
+                      {visibleColumns.find(c => c.id === "source") && (
+                        <div className="w-[90px] text-center">
+                          {practitioner.is_user_added ? (
+                            <Badge 
+                              variant="outline" 
+                              className="text-[9px] px-1.5 py-0 h-4 bg-amber-50 border-amber-300 text-amber-700 dark:bg-amber-950/30 dark:border-amber-700 dark:text-amber-400"
+                            >
+                              User Added
+                            </Badge>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">Database</span>
                           )}
                         </div>
                       )}
