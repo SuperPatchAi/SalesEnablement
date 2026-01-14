@@ -1,0 +1,356 @@
+// Supabase Edge Function for processing the retry queue
+// Triggered by cron to initiate calls for practitioners due for retry
+
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const BLAND_API_KEY = Deno.env.get("BLAND_API_KEY") || "";
+const BLAND_API_URL = "https://api.bland.ai/v1";
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "";
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+
+// Batch size for concurrent calls (limit to avoid rate limits)
+const BATCH_SIZE = 10;
+
+// Default pathway ID for retry calls (should be configured)
+const DEFAULT_PATHWAY_ID = Deno.env.get("DEFAULT_PATHWAY_ID") || "";
+
+// Pathway mapping by practitioner type
+const PATHWAY_MAP: Record<string, string> = {
+  "chiropractor": Deno.env.get("PATHWAY_CHIROPRACTOR") || DEFAULT_PATHWAY_ID,
+  "massage_therapist": Deno.env.get("PATHWAY_MASSAGE") || DEFAULT_PATHWAY_ID,
+  "naturopath": Deno.env.get("PATHWAY_NATUROPATH") || DEFAULT_PATHWAY_ID,
+  "acupuncturist": Deno.env.get("PATHWAY_ACUPUNCTURE") || DEFAULT_PATHWAY_ID,
+  "physiotherapist": Deno.env.get("PATHWAY_PHYSIO") || DEFAULT_PATHWAY_ID,
+  "osteopath": Deno.env.get("PATHWAY_OSTEOPATH") || DEFAULT_PATHWAY_ID,
+};
+
+interface RetryQueueEntry {
+  id: string;
+  name: string;
+  phone: string;
+  practitioner_type: string | null;
+  retry_count: number;
+  next_retry_at: string;
+  retry_reason: string | null;
+  city: string | null;
+  province: string | null;
+}
+
+interface CallResult {
+  practitioner_id: string;
+  success: boolean;
+  call_id?: string;
+  error?: string;
+}
+
+// Get practitioners due for retry
+async function getRetryQueue(supabase: ReturnType<typeof createClient>, limit: number = 50): Promise<RetryQueueEntry[]> {
+  const { data, error } = await supabase
+    .from("practitioners")
+    .select("id, name, phone, practitioner_type, retry_count, next_retry_at, retry_reason, city, province")
+    .not("next_retry_at", "is", null)
+    .lte("next_retry_at", new Date().toISOString())
+    .eq("do_not_call", false)
+    .not("phone", "is", null)
+    .order("next_retry_at", { ascending: true })
+    .limit(limit);
+
+  if (error) {
+    console.error("[RetryQueue] Error fetching queue:", error);
+    return [];
+  }
+
+  return (data || []) as RetryQueueEntry[];
+}
+
+// Initiate a call via Bland.ai
+async function initiateCall(practitioner: RetryQueueEntry): Promise<CallResult> {
+  if (!BLAND_API_KEY) {
+    return {
+      practitioner_id: practitioner.id,
+      success: false,
+      error: "BLAND_API_KEY not configured",
+    };
+  }
+
+  // Determine pathway based on practitioner type
+  const pathwayId = practitioner.practitioner_type 
+    ? (PATHWAY_MAP[practitioner.practitioner_type.toLowerCase()] || DEFAULT_PATHWAY_ID)
+    : DEFAULT_PATHWAY_ID;
+
+  if (!pathwayId) {
+    return {
+      practitioner_id: practitioner.id,
+      success: false,
+      error: "No pathway configured for this practitioner type",
+    };
+  }
+
+  // Build call payload
+  const callPayload = {
+    phone_number: practitioner.phone,
+    pathway_id: pathwayId,
+    voice: "maya", // Default voice, can be configured
+    wait_for_greeting: true,
+    record: true,
+    max_duration: 10, // 10 minutes max for retry calls
+    metadata: {
+      practitioner_id: practitioner.id,
+      practice_name: practitioner.name,
+      practitioner_type: practitioner.practitioner_type,
+      city: practitioner.city,
+      province: practitioner.province,
+      source: "retry_queue",
+      retry_count: practitioner.retry_count,
+      retry_reason: practitioner.retry_reason,
+    },
+    // Webhook for call completion
+    webhook: Deno.env.get("WEBHOOK_URL") || "",
+  };
+
+  try {
+    console.log(`[RetryQueue] Initiating call to ${practitioner.name} (${practitioner.phone})`);
+    console.log(`   Retry #${practitioner.retry_count}, Reason: ${practitioner.retry_reason}`);
+
+    const response = await fetch(`${BLAND_API_URL}/calls`, {
+      method: "POST",
+      headers: {
+        "Authorization": BLAND_API_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(callPayload),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error(`[RetryQueue] Call failed for ${practitioner.name}:`, data);
+      return {
+        practitioner_id: practitioner.id,
+        success: false,
+        error: data.message || `HTTP ${response.status}`,
+      };
+    }
+
+    console.log(`[RetryQueue] ✅ Call initiated for ${practitioner.name}, call_id: ${data.call_id}`);
+    return {
+      practitioner_id: practitioner.id,
+      success: true,
+      call_id: data.call_id,
+    };
+  } catch (error) {
+    console.error(`[RetryQueue] Error initiating call for ${practitioner.name}:`, error);
+    return {
+      practitioner_id: practitioner.id,
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}
+
+// Update practitioner after call attempt
+async function updatePractitionerAfterCall(
+  supabase: ReturnType<typeof createClient>,
+  practitionerId: string,
+  success: boolean,
+  callId?: string
+): Promise<void> {
+  if (success) {
+    // Clear next_retry_at since call was initiated
+    // The webhook handler will schedule next retry if needed
+    await supabase
+      .from("practitioners")
+      .update({
+        next_retry_at: null,
+        last_call_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", practitionerId);
+  } else {
+    // On failure, increment retry and reschedule
+    const { data: current } = await supabase
+      .from("practitioners")
+      .select("retry_count")
+      .eq("id", practitionerId)
+      .single();
+
+    const newRetryCount = ((current as { retry_count: number } | null)?.retry_count || 0) + 1;
+    const maxAttempts = 3;
+
+    if (newRetryCount >= maxAttempts) {
+      // Max retries reached, mark for manual review
+      await supabase
+        .from("practitioners")
+        .update({
+          next_retry_at: null,
+          retry_reason: "max_retries_reached",
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", practitionerId);
+    } else {
+      // Schedule another retry in 4 hours
+      const nextRetry = new Date(Date.now() + 4 * 60 * 60 * 1000);
+      await supabase
+        .from("practitioners")
+        .update({
+          retry_count: newRetryCount,
+          next_retry_at: nextRetry.toISOString(),
+          retry_reason: "call_initiation_failed",
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", practitionerId);
+    }
+  }
+}
+
+// Process the retry queue
+async function processRetryQueue(supabase: ReturnType<typeof createClient>): Promise<{
+  processed: number;
+  successful: number;
+  failed: number;
+  results: CallResult[];
+}> {
+  // Get practitioners due for retry
+  const queue = await getRetryQueue(supabase, 50);
+
+  if (queue.length === 0) {
+    console.log("[RetryQueue] No practitioners due for retry");
+    return { processed: 0, successful: 0, failed: 0, results: [] };
+  }
+
+  console.log(`[RetryQueue] Processing ${queue.length} practitioners`);
+
+  const results: CallResult[] = [];
+  let successful = 0;
+  let failed = 0;
+
+  // Process in batches to avoid rate limits
+  for (let i = 0; i < queue.length; i += BATCH_SIZE) {
+    const batch = queue.slice(i, i + BATCH_SIZE);
+    console.log(`[RetryQueue] Processing batch ${Math.floor(i / BATCH_SIZE) + 1} (${batch.length} practitioners)`);
+
+    // Process batch concurrently
+    const batchResults = await Promise.all(
+      batch.map(async (practitioner) => {
+        const result = await initiateCall(practitioner);
+        await updatePractitionerAfterCall(supabase, practitioner.id, result.success, result.call_id);
+        return result;
+      })
+    );
+
+    results.push(...batchResults);
+    successful += batchResults.filter((r) => r.success).length;
+    failed += batchResults.filter((r) => !r.success).length;
+
+    // Small delay between batches to be nice to Bland.ai
+    if (i + BATCH_SIZE < queue.length) {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
+  }
+
+  return {
+    processed: queue.length,
+    successful,
+    failed,
+    results,
+  };
+}
+
+// Main handler
+serve(async (req: Request) => {
+  // CORS headers
+  const corsHeaders = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  };
+
+  if (req.method === "OPTIONS") {
+    return new Response(null, { status: 204, headers: corsHeaders });
+  }
+
+  // Verify configuration
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+    return new Response(
+      JSON.stringify({ error: "Supabase not configured" }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+
+  if (!BLAND_API_KEY) {
+    return new Response(
+      JSON.stringify({ error: "BLAND_API_KEY not configured" }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+
+  // Create Supabase client
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+  try {
+    // Check if this is a manual trigger with specific IDs
+    let body: { practitionerIds?: string[] } = {};
+    if (req.method === "POST") {
+      try {
+        body = await req.json();
+      } catch {
+        // No body or invalid JSON - proceed with queue processing
+      }
+    }
+
+    if (body.practitionerIds && body.practitionerIds.length > 0) {
+      // Manual trigger for specific practitioners
+      console.log(`[RetryQueue] Manual trigger for ${body.practitionerIds.length} practitioners`);
+
+      const { data: practitioners, error } = await supabase
+        .from("practitioners")
+        .select("id, name, phone, practitioner_type, retry_count, next_retry_at, retry_reason, city, province")
+        .in("id", body.practitionerIds)
+        .eq("do_not_call", false)
+        .not("phone", "is", null);
+
+      if (error || !practitioners || practitioners.length === 0) {
+        return new Response(
+          JSON.stringify({ error: "No valid practitioners found", details: error }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      const results: CallResult[] = [];
+      for (const practitioner of practitioners as RetryQueueEntry[]) {
+        const result = await initiateCall(practitioner);
+        await updatePractitionerAfterCall(supabase, practitioner.id, result.success, result.call_id);
+        results.push(result);
+      }
+
+      return new Response(
+        JSON.stringify({
+          message: "Manual retry calls initiated",
+          processed: results.length,
+          successful: results.filter((r) => r.success).length,
+          failed: results.filter((r) => !r.success).length,
+          results,
+        }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Normal queue processing
+    const result = await processRetryQueue(supabase);
+
+    return new Response(
+      JSON.stringify({
+        message: "Retry queue processed",
+        ...result,
+      }),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  } catch (error) {
+    console.error("[RetryQueue] Error:", error);
+    return new Response(
+      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+});

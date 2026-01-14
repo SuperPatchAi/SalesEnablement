@@ -1,10 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { serverUpsertCallRecord, serverUpdateByCallId } from "@/lib/db/call-records";
 import { supabaseAdmin, isSupabaseConfigured } from "@/lib/supabase";
-import type { CallStatus, CallRecordInsert, SampleRequestInsert } from "@/lib/db/types";
+import type { CallStatus, CallRecordInsert, SampleRequestInsert, RetryReason, RetryPolicy } from "@/lib/db/types";
 
 const CAL_API_KEY = process.env.CAL_API_KEY || "";
 const CAL_EVENT_TYPE_ID = Number(process.env.CAL_EVENT_TYPE_ID) || 4352394;
+
+// Smart Retry Policy Configuration
+const RETRY_POLICY: RetryPolicy = {
+  maxAttempts: 3,
+  retryDelays: [60, 240, 1440], // Minutes: 1hr, 4hr, 24hr
+  voicemailAction: 'retry',
+  failedAction: 'retry_next_business_day',
+  businessHoursOnly: true,
+  businessHours: {
+    start: 9,   // 9 AM
+    end: 17,    // 5 PM
+    timezone: 'America/Toronto',
+  },
+};
 
 // Helper to normalize phone numbers for comparison
 function normalizePhone(phone: string): string {
@@ -224,6 +238,203 @@ async function markPractitionerAsDNC(
   } catch (error) {
     console.error("Error marking practitioner as DNC:", error);
     return false;
+  }
+}
+
+// Calculate next retry time based on business hours
+function calculateNextRetryTime(
+  delayMinutes: number,
+  businessHoursOnly: boolean,
+  businessHours: { start: number; end: number; timezone: string }
+): Date {
+  const now = new Date();
+  let nextRetry = new Date(now.getTime() + delayMinutes * 60 * 1000);
+
+  if (!businessHoursOnly) {
+    return nextRetry;
+  }
+
+  // Get hour in business timezone (simplified - using UTC offset for Toronto)
+  // In production, use a proper timezone library like date-fns-tz
+  const getBusinessHour = (date: Date): number => {
+    // Toronto is UTC-5 (EST) or UTC-4 (EDT)
+    // Simplified: assume EST (-5)
+    const utcHour = date.getUTCHours();
+    return (utcHour - 5 + 24) % 24;
+  };
+
+  const getBusinessDay = (date: Date): number => {
+    // Adjust for timezone
+    const utcDay = date.getUTCDay();
+    const utcHour = date.getUTCHours();
+    // If it's before midnight in Toronto but after in UTC, adjust day
+    if (utcHour < 5) {
+      return (utcDay - 1 + 7) % 7;
+    }
+    return utcDay;
+  };
+
+  // Check if time is within business hours
+  const isBusinessHours = (date: Date): boolean => {
+    const hour = getBusinessHour(date);
+    const day = getBusinessDay(date);
+    
+    // Weekend check (0 = Sunday, 6 = Saturday)
+    if (day === 0 || day === 6) return false;
+    
+    // Business hours check
+    return hour >= businessHours.start && hour < businessHours.end;
+  };
+
+  // If not in business hours, move to next business hour
+  let maxIterations = 7 * 24; // Max 1 week of hourly checks
+  while (!isBusinessHours(nextRetry) && maxIterations > 0) {
+    // Move forward by 1 hour
+    nextRetry = new Date(nextRetry.getTime() + 60 * 60 * 1000);
+    maxIterations--;
+  }
+
+  return nextRetry;
+}
+
+// Schedule a retry for a practitioner
+async function scheduleRetry(
+  practitionerId: string,
+  callStatus: CallStatus,
+  currentRetryCount: number
+): Promise<{ scheduled: boolean; nextRetryAt: string | null; reason: string }> {
+  if (!isSupabaseConfigured || !supabaseAdmin) {
+    return { scheduled: false, nextRetryAt: null, reason: "Supabase not configured" };
+  }
+
+  // Determine retry reason
+  let retryReason: RetryReason;
+  let shouldRetry = false;
+  let delayMinutes: number;
+
+  if (callStatus === "voicemail") {
+    if (RETRY_POLICY.voicemailAction === 'retry') {
+      shouldRetry = currentRetryCount < RETRY_POLICY.maxAttempts;
+      retryReason = 'voicemail_left';
+      delayMinutes = RETRY_POLICY.retryDelays[currentRetryCount] || RETRY_POLICY.retryDelays[RETRY_POLICY.retryDelays.length - 1];
+    } else {
+      return { scheduled: false, nextRetryAt: null, reason: "Voicemail policy is skip/sms_followup" };
+    }
+  } else if (callStatus === "failed") {
+    if (RETRY_POLICY.failedAction === 'retry' || RETRY_POLICY.failedAction === 'retry_next_business_day') {
+      shouldRetry = currentRetryCount < RETRY_POLICY.maxAttempts;
+      retryReason = 'call_failed';
+      // For failed calls, use longer delay or next business day
+      delayMinutes = RETRY_POLICY.failedAction === 'retry_next_business_day' 
+        ? 1440 // 24 hours minimum
+        : RETRY_POLICY.retryDelays[currentRetryCount] || 1440;
+    } else {
+      return { scheduled: false, nextRetryAt: null, reason: "Failed policy is manual_review" };
+    }
+  } else {
+    return { scheduled: false, nextRetryAt: null, reason: "Status does not require retry" };
+  }
+
+  if (!shouldRetry) {
+    return { scheduled: false, nextRetryAt: null, reason: `Max retry attempts (${RETRY_POLICY.maxAttempts}) reached` };
+  }
+
+  // Calculate next retry time
+  const nextRetryTime = calculateNextRetryTime(
+    delayMinutes,
+    RETRY_POLICY.businessHoursOnly,
+    RETRY_POLICY.businessHours
+  );
+
+  // Update practitioner with retry info
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await (supabaseAdmin as any)
+      .from('practitioners')
+      .update({
+        retry_count: currentRetryCount + 1,
+        next_retry_at: nextRetryTime.toISOString(),
+        retry_reason: retryReason,
+        last_call_status: callStatus,
+        last_call_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', practitionerId);
+
+    if (error) {
+      console.error("Error scheduling retry:", error);
+      return { scheduled: false, nextRetryAt: null, reason: `Database error: ${error.message}` };
+    }
+
+    console.log(`🔄 Retry scheduled for practitioner ${practitionerId}:`);
+    console.log(`   Reason: ${retryReason}`);
+    console.log(`   Attempt: ${currentRetryCount + 1}/${RETRY_POLICY.maxAttempts}`);
+    console.log(`   Next retry: ${nextRetryTime.toISOString()}`);
+
+    return { 
+      scheduled: true, 
+      nextRetryAt: nextRetryTime.toISOString(), 
+      reason: `Retry ${currentRetryCount + 1} scheduled for ${nextRetryTime.toISOString()}` 
+    };
+  } catch (error) {
+    console.error("Error scheduling retry:", error);
+    return { scheduled: false, nextRetryAt: null, reason: `Error: ${String(error)}` };
+  }
+}
+
+// Clear retry scheduling after successful call
+async function clearRetryScheduling(practitionerId: string): Promise<boolean> {
+  if (!isSupabaseConfigured || !supabaseAdmin) {
+    return false;
+  }
+
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await (supabaseAdmin as any)
+      .from('practitioners')
+      .update({
+        next_retry_at: null,
+        retry_reason: null,
+        last_call_status: 'completed',
+        last_call_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', practitionerId);
+
+    if (error) {
+      console.error("Error clearing retry scheduling:", error);
+      return false;
+    }
+
+    console.log(`✅ Retry scheduling cleared for practitioner ${practitionerId}`);
+    return true;
+  } catch (error) {
+    console.error("Error clearing retry scheduling:", error);
+    return false;
+  }
+}
+
+// Get current retry count for a practitioner
+async function getPractitionerRetryCount(practitionerId: string): Promise<number> {
+  if (!isSupabaseConfigured || !supabaseAdmin) {
+    return 0;
+  }
+
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabaseAdmin as any)
+      .from('practitioners')
+      .select('retry_count')
+      .eq('id', practitionerId)
+      .single();
+
+    if (error || !data) {
+      return 0;
+    }
+
+    return data.retry_count || 0;
+  } catch {
+    return 0;
   }
 }
 
@@ -546,6 +757,26 @@ export async function POST(request: NextRequest) {
         console.log(`✅ Practitioner ${resolvedPractitionerName} successfully marked as DNC`);
       }
     }
+
+    // Smart Retry Logic - Schedule retries for voicemail/failed calls
+    let retryScheduled = false;
+    let retryInfo: { scheduled: boolean; nextRetryAt: string | null; reason: string } | null = null;
+
+    if (resolvedPractitionerId && !dncResult.detected) {
+      if (callStatus === "voicemail" || callStatus === "failed") {
+        // Get current retry count
+        const currentRetryCount = await getPractitionerRetryCount(resolvedPractitionerId);
+        
+        // Schedule retry
+        retryInfo = await scheduleRetry(resolvedPractitionerId, callStatus, currentRetryCount);
+        retryScheduled = retryInfo.scheduled;
+        
+        console.log("🔄 Retry scheduling result:", retryInfo);
+      } else if (callStatus === "completed" || callStatus === "booked" || callStatus === "calendar_sent") {
+        // Clear any pending retries on successful call
+        await clearRetryScheduling(resolvedPractitionerId);
+      }
+    }
     
     // Return appropriate response
     if (!payload.completed) {
@@ -576,8 +807,14 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json({
       status: "ok",
-      message: "Call completed - no booking requested",
+      message: callStatus === "voicemail" 
+        ? "Voicemail detected" 
+        : callStatus === "failed"
+        ? "Call failed"
+        : "Call completed - no booking requested",
       record_saved: !!savedRecord,
+      retry_scheduled: retryScheduled,
+      retry_info: retryInfo,
     });
     
   } catch (error) {
@@ -732,7 +969,17 @@ export async function GET(request: NextRequest) {
       "Stores transcripts and summaries",
       "Tracks voicemail status",
       "Creates sample requests when requested",
+      "Smart retry scheduling for voicemail/failed calls",
+      "DNC detection and automatic marking",
     ],
+    retry_policy: {
+      max_attempts: RETRY_POLICY.maxAttempts,
+      retry_delays_minutes: RETRY_POLICY.retryDelays,
+      voicemail_action: RETRY_POLICY.voicemailAction,
+      failed_action: RETRY_POLICY.failedAction,
+      business_hours_only: RETRY_POLICY.businessHoursOnly,
+      business_hours: RETRY_POLICY.businessHours,
+    },
     debug_endpoints: {
       test_supabase: "/api/webhooks/bland?test=supabase",
     },

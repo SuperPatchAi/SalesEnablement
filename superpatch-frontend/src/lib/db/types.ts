@@ -30,6 +30,13 @@ export type SampleProduct =
   | 'kick_it'
   | 'joint_flex';
 
+export type RetryReason = 
+  | 'voicemail_left'
+  | 'no_answer'
+  | 'call_failed'
+  | 'busy'
+  | 'manual_retry';
+
 export interface Database {
   public: {
     Tables: {
@@ -277,4 +284,32 @@ export interface CampaignStats {
   avg_duration_seconds: number;
   success_rate: number;
   booking_rate: number;
+}
+
+// Retry queue entry (from get_upcoming_retries or get_retry_queue functions)
+export interface RetryQueueEntry {
+  id: string;
+  name: string;
+  phone: string;
+  practitioner_type: string | null;
+  retry_count: number;
+  next_retry_at: string;
+  retry_reason: RetryReason | null;
+  city: string | null;
+  province: string | null;
+  time_until_retry?: string; // Interval as string from Postgres
+}
+
+// Retry policy configuration
+export interface RetryPolicy {
+  maxAttempts: number;
+  retryDelays: number[]; // Minutes: [60, 240, 1440] = 1hr, 4hr, 24hr
+  voicemailAction: 'retry' | 'skip' | 'sms_followup';
+  failedAction: 'retry' | 'retry_next_business_day' | 'manual_review';
+  businessHoursOnly: boolean;
+  businessHours: {
+    start: number; // 9 = 9am
+    end: number;   // 17 = 5pm
+    timezone: string;
+  };
 }
