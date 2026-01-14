@@ -269,6 +269,76 @@ BLAND_MEMORY_ID=mem_...
 
 ---
 
+## Practitioner Search
+
+### Overview
+
+The "Search New" tab enables discovering and importing practitioners from Google Maps across North America (Canada and USA).
+
+### Features
+
+**Search Options**
+- Country selector (Canada / USA)
+- Province/State dropdown
+- City dropdown with pre-configured coordinates
+- Practitioner type selection (Chiropractor, Massage Therapist, Naturopath, etc.)
+- Search radius slider (5-50 km)
+
+**Results Management**
+- Preview practitioner details before import
+- Select multiple practitioners for bulk import
+- Duplicate detection (existing practitioners highlighted)
+- Enrich with Firecrawl website scraping
+- Direct links to Google Maps
+
+### Workflow
+
+```
+1. Select Country → Province/State → City
+2. Choose Practitioner Type
+3. Adjust Search Radius
+4. Click "Search Google Maps"
+5. Review Results
+6. Select practitioners to import
+7. Click "Import Selected"
+8. Optionally enrich with Firecrawl
+```
+
+### API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/search/places` | POST | Search Google Maps Places API |
+| `/api/search/import` | POST | Bulk import practitioners to database |
+| `/api/search/enrich` | POST | Enrich practitioner with Firecrawl |
+
+### Environment Variables for Search
+
+```env
+# Required for Practitioner Search
+GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+
+# Required for Enrichment
+FIRECRAWL_API_KEY=your_firecrawl_api_key
+```
+
+### Cost Considerations
+
+| Service | Cost |
+|---------|------|
+| Google Maps Places API | ~$40 per 1,000 searches |
+| Firecrawl Scrape | 1 credit per website |
+
+### Enrichment Data Extracted
+
+- Team member names and credentials
+- Contact emails
+- Phone numbers
+- Services offered
+- Languages spoken
+
+---
+
 ## Practitioner Detail Drawer
 
 ### Tabs

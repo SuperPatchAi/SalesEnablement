@@ -80,6 +80,10 @@ BLAND_MEMORY_ID=your_memory_store_id
 # Cal.com (optional)
 CAL_API_KEY=your_cal_api_key
 CAL_EVENT_TYPE_ID=your_event_type_id
+
+# Practitioner Search (optional - for Search New tab)
+GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+FIRECRAWL_API_KEY=your_firecrawl_api_key
 ```
 
 ## API Endpoints
@@ -98,6 +102,13 @@ CAL_EVENT_TYPE_ID=your_event_type_id
 | POST | `/api/bland/calls` | Initiate call via Bland.ai |
 | GET | `/api/bland/calls/[id]` | Get call status/details |
 | POST | `/api/webhooks/bland` | Webhook for call completion |
+
+### Practitioner Search
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/search/places` | Search Google Maps for practitioners |
+| POST | `/api/search/import` | Bulk import practitioners to database |
+| POST | `/api/search/enrich` | Enrich practitioner with Firecrawl |
 
 ### Other
 | Method | Endpoint | Description |

@@ -19,7 +19,7 @@ import {
   Clock, Loader2, Download, RefreshCw,
   ListChecks, BarChart3, Phone, Zap,
   PanelLeftClose, PanelLeft, Filter, Kanban, MapPin, History, Package,
-  Smile, Meh, Frown, TrendingUp
+  Smile, Meh, Frown, TrendingUp, Globe2
 } from "lucide-react";
 import {
   CampaignCallRecord,
@@ -60,6 +60,7 @@ import {
   StatCard, 
   KPIGrid 
 } from "@/components/campaign/enhanced-charts";
+import { PractitionerSearchTab } from "@/components/campaign/practitioner-search-tab";
 import dynamic from "next/dynamic";
 
 // Dynamically import map to avoid SSR issues with Leaflet
@@ -1517,6 +1518,10 @@ function CampaignPageContent() {
                   </Badge>
                 )}
               </TabsTrigger>
+              <TabsTrigger value="search" className="gap-2">
+                <Globe2 className="w-4 h-4" />
+                Search New
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -2771,6 +2776,16 @@ function CampaignPageContent() {
               </div>
             </div>
           )}
+        </TabsContent>
+
+        {/* Search New Practitioners Tab */}
+        <TabsContent value="search" className="flex-1 flex flex-col overflow-hidden m-0 p-6">
+          <PractitionerSearchTab 
+            onPractitionerImported={() => {
+              // Refresh practitioners list after import
+              loadPractitioners(1);
+            }}
+          />
         </TabsContent>
         </Tabs>
       </div>
