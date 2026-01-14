@@ -412,7 +412,98 @@ async function bookCalComAppointment(data: {
 }
 
 // GET endpoint for testing
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  
+  // Test Supabase connection
+  if (searchParams.get("test") === "supabase") {
+    console.log("🧪 Testing Supabase connection...");
+    console.log("🔧 isSupabaseConfigured:", isSupabaseConfigured);
+    console.log("🔧 supabaseAdmin exists:", !!supabaseAdmin);
+    
+    if (!isSupabaseConfigured || !supabaseAdmin) {
+      return NextResponse.json({
+        status: "error",
+        message: "Supabase not configured",
+        debug: {
+          isSupabaseConfigured,
+          hasAdminClient: !!supabaseAdmin,
+          supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ? "SET" : "NOT_SET",
+          anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? "SET" : "NOT_SET",
+          serviceKey: process.env.SUPABASE_SERVICE_ROLE_KEY ? "SET" : "NOT_SET",
+        }
+      });
+    }
+    
+    try {
+      // Try to read from call_records
+      const { data, error, count } = await supabaseAdmin
+        .from('call_records')
+        .select('*', { count: 'exact' })
+        .limit(5);
+      
+      if (error) {
+        return NextResponse.json({
+          status: "error",
+          message: "Supabase read failed",
+          error: error.message,
+          code: error.code,
+        });
+      }
+      
+      // Try a test insert (will be deleted)
+      const testId = `test-${Date.now()}`;
+      const { data: insertData, error: insertError } = await supabaseAdmin
+        .from('call_records')
+        .insert({
+          call_id: testId,
+          practitioner_name: "Webhook Test",
+          phone: "+10000000000",
+          status: "completed",
+        })
+        .select()
+        .single();
+      
+      let insertSuccess = false;
+      let deleteSuccess = false;
+      
+      if (!insertError && insertData) {
+        insertSuccess = true;
+        // Delete the test record
+        const { error: deleteError } = await supabaseAdmin
+          .from('call_records')
+          .delete()
+          .eq('call_id', testId);
+        deleteSuccess = !deleteError;
+      }
+      
+      return NextResponse.json({
+        status: "ok",
+        message: "Supabase connection working",
+        test_results: {
+          read_success: true,
+          records_found: count,
+          insert_success: insertSuccess,
+          insert_error: insertError?.message || null,
+          cleanup_success: deleteSuccess,
+        },
+        sample_records: data?.slice(0, 2).map(r => ({
+          id: r.id,
+          call_id: r.call_id,
+          practitioner_name: r.practitioner_name,
+          status: r.status,
+          created_at: r.created_at,
+        })),
+      });
+    } catch (err) {
+      return NextResponse.json({
+        status: "error",
+        message: "Supabase test failed",
+        error: String(err),
+      });
+    }
+  }
+  
   return NextResponse.json({
     status: "ok",
     message: "Bland.ai webhook endpoint ready",
@@ -425,5 +516,12 @@ export async function GET() {
       "Stores transcripts and summaries",
       "Tracks voicemail status",
     ],
+    debug_endpoints: {
+      test_supabase: "/api/webhooks/bland?test=supabase",
+    },
+    config: {
+      supabase_configured: isSupabaseConfigured,
+      has_admin_client: !!supabaseAdmin,
+    }
   });
 }

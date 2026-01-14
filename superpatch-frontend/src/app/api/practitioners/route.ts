@@ -47,6 +47,8 @@ interface PractitionerData {
 // Cache for JSON fallback (only used if Supabase fails)
 let jsonCache: Practitioner[] | null = null;
 let metadataCache: { provinces: string[]; cities: Record<string, string[]>; types: string[] } | null = null;
+let metadataCacheTime: number = 0;
+const METADATA_CACHE_TTL = 5 * 60 * 1000; // 5 minutes TTL
 
 // Check if practitioners table exists in Supabase
 let supabaseTableExists: boolean | null = null;
@@ -100,9 +102,30 @@ async function loadFromJSON(): Promise<Practitioner[]> {
   return [];
 }
 
+// Clear metadata cache
+function clearMetadataCache() {
+  metadataCache = null;
+  metadataCacheTime = 0;
+  console.log("[Practitioners API] Metadata cache cleared");
+}
+
 // Get metadata for filters
-async function getMetadata(): Promise<{ provinces: string[]; cities: Record<string, string[]>; types: string[] }> {
-  if (metadataCache) return metadataCache;
+async function getMetadata(forceRefresh: boolean = false): Promise<{ provinces: string[]; cities: Record<string, string[]>; types: string[] }> {
+  // Check if cache is valid (not expired and not force refresh)
+  const now = Date.now();
+  const cacheValid = metadataCache && (now - metadataCacheTime) < METADATA_CACHE_TTL;
+  
+  if (cacheValid && !forceRefresh) {
+    return metadataCache!;
+  }
+  
+  // Clear stale cache
+  if (metadataCache && !cacheValid) {
+    console.log("[Practitioners API] Metadata cache expired, refreshing...");
+  }
+  if (forceRefresh) {
+    console.log("[Practitioners API] Force refresh requested");
+  }
 
   const useSupabase = await checkSupabaseTable();
   
@@ -149,6 +172,8 @@ async function getMetadata(): Promise<{ provinces: string[]; cities: Record<stri
       }
       
       metadataCache = { provinces, cities, types };
+      metadataCacheTime = Date.now();
+      console.log(`[Practitioners API] Metadata cached: ${provinces.length} provinces, ${Object.keys(cities).length} city groups, ${types.length} types`);
       return metadataCache;
     } catch (error) {
       console.error("[Practitioners API] Supabase metadata error, falling back to JSON:", error);
@@ -166,6 +191,8 @@ async function getMetadata(): Promise<{ provinces: string[]; cities: Record<stri
   const types = [...new Set(practitioners.map(p => p.practitioner_type).filter(Boolean))].sort();
   
   metadataCache = { provinces, cities, types };
+  metadataCacheTime = Date.now();
+  console.log(`[Practitioners API] Metadata cached from JSON: ${provinces.length} provinces, ${Object.keys(cities).length} city groups, ${types.length} types`);
   return metadataCache;
 }
 
@@ -174,8 +201,22 @@ export async function GET(request: NextRequest) {
   
   // Check if requesting metadata only
   if (searchParams.get("metadata") === "true") {
-    const metadata = await getMetadata();
-    return NextResponse.json(metadata);
+    const forceRefresh = searchParams.get("refresh") === "true";
+    const metadata = await getMetadata(forceRefresh);
+    return NextResponse.json({
+      ...metadata,
+      _cache: {
+        refreshed: forceRefresh,
+        ttl_ms: METADATA_CACHE_TTL,
+        cached_at: metadataCacheTime ? new Date(metadataCacheTime).toISOString() : null,
+      }
+    });
+  }
+  
+  // Clear cache endpoint (for admin use)
+  if (searchParams.get("clearCache") === "true") {
+    clearMetadataCache();
+    return NextResponse.json({ status: "ok", message: "Cache cleared" });
   }
 
   // Parse parameters
