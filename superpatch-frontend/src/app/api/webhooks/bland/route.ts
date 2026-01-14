@@ -96,6 +96,7 @@ interface BlandWebhookPayload {
     address?: string;
     city?: string;
     province?: string;
+    postal_code?: string;
     clinic_email?: string;
     call_language?: string;
     selected_pathway?: string;  // For manual quick calls
@@ -191,14 +192,25 @@ export async function POST(request: NextRequest) {
         }
         
         resolvedPractitionerType = resolvedPractitionerType || meta.practitioner_type || vars.business_type || meta.selected_pathway || "Unknown";
-        resolvedAddress = resolvedAddress || vars.location || undefined;
+        
+        // Build address from metadata - include postal code if available
+        const streetAddress = meta.address || vars.address || vars.location;
+        const postalCode = meta.postal_code || vars.postal_code;
+        if (streetAddress) {
+          resolvedAddress = postalCode ? `${streetAddress}, ${postalCode}` : streetAddress;
+        } else {
+          resolvedAddress = resolvedAddress || undefined;
+        }
+        
         resolvedCity = resolvedCity || meta.city || undefined;
         resolvedProvince = resolvedProvince || meta.province || undefined;
         
         console.log(`📝 Recording call from unknown number: ${payload.to}`);
         console.log(`   Name: ${resolvedPractitionerName}`);
         console.log(`   Type: ${resolvedPractitionerType}`);
+        console.log(`   Address: ${resolvedAddress}`);
         console.log(`   Location: ${resolvedCity}, ${resolvedProvince}`);
+        console.log(`   Email: ${meta.clinic_email}`);
         console.log(`   Source: ${meta.source}`);
       }
     }

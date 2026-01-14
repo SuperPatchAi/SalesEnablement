@@ -210,8 +210,11 @@ function CampaignPageContent() {
   // Manual quick call info (for calls to unknown numbers)
   const [quickCallPracticeName, setQuickCallPracticeName] = useState("");
   const [quickCallContactName, setQuickCallContactName] = useState("");
+  const [quickCallEmail, setQuickCallEmail] = useState("");
+  const [quickCallAddress, setQuickCallAddress] = useState("");
   const [quickCallCity, setQuickCallCity] = useState("");
   const [quickCallProvince, setQuickCallProvince] = useState("");
+  const [quickCallPostalCode, setQuickCallPostalCode] = useState("");
 
   // Map state - track if all practitioners are loaded
   const [allPractitionersLoaded, setAllPractitionersLoaded] = useState(false);
@@ -881,13 +884,35 @@ function CampaignPageContent() {
         acupuncturist: "Acupuncturist",
       };
 
-      // Build request_data for pathway variable substitution (even for manual calls)
+      // Build full address string
+      const fullAddress = [
+        quickCallAddress,
+        quickCallCity,
+        quickCallProvince,
+        quickCallPostalCode
+      ].filter(Boolean).join(', ');
+
+      // Build request_data for pathway variable substitution
+      // These variables will be available in the conversational pathway
       const requestData = {
+        // Practice identification
         practice_name: quickCallPracticeName || 'your practice',
         contact_name: quickCallContactName || '',
+        practitioner_type: pathwayLabels[quickCallType] || quickCallType,
+        
+        // Contact info
+        practice_email: quickCallEmail || '',
+        practice_phone: formattedPhone,
+        
+        // Location details
+        practice_address: quickCallAddress || '',
         practice_city: quickCallCity || '',
         practice_province: quickCallProvince || '',
-        practitioner_type: pathwayLabels[quickCallType] || quickCallType,
+        practice_postal_code: quickCallPostalCode || '',
+        full_address: fullAddress || '',
+        
+        // For greeting personalization
+        greeting_name: quickCallContactName || quickCallPracticeName || 'there',
       };
 
       const callPayload = {
@@ -905,12 +930,15 @@ function CampaignPageContent() {
           campaign: 'quick_call',
           source: 'manual_dial',
           selected_pathway: quickCallType,
-          // Include practice info for call record creation
+          // Include all practice info for call record creation
           practice_name: quickCallPracticeName || undefined,
           contact_name: quickCallContactName || undefined,
           practitioner_type: pathwayLabels[quickCallType] || quickCallType,
+          clinic_email: quickCallEmail || undefined,
+          address: quickCallAddress || undefined,
           city: quickCallCity || undefined,
           province: quickCallProvince || undefined,
+          postal_code: quickCallPostalCode || undefined,
         },
       };
       
@@ -929,8 +957,11 @@ function CampaignPageContent() {
         setQuickCallPhone('');
         setQuickCallPracticeName('');
         setQuickCallContactName('');
+        setQuickCallEmail('');
+        setQuickCallAddress('');
         setQuickCallCity('');
         setQuickCallProvince('');
+        setQuickCallPostalCode('');
         setQuickCallNotFound(false);
         // Refresh call records to show the new call
         loadCallRecords();
@@ -1887,8 +1918,11 @@ function CampaignPageContent() {
                           // Clear manual entry fields when phone changes
                           setQuickCallPracticeName("");
                           setQuickCallContactName("");
+                          setQuickCallEmail("");
+                          setQuickCallAddress("");
                           setQuickCallCity("");
                           setQuickCallProvince("");
+                          setQuickCallPostalCode("");
                         }}
                         className="flex-1"
                       />
@@ -1974,65 +2008,103 @@ function CampaignPageContent() {
                           No practitioner found with this phone number
                         </p>
                         <p className="text-sm text-muted-foreground mb-4">
-                          Enter the practice details below to make a call and track it properly.
+                          Enter the practice details below. This info will be used by the AI during the call.
                         </p>
 
                         <div className="space-y-4">
-                          {/* Practice Info */}
-                          <div className="grid grid-cols-2 gap-3">
-                            <div>
-                              <Label htmlFor="quick-practice-name">Practice Name *</Label>
-                              <Input
-                                id="quick-practice-name"
-                                placeholder="ABC Wellness Clinic"
-                                value={quickCallPracticeName}
-                                onChange={(e) => setQuickCallPracticeName(e.target.value)}
-                                className="mt-1 bg-white"
-                              />
+                          {/* Practice & Contact Info */}
+                          <div className="space-y-3">
+                            <p className="text-xs font-medium text-yellow-800 uppercase tracking-wide">Practice Information</p>
+                            <div className="grid grid-cols-2 gap-3">
+                              <div>
+                                <Label htmlFor="quick-practice-name">Practice Name *</Label>
+                                <Input
+                                  id="quick-practice-name"
+                                  placeholder="ABC Wellness Clinic"
+                                  value={quickCallPracticeName}
+                                  onChange={(e) => setQuickCallPracticeName(e.target.value)}
+                                  className="mt-1 bg-white"
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="quick-contact-name">Contact / Dr. Name</Label>
+                                <Input
+                                  id="quick-contact-name"
+                                  placeholder="Dr. Smith"
+                                  value={quickCallContactName}
+                                  onChange={(e) => setQuickCallContactName(e.target.value)}
+                                  className="mt-1 bg-white"
+                                />
+                              </div>
                             </div>
                             <div>
-                              <Label htmlFor="quick-contact-name">Contact Name</Label>
+                              <Label htmlFor="quick-email">Email Address</Label>
                               <Input
-                                id="quick-contact-name"
-                                placeholder="Dr. Smith"
-                                value={quickCallContactName}
-                                onChange={(e) => setQuickCallContactName(e.target.value)}
+                                id="quick-email"
+                                type="email"
+                                placeholder="info@abcwellness.com"
+                                value={quickCallEmail}
+                                onChange={(e) => setQuickCallEmail(e.target.value)}
                                 className="mt-1 bg-white"
                               />
                             </div>
                           </div>
 
-                          {/* Location */}
-                          <div className="grid grid-cols-2 gap-3">
+                          {/* Address */}
+                          <div className="space-y-3">
+                            <p className="text-xs font-medium text-yellow-800 uppercase tracking-wide">Location</p>
                             <div>
-                              <Label htmlFor="quick-city">City</Label>
+                              <Label htmlFor="quick-address">Street Address</Label>
                               <Input
-                                id="quick-city"
-                                placeholder="Toronto"
-                                value={quickCallCity}
-                                onChange={(e) => setQuickCallCity(e.target.value)}
+                                id="quick-address"
+                                placeholder="123 Main Street, Suite 200"
+                                value={quickCallAddress}
+                                onChange={(e) => setQuickCallAddress(e.target.value)}
                                 className="mt-1 bg-white"
                               />
                             </div>
-                            <div>
-                              <Label htmlFor="quick-province">Province</Label>
-                              <Select value={quickCallProvince} onValueChange={setQuickCallProvince}>
-                                <SelectTrigger className="mt-1 bg-white">
-                                  <SelectValue placeholder="Select province" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="Alberta">Alberta</SelectItem>
-                                  <SelectItem value="British Columbia">British Columbia</SelectItem>
-                                  <SelectItem value="Manitoba">Manitoba</SelectItem>
-                                  <SelectItem value="New Brunswick">New Brunswick</SelectItem>
-                                  <SelectItem value="Newfoundland and Labrador">Newfoundland and Labrador</SelectItem>
-                                  <SelectItem value="Nova Scotia">Nova Scotia</SelectItem>
-                                  <SelectItem value="Ontario">Ontario</SelectItem>
-                                  <SelectItem value="Prince Edward Island">Prince Edward Island</SelectItem>
-                                  <SelectItem value="Quebec">Quebec</SelectItem>
-                                  <SelectItem value="Saskatchewan">Saskatchewan</SelectItem>
-                                </SelectContent>
-                              </Select>
+                            <div className="grid grid-cols-3 gap-3">
+                              <div>
+                                <Label htmlFor="quick-city">City</Label>
+                                <Input
+                                  id="quick-city"
+                                  placeholder="Toronto"
+                                  value={quickCallCity}
+                                  onChange={(e) => setQuickCallCity(e.target.value)}
+                                  className="mt-1 bg-white"
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="quick-province">Province</Label>
+                                <Select value={quickCallProvince} onValueChange={setQuickCallProvince}>
+                                  <SelectTrigger className="mt-1 bg-white">
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="Alberta">Alberta</SelectItem>
+                                    <SelectItem value="British Columbia">British Columbia</SelectItem>
+                                    <SelectItem value="Manitoba">Manitoba</SelectItem>
+                                    <SelectItem value="New Brunswick">New Brunswick</SelectItem>
+                                    <SelectItem value="Newfoundland and Labrador">Newfoundland</SelectItem>
+                                    <SelectItem value="Nova Scotia">Nova Scotia</SelectItem>
+                                    <SelectItem value="Ontario">Ontario</SelectItem>
+                                    <SelectItem value="Prince Edward Island">PEI</SelectItem>
+                                    <SelectItem value="Quebec">Quebec</SelectItem>
+                                    <SelectItem value="Saskatchewan">Saskatchewan</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              <div>
+                                <Label htmlFor="quick-postal">Postal Code</Label>
+                                <Input
+                                  id="quick-postal"
+                                  placeholder="M5V 1A1"
+                                  value={quickCallPostalCode}
+                                  onChange={(e) => setQuickCallPostalCode(e.target.value.toUpperCase())}
+                                  className="mt-1 bg-white"
+                                  maxLength={7}
+                                />
+                              </div>
                             </div>
                           </div>
 
