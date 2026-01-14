@@ -37,6 +37,48 @@ export type RetryReason =
   | 'busy'
   | 'manual_retry';
 
+// Qualification types for lead scoring
+export type InterestLevel = 'high' | 'medium' | 'low' | 'not_interested';
+
+export type ContactRole = 
+  | 'owner'
+  | 'office_manager'
+  | 'receptionist'
+  | 'practitioner'
+  | 'other';
+
+export type FollowUpAction = 
+  | 'send_info'
+  | 'callback'
+  | 'sample'
+  | 'demo'
+  | 'none';
+
+// Practitioner qualification data (extracted from calls)
+export interface PractitionerQualification {
+  // Contact info
+  contact_name: string | null;
+  contact_role: ContactRole | null;
+  contact_email: string | null;
+  decision_maker: boolean | null;
+  best_callback_time: string | null;
+  
+  // Interest level
+  interest_level: InterestLevel | null;
+  pain_points: string | null;
+  current_solutions: string | null;
+  objections: string | null;
+  
+  // Business info
+  practice_size: number | null;
+  patient_volume: string | null;
+  
+  // Next steps
+  follow_up_action: FollowUpAction | null;
+  follow_up_date: string | null;
+  decision_timeline: string | null;
+}
+
 export interface Database {
   public: {
     Tables: {

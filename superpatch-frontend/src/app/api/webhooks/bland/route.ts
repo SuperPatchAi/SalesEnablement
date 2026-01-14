@@ -1,7 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { serverUpsertCallRecord, serverUpdateByCallId } from "@/lib/db/call-records";
 import { supabaseAdmin, isSupabaseConfigured } from "@/lib/supabase";
-import type { CallStatus, CallRecordInsert, SampleRequestInsert, RetryReason, RetryPolicy } from "@/lib/db/types";
+import type { 
+  CallStatus, 
+  CallRecordInsert, 
+  SampleRequestInsert, 
+  RetryReason, 
+  RetryPolicy,
+  InterestLevel,
+  ContactRole,
+  FollowUpAction,
+  PractitionerQualification,
+} from "@/lib/db/types";
 
 const CAL_API_KEY = process.env.CAL_API_KEY || "";
 const CAL_EVENT_TYPE_ID = Number(process.env.CAL_EVENT_TYPE_ID) || 4352394;
@@ -124,8 +134,12 @@ interface BlandWebhookPayload {
   answered_by?: "human" | "voicemail" | "unknown";
 }
 
-// Calculate lead score based on call outcomes
-function calculateLeadScore(payload: BlandWebhookPayload, callStatus: string): number {
+// Calculate lead score based on call outcomes and qualification data
+function calculateLeadScore(
+  payload: BlandWebhookPayload, 
+  callStatus: string,
+  qualification?: Partial<PractitionerQualification>
+): number {
   let score = 0;
   
   // Answered by human: +30
@@ -166,8 +180,70 @@ function calculateLeadScore(payload: BlandWebhookPayload, callStatus: string): n
   if (!payload.completed || payload.status === "failed") {
     score -= 30;
   }
+
+  // === NEW: Qualification-based scoring ===
   
-  return Math.max(0, score); // Don't go below 0
+  // Interest level scoring
+  if (qualification?.interest_level) {
+    switch (qualification.interest_level) {
+      case 'high':
+        score += 30;
+        break;
+      case 'medium':
+        score += 15;
+        break;
+      case 'low':
+        score += 5;
+        break;
+      case 'not_interested':
+        score -= 20;
+        break;
+    }
+  }
+
+  // Decision maker bonus: +20
+  if (qualification?.decision_maker === true) {
+    score += 20;
+  }
+
+  // Contact email captured: +10
+  if (qualification?.contact_email) {
+    score += 10;
+  }
+
+  // Follow-up action agreed: +10-25 depending on action
+  if (qualification?.follow_up_action) {
+    switch (qualification.follow_up_action) {
+      case 'demo':
+        score += 25;
+        break;
+      case 'sample':
+        score += 20;
+        break;
+      case 'callback':
+        score += 15;
+        break;
+      case 'send_info':
+        score += 10;
+        break;
+      case 'none':
+        score -= 5;
+        break;
+    }
+  }
+
+  // Practice size bonus (larger practices = more potential)
+  if (qualification?.practice_size) {
+    if (qualification.practice_size >= 5) {
+      score += 15;
+    } else if (qualification.practice_size >= 3) {
+      score += 10;
+    } else if (qualification.practice_size >= 2) {
+      score += 5;
+    }
+  }
+  
+  return Math.max(0, Math.min(100, score)); // Keep between 0-100
 }
 
 // Do Not Call (DNC) phrases to detect in transcripts
@@ -414,6 +490,155 @@ async function clearRetryScheduling(practitionerId: string): Promise<boolean> {
   }
 }
 
+// Extract qualification data from call variables
+function extractQualificationData(
+  vars: Record<string, string>,
+  meta: Record<string, string | undefined>
+): Partial<PractitionerQualification> {
+  const qualification: Partial<PractitionerQualification> = {};
+
+  // Contact info
+  const contactName = vars.contact_name || vars.spoke_with || meta.contact_name;
+  if (contactName) qualification.contact_name = contactName;
+
+  const contactRole = (vars.contact_role || vars.role || vars.position)?.toLowerCase();
+  if (contactRole) {
+    const validRoles: ContactRole[] = ['owner', 'office_manager', 'receptionist', 'practitioner', 'other'];
+    qualification.contact_role = validRoles.includes(contactRole as ContactRole) 
+      ? (contactRole as ContactRole) 
+      : 'other';
+  }
+
+  const contactEmail = vars.email || vars.contact_email || vars.practitioner_email || meta.clinic_email;
+  if (contactEmail) qualification.contact_email = contactEmail;
+
+  const decisionMaker = vars.decision_maker || vars.is_decision_maker;
+  if (decisionMaker) {
+    qualification.decision_maker = decisionMaker.toLowerCase() === 'yes' || decisionMaker.toLowerCase() === 'true';
+  }
+
+  const bestCallbackTime = vars.best_callback_time || vars.callback_time || vars.preferred_time_to_call;
+  if (bestCallbackTime) qualification.best_callback_time = bestCallbackTime;
+
+  // Interest level
+  const interestLevel = (vars.interest_level || vars.interest)?.toLowerCase();
+  if (interestLevel) {
+    const validLevels: InterestLevel[] = ['high', 'medium', 'low', 'not_interested'];
+    qualification.interest_level = validLevels.includes(interestLevel as InterestLevel)
+      ? (interestLevel as InterestLevel)
+      : undefined;
+  }
+
+  const painPoints = vars.pain_points || vars.challenges || vars.problems_mentioned;
+  if (painPoints) qualification.pain_points = painPoints;
+
+  const currentSolutions = vars.current_solutions || vars.current_products || vars.what_they_use;
+  if (currentSolutions) qualification.current_solutions = currentSolutions;
+
+  const objections = vars.objections || vars.concerns || vars.hesitations;
+  if (objections) qualification.objections = objections;
+
+  // Business info
+  const practiceSize = vars.practice_size || vars.num_practitioners || vars.staff_size;
+  if (practiceSize) {
+    const size = parseInt(practiceSize, 10);
+    if (!isNaN(size)) qualification.practice_size = size;
+  }
+
+  const patientVolume = vars.patient_volume || vars.patients_per_week || vars.weekly_patients;
+  if (patientVolume) qualification.patient_volume = patientVolume;
+
+  // Next steps
+  const followUpAction = (vars.follow_up_action || vars.next_step || vars.agreed_action)?.toLowerCase();
+  if (followUpAction) {
+    const validActions: FollowUpAction[] = ['send_info', 'callback', 'sample', 'demo', 'none'];
+    // Map common variations
+    const actionMap: Record<string, FollowUpAction> = {
+      'send_info': 'send_info',
+      'send_information': 'send_info',
+      'email_info': 'send_info',
+      'callback': 'callback',
+      'call_back': 'callback',
+      'follow_up_call': 'callback',
+      'sample': 'sample',
+      'send_sample': 'sample',
+      'demo': 'demo',
+      'schedule_demo': 'demo',
+      'book_demo': 'demo',
+      'none': 'none',
+      'no_action': 'none',
+    };
+    qualification.follow_up_action = actionMap[followUpAction] || 
+      (validActions.includes(followUpAction as FollowUpAction) ? (followUpAction as FollowUpAction) : undefined);
+  }
+
+  const followUpDate = vars.follow_up_date || vars.callback_date || vars.next_call_date;
+  if (followUpDate) {
+    try {
+      const date = new Date(followUpDate);
+      if (!isNaN(date.getTime())) {
+        qualification.follow_up_date = date.toISOString();
+      }
+    } catch {
+      // Keep as string if can't parse
+      qualification.follow_up_date = followUpDate;
+    }
+  }
+
+  const decisionTimeline = vars.decision_timeline || vars.when_deciding || vars.timeline;
+  if (decisionTimeline) qualification.decision_timeline = decisionTimeline;
+
+  return qualification;
+}
+
+// Update practitioner with qualification data
+async function updatePractitionerQualification(
+  practitionerId: string,
+  qualification: Partial<PractitionerQualification>
+): Promise<boolean> {
+  if (!isSupabaseConfigured || !supabaseAdmin) {
+    console.log("Cannot update qualification: Supabase not configured");
+    return false;
+  }
+
+  // Only update if we have data to update
+  const fieldsToUpdate = Object.entries(qualification).filter(([, v]) => v !== undefined && v !== null);
+  if (fieldsToUpdate.length === 0) {
+    console.log("No qualification data to update");
+    return true;
+  }
+
+  try {
+    const updateData: Record<string, unknown> = {
+      updated_at: new Date().toISOString(),
+    };
+
+    // Add non-null qualification fields
+    for (const [key, value] of fieldsToUpdate) {
+      updateData[key] = value;
+    }
+
+    console.log(`📊 Updating practitioner ${practitionerId} with qualification data:`, updateData);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await (supabaseAdmin as any)
+      .from('practitioners')
+      .update(updateData)
+      .eq('id', practitionerId);
+
+    if (error) {
+      console.error("Error updating practitioner qualification:", error);
+      return false;
+    }
+
+    console.log(`✅ Practitioner qualification updated successfully`);
+    return true;
+  } catch (error) {
+    console.error("Error updating practitioner qualification:", error);
+    return false;
+  }
+}
+
 // Get current retry count for a practitioner
 async function getPractitionerRetryCount(practitionerId: string): Promise<number> {
   if (!isSupabaseConfigured || !supabaseAdmin) {
@@ -485,6 +710,10 @@ export async function POST(request: NextRequest) {
       practiceAddress,
       practitionerId,
     });
+
+    // Extract qualification data from call variables
+    const qualificationData = extractQualificationData(vars, meta as Record<string, string | undefined>);
+    console.log("📊 Extracted qualification data:", qualificationData);
     
     // Try to find practitioner by phone if not provided in metadata
     let resolvedPractitionerId: string | undefined | null = practitionerId;
@@ -599,8 +828,8 @@ export async function POST(request: NextRequest) {
     const sentimentLabel = payload.analysis?.sentiment?.toLowerCase() || null;
     const sentimentScore = payload.analysis?.sentiment_score || null;
     
-    // Calculate lead score based on call outcomes
-    const leadScore = calculateLeadScore(payload, callStatus);
+    // Calculate lead score based on call outcomes and qualification data
+    const leadScore = calculateLeadScore(payload, callStatus, qualificationData);
     
     console.log("📊 Call analysis:", {
       sentiment: sentimentLabel,
@@ -755,6 +984,15 @@ export async function POST(request: NextRequest) {
       );
       if (dncMarked) {
         console.log(`✅ Practitioner ${resolvedPractitionerName} successfully marked as DNC`);
+      }
+    }
+
+    // Update practitioner with qualification data (if we have a practitioner and data)
+    let qualificationUpdated = false;
+    if (resolvedPractitionerId && Object.keys(qualificationData).length > 0 && !dncResult.detected) {
+      qualificationUpdated = await updatePractitionerQualification(resolvedPractitionerId, qualificationData);
+      if (qualificationUpdated) {
+        console.log(`✅ Qualification data saved for practitioner ${resolvedPractitionerId}`);
       }
     }
 
@@ -971,7 +1209,33 @@ export async function GET(request: NextRequest) {
       "Creates sample requests when requested",
       "Smart retry scheduling for voicemail/failed calls",
       "DNC detection and automatic marking",
+      "Extracts qualification data (interest_level, decision_maker, etc.)",
+      "Enhanced lead scoring with qualification factors",
     ],
+    pathway_variables: {
+      contact_info: [
+        "contact_name - Name of person spoken to",
+        "contact_role - owner/office_manager/receptionist/practitioner/other",
+        "email - Email address for follow-up",
+        "decision_maker - yes/no if they make purchasing decisions",
+        "best_callback_time - Preferred time to call back",
+      ],
+      interest: [
+        "interest_level - high/medium/low/not_interested",
+        "pain_points - Challenges they mentioned",
+        "current_solutions - What they currently use",
+        "objections - Concerns or hesitations raised",
+      ],
+      business: [
+        "practice_size - Number of practitioners",
+        "patient_volume - Approx patients per week",
+      ],
+      next_steps: [
+        "follow_up_action - send_info/callback/sample/demo/none",
+        "follow_up_date - When to follow up",
+        "decision_timeline - When they expect to decide",
+      ],
+    },
     retry_policy: {
       max_attempts: RETRY_POLICY.maxAttempts,
       retry_delays_minutes: RETRY_POLICY.retryDelays,

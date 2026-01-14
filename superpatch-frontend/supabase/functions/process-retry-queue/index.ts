@@ -116,9 +116,14 @@ async function initiateCall(practitioner: RetryQueueEntry): Promise<CallResult> 
     webhook: WEBHOOK_URL,
     request_data: {
       practice_name: practitioner.name || "your practice",
+      practice_address: "",  // Not stored in retry queue entry
       practice_city: practitioner.city || "",
       practice_province: practitioner.province || "",
+      google_rating: "",
+      review_count: "",
+      website: "",
       practitioner_type: practitioner.practitioner_type || "",
+      has_address: "false",
     },
     metadata: {
       campaign: "canadian_practitioners",
