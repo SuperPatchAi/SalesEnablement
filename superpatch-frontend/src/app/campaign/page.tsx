@@ -812,7 +812,7 @@ function CampaignPageContent() {
     callNotifications.campaignCompleted(bookedCount);
   };
 
-  // Bulk enrich selected practitioners
+  // Bulk enrich selected practitioners using Supabase Edge Function
   const bulkEnrichSelected = async () => {
     // Get selected practitioners with websites that need enrichment
     const toEnrich = practitioners.filter(
@@ -825,52 +825,66 @@ function CampaignPageContent() {
     }
 
     setIsEnrichingBulk(true);
-    setEnrichmentProgress({ current: 0, total: toEnrich.length, currentName: "" });
+    setEnrichmentProgress({ current: 0, total: toEnrich.length, currentName: "Sending to enrichment service..." });
 
-    let successCount = 0;
-    let failCount = 0;
-
-    for (let i = 0; i < toEnrich.length; i++) {
-      const practitioner = toEnrich[i];
-      setEnrichmentProgress({ 
-        current: i + 1, 
-        total: toEnrich.length, 
-        currentName: practitioner.name 
-      });
-
-      try {
-        const response = await fetch("/api/search/enrich", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            practitionerId: practitioner.id,
-            websiteUrl: practitioner.website,
-          }),
-        });
-
-        if (response.ok) {
-          successCount++;
-          console.log(`[Bulk Enrich] Success: ${practitioner.name}`);
-        } else {
-          failCount++;
-          console.warn(`Enrichment failed for ${practitioner.name}: ${response.status}`);
-        }
-      } catch (err) {
-        failCount++;
-        console.error(`Enrichment error for ${practitioner.name}:`, err);
+    try {
+      // Call Supabase Edge Function for parallel enrichment (up to 50 concurrent)
+      const practitionerIds = toEnrich.map(p => p.id);
+      
+      console.log(`[Bulk Enrich] Invoking edge function for ${practitionerIds.length} practitioners`);
+      
+      // Use fetch to call the edge function directly
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+      
+      if (!supabaseUrl || !supabaseAnonKey) {
+        throw new Error("Supabase not configured");
       }
 
-      // Small delay to avoid rate limiting
-      await new Promise(resolve => setTimeout(resolve, 300));
-    }
+      setEnrichmentProgress({ 
+        current: 0, 
+        total: toEnrich.length, 
+        currentName: `Processing ${toEnrich.length} practitioners in parallel...` 
+      });
 
-    setIsEnrichingBulk(false);
-    setEnrichmentProgress({ current: 0, total: 0, currentName: "" });
-    
-    // Refresh data to get updated enrichment status
-    loadPractitioners(1);
-    
-    alert(`Enrichment complete!\n✓ ${successCount} succeeded\n✗ ${failCount} failed`);
+      const response = await fetch(`${supabaseUrl}/functions/v1/enrich-practitioners`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${supabaseAnonKey}`,
+        },
+        body: JSON.stringify({ practitionerIds }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Edge function error: ${response.status} - ${errorText}`);
+      }
+
+      const result = await response.json();
+      
+      console.log(`[Bulk Enrich] Edge function result:`, result);
+
+      const successCount = result.enriched || 0;
+      const failCount = result.failed || 0;
+
+      setEnrichmentProgress({ 
+        current: toEnrich.length, 
+        total: toEnrich.length, 
+        currentName: "Complete!" 
+      });
+
+      // Refresh data to get updated enrichment status
+      loadPractitioners(1);
+      
+      alert(`Enrichment complete!\n✓ ${successCount} succeeded\n✗ ${failCount} failed`);
+    } catch (err) {
+      console.error("[Bulk Enrich] Error:", err);
+      alert(`Enrichment failed: ${err instanceof Error ? err.message : "Unknown error"}`);
+    } finally {
+      setIsEnrichingBulk(false);
+      setEnrichmentProgress({ current: 0, total: 0, currentName: "" });
+    }
   };
 
   // Export data
