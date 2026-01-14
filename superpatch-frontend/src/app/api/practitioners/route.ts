@@ -131,11 +131,12 @@ async function getMetadata(forceRefresh: boolean = false): Promise<{ provinces: 
   
   if (useSupabase && supabaseAdmin) {
     try {
-      // Get distinct provinces
+      // Get distinct provinces - need high limit since Supabase defaults to 1000
       const { data: provinceData } = await supabaseAdmin
         .from('practitioners')
         .select('province')
-        .not('province', 'is', null);
+        .not('province', 'is', null)
+        .limit(50000);  // Ensure we get all records for unique extraction
       
       const provinces = [...new Set(
         (provinceData as { province: string }[] || [])
@@ -147,7 +148,8 @@ async function getMetadata(forceRefresh: boolean = false): Promise<{ provinces: 
       const { data: typeData } = await supabaseAdmin
         .from('practitioners')
         .select('practitioner_type')
-        .not('practitioner_type', 'is', null);
+        .not('practitioner_type', 'is', null)
+        .limit(50000);  // Ensure we get all records for unique extraction
       
       const types = [...new Set(
         (typeData as { practitioner_type: string }[] || [])
@@ -155,11 +157,12 @@ async function getMetadata(forceRefresh: boolean = false): Promise<{ provinces: 
           .filter(Boolean)
       )].sort();
       
-      // Get cities by province
+      // Get cities by province - need all records
       const { data: cityData } = await supabaseAdmin
         .from('practitioners')
         .select('province, city')
-        .not('city', 'is', null);
+        .not('city', 'is', null)
+        .limit(50000);  // Ensure we get all records for unique extraction
       
       const typedCityData = cityData as { province: string; city: string }[] || [];
       const cities: Record<string, string[]> = {};
@@ -198,6 +201,14 @@ async function getMetadata(forceRefresh: boolean = false): Promise<{ provinces: 
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
+  
+  // Allow cache busting for metadata
+  if (searchParams.get("clearCache") === "true") {
+    metadataCache = null;
+    jsonCache = null;
+    supabaseTableExists = null;
+    console.log("[Practitioners API] Cache cleared");
+  }
   
   // Check if requesting metadata only
   if (searchParams.get("metadata") === "true") {
