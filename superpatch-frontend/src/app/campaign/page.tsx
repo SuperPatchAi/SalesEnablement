@@ -1983,7 +1983,7 @@ function CampaignPageContent() {
         </TabsContent>
 
         {/* Quick Call Tab */}
-        <TabsContent value="quick-call" className="flex-1 m-0 p-6">
+        <TabsContent value="quick-call" className="flex-1 m-0 p-6 overflow-auto">
           <div className="max-w-2xl mx-auto">
             <Card>
               <CardContent className="pt-6">
