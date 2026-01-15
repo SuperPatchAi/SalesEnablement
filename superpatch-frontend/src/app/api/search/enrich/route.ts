@@ -52,6 +52,7 @@ const LANGUAGE_KEYWORDS: Record<string, string[]> = {
 interface EnrichRequest {
   practitionerId?: string;
   websiteUrl: string;
+  force?: boolean; // Force re-enrichment even if already enriched
 }
 
 interface ExtractedPractitioner {
@@ -261,7 +262,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: EnrichRequest = await request.json();
-    const { practitionerId, websiteUrl } = body;
+    const { practitionerId, websiteUrl, force } = body;
 
     if (!websiteUrl) {
       return NextResponse.json(
@@ -271,6 +272,48 @@ export async function POST(request: NextRequest) {
         },
         { status: 400 }
       );
+    }
+
+    // Check if practitioner is already being enriched or enriched (prevent duplicates)
+    if (practitionerId && isSupabaseConfigured && supabaseAdmin && !force) {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data: existing } = await (supabaseAdmin as any)
+          .from("practitioners")
+          .select("enrichment_status, enriched_at")
+          .eq("id", practitionerId)
+          .single();
+
+        if (existing) {
+          if (existing.enrichment_status === "in_progress") {
+            console.log(`[Enrich API] Skipping ${practitionerId} - already in_progress`);
+            return NextResponse.json({
+              success: false,
+              skipped: true,
+              error: "Enrichment already in progress for this practitioner",
+            });
+          }
+          
+          if (existing.enrichment_status === "enriched" || existing.enrichment_status === "completed") {
+            console.log(`[Enrich API] Skipping ${practitionerId} - already enriched at ${existing.enriched_at}`);
+            return NextResponse.json({
+              success: false,
+              skipped: true,
+              error: "Practitioner already enriched. Use force=true to re-enrich.",
+            });
+          }
+        }
+
+        // Set status to in_progress before starting
+        await (supabaseAdmin as any)
+          .from("practitioners")
+          .update({ enrichment_status: "in_progress" })
+          .eq("id", practitionerId);
+
+      } catch (checkError) {
+        console.warn(`[Enrich API] Status check failed:`, checkError);
+        // Continue with enrichment if check fails
+      }
     }
 
     console.log(`[Enrich API] Scraping: ${websiteUrl}`);

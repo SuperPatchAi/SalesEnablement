@@ -347,9 +347,22 @@ serve(async (req) => {
     // Create Supabase client
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
+    // Cleanup stale "in_progress" statuses (older than 5 minutes)
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+    const { data: staleRecords, error: staleError } = await supabase
+      .from("practitioners")
+      .update({ enrichment_status: "pending" })
+      .eq("enrichment_status", "in_progress")
+      .lt("updated_at", fiveMinutesAgo)
+      .select("id");
+    
+    if (!staleError && staleRecords && staleRecords.length > 0) {
+      console.log(`[Edge Enrich] Reset ${staleRecords.length} stale in_progress records to pending`);
+    }
+
     // Parse request body
     const body = await req.json();
-    const { practitionerIds, enrichAll } = body;
+    const { practitionerIds, enrichAll, includeRetries } = body;
 
     let practitioners: Practitioner[] = [];
 
@@ -371,10 +384,13 @@ serve(async (req) => {
       practitioners = (data || []) as Practitioner[];
     } else if (enrichAll) {
       // Fetch all pending practitioners with websites
+      // Optionally include failed practitioners for retry
+      const statusFilter = includeRetries ? ["pending", "failed"] : ["pending"];
+      
       const { data, error } = await supabase
         .from("practitioners")
         .select("id, name, website")
-        .eq("enrichment_status", "pending")
+        .in("enrichment_status", statusFilter)
         .not("website", "is", null)
         .limit(200); // Safety limit
 
@@ -385,6 +401,7 @@ serve(async (req) => {
         );
       }
 
+      console.log(`[Edge Enrich] Found ${(data || []).length} practitioners with status in [${statusFilter.join(', ')}]`);
       practitioners = (data || []) as Practitioner[];
     } else {
       return new Response(

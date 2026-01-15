@@ -38,6 +38,31 @@ Practitioners can have enrichment data from website scraping:
 
 Enriched practitioners display a purple "Enriched" badge and compact indicators in the table.
 
+#### Enrichment Status
+
+| Status | Description |
+|--------|-------------|
+| `pending` | Website not yet scraped |
+| `in_progress` | Scraping currently running |
+| `completed` | Successfully enriched |
+| `failed` | Scraping failed (will retry) |
+
+#### Enrichment Improvements
+
+**Stale Status Cleanup**: Records stuck in `in_progress` for >5 minutes are automatically reset to `pending`.
+
+**Retry Mechanism**: Failed enrichments can be retried by calling the edge function with `includeRetries: true`.
+
+**Duplicate Prevention**: The enrich API checks current status before starting:
+- Skips if already `in_progress`
+- Skips if already `enriched` (unless `force: true`)
+
+#### Real-Time Enrichment Updates
+
+Enrichment status changes are broadcast in real-time:
+- Progress visible as practitioners move through statuses
+- Callbacks available for completion/failure events
+
 ### Filtering Options
 
 | Filter | Description |
@@ -233,9 +258,98 @@ pending → approved → shipped → delivered
          cancelled
 ```
 
+### Real-Time Updates
+
+Sample requests update in real-time via Supabase subscriptions:
+- New requests appear immediately in the Samples tab
+- Status changes are reflected without page refresh
+- Live connection indicator shows when real-time is active
+
 ### Export
 
 Sample requests can be exported to CSV for fulfillment processing.
+
+---
+
+## Retry Queue
+
+### Overview
+
+The Retries tab shows practitioners scheduled for follow-up calls. Retries are automatically scheduled when calls result in voicemail or failed status.
+
+### Stats Dashboard
+
+| Stat | Description |
+|------|-------------|
+| Due Now | Retries past their scheduled time |
+| Next Hour | Retries scheduled within the next 60 minutes |
+| Next 24 Hours | Retries scheduled within 24 hours |
+
+### Retry Logic
+
+When a call ends with voicemail or failure:
+1. `retry_count` is incremented
+2. `next_retry_at` is set (business hours: 9 AM - 6 PM local time)
+3. `retry_reason` is recorded (e.g., "voicemail", "no_answer")
+
+### Retry Queue Processing
+
+The `process-retry-queue` edge function (cron-triggered) handles automatic retries:
+- Fetches practitioners where `next_retry_at <= now`
+- Excludes `do_not_call = true` practitioners
+- Initiates calls with full practitioner context
+- Includes `memory_id` for cross-call context retention
+
+### Real-Time Updates
+
+The retry queue updates in real-time:
+- New retries appear automatically when scheduled
+- Processed retries are removed from the queue
+- Time-based stats refresh every minute
+
+---
+
+## Real-Time Updates
+
+### Overview
+
+The campaign page uses Supabase real-time subscriptions to provide live updates without page refresh. Three dedicated hooks handle different data streams.
+
+### Hooks
+
+| Hook | Table | Purpose |
+|------|-------|---------|
+| `useRealtimeSampleRequests` | `sample_requests` | Live sample request updates |
+| `useRealtimePractitioners` | `practitioners` | Enrichment status changes |
+| `useRealtimeRetryQueue` | `practitioners` | Upcoming retry scheduling |
+
+### Connection Status
+
+Each real-time feature shows a "Live" badge when connected:
+- Green radio icon indicates active subscription
+- Automatic reconnection on connection loss
+- Fallback polling available if real-time unavailable
+
+### Callbacks
+
+Hooks support optional callbacks for reactive behavior:
+
+```typescript
+useRealtimeSampleRequests({
+  onNewRequest: (request) => { /* show notification */ },
+  onStatusChange: (request, oldStatus) => { /* log change */ },
+});
+
+useRealtimePractitioners({
+  onEnrichmentComplete: (practitioner) => { /* update UI */ },
+  onEnrichmentFailed: (practitioner) => { /* show error */ },
+});
+
+useRealtimeRetryQueue({
+  onRetryScheduled: (item) => { /* notify user */ },
+  onRetryProcessed: (item) => { /* remove from view */ },
+});
+```
 
 ---
 
@@ -251,6 +365,19 @@ Receives call completion data:
 - AI-generated summary
 - Sentiment analysis
 - Recording URL
+
+### Email Resolution
+
+The webhook resolves practitioner email using a fallback chain:
+
+```
+1. Call-captured email (vars.email, vars.practitioner_email)
+2. Metadata email (meta.clinic_email)
+3. Stored contact_email (from practitioners table)
+4. Enrichment emails (enrichment.data.emails[0])
+```
+
+This ensures Cal.com bookings and sample requests always have the best available email.
 
 ### Memory System
 

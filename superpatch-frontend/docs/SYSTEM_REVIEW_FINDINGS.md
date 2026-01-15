@@ -40,6 +40,13 @@ The integration between Bland.ai, the Next.js UI, and Supabase is **well-connect
 | Voice ID | ✓ Consistent | 78c8543e-e5fe-448e-8292-20a7b8c45247 |
 | Real-time subscriptions | ✓ Working | Fallback polling at 10s intervals |
 | Database upsert logic | ✓ Working | Handles both call_id and practitioner_id |
+| Email fallback chain | ✓ NEW | call vars → metadata → stored → enrichment |
+| Retry queue context | ✓ NEW | Full practitioner data + memory_id |
+| Sample requests real-time | ✓ NEW | useRealtimeSampleRequests hook |
+| Enrichment real-time | ✓ NEW | useRealtimePractitioners hook |
+| Retry queue real-time | ✓ NEW | useRealtimeRetryQueue hook |
+| Enrichment stale cleanup | ✓ NEW | 5-minute timeout reset |
+| Enrichment duplicate prevention | ✓ NEW | Status check before starting |
 
 ---
 
@@ -48,6 +55,25 @@ The integration between Bland.ai, the Next.js UI, and Supabase is **well-connect
 ### No Critical Issues Found
 
 The system is well-integrated with proper error handling and fallback mechanisms.
+
+### Improvements Applied (January 2026)
+
+The following issues were identified and resolved:
+
+| Issue | Resolution |
+|-------|------------|
+| Email not using stored practitioner data | Added `getPractitionerEmail()` helper with fallback chain |
+| Cal.com booking missing email/address | Now uses resolved values from stored data |
+| Sample requests missing practitioner email | Uses `resolvedEmail` from fallback chain |
+| Retry queue missing full context | Added address, rating, review_count, website to payload |
+| Retry queue missing memory_id | Added `BLAND_MEMORY_ID` env var support |
+| Inconsistent products_interested fallback | Standardized across all webhook usages |
+| No real-time for sample requests | Added `useRealtimeSampleRequests` hook |
+| No real-time for enrichment status | Added `useRealtimePractitioners` hook |
+| No visibility into retry queue | Added `useRealtimeRetryQueue` hook + Retries tab |
+| Enrichment stuck in "in_progress" | Added 5-minute stale status cleanup |
+| No retry for failed enrichments | Added `includeRetries` flag to edge function |
+| Duplicate enrichment calls | Added status check before starting + `force` flag |
 
 ### Minor Observations (Not Blocking)
 
@@ -147,23 +173,64 @@ CAL_EVENT_TYPE_ID=...
 - [ ] Verify retry_count increments
 - [ ] Verify next_retry_at is set within business hours
 
+### Test 9: Retry Queue Tab
+- [ ] Navigate to Retries tab
+- [ ] Verify "Due Now", "Next Hour", "Next 24 Hours" stats display
+- [ ] Check live connection badge shows "Live"
+- [ ] Trigger a retry scheduling and verify it appears without refresh
+- [ ] Verify retry queue items show practitioner details
+
+### Test 10: Email Fallback Chain
+- [ ] Make a call where email is NOT captured in conversation
+- [ ] Verify Cal.com booking uses stored practitioner email
+- [ ] Verify sample request uses stored practitioner email
+- [ ] Test with enriched practitioner (should use enrichment.data.emails)
+
+### Test 11: Real-Time Sample Requests
+- [ ] Open Samples tab
+- [ ] Verify "Live" badge appears when connected
+- [ ] Trigger a sample request from a call
+- [ ] Verify it appears in Samples tab without refresh
+- [ ] Update sample status and verify change appears in other browser
+
+### Test 12: Enrichment Improvements
+- [ ] Trigger enrichment for a practitioner
+- [ ] Verify status changes to "in_progress"
+- [ ] If scraping takes >5 minutes, verify status resets to "pending"
+- [ ] Try enriching an already-enriched practitioner (should skip)
+- [ ] Try with force=true (should re-enrich)
+
 ---
 
 ## Files Reviewed
 
 | File | Lines | Purpose |
 |------|-------|---------|
-| `/api/webhooks/bland/route.ts` | 1272 | Main webhook handler |
+| `/api/webhooks/bland/route.ts` | ~1300 | Main webhook handler |
 | `/lib/batch-caller.ts` | 528 | Batch call queue management |
 | `/lib/db/call-records.ts` | 500 | Database operations |
 | `/lib/db/types.ts` | 363 | TypeScript types |
-| `/hooks/useSupabaseCallRecords.ts` | 341 | Real-time hook |
+| `/hooks/useSupabaseCallRecords.ts` | 341 | Real-time call records hook |
+| `/hooks/useRealtimeSampleRequests.ts` | ~200 | Real-time sample requests hook (NEW) |
+| `/hooks/useRealtimePractitioners.ts` | ~250 | Real-time enrichment status hook (NEW) |
+| `/hooks/useRealtimeRetryQueue.ts` | ~250 | Real-time retry queue hook (NEW) |
 | `/api/campaign/calls/route.ts` | 213 | Campaign API |
 | `/api/bland/calls/route.ts` | 48 | Bland.ai proxy |
-| `/app/campaign/page.tsx` | ~3000 | Campaign UI |
+| `/api/search/enrich/route.ts` | ~370 | Enrichment API (updated) |
+| `/api/search/import/route.ts` | ~300 | Import API (updated) |
+| `/app/campaign/page.tsx` | ~3100 | Campaign UI (updated) |
+| `/supabase/functions/process-retry-queue` | ~400 | Retry queue edge function (updated) |
+| `/supabase/functions/enrich-practitioners` | ~450 | Enrichment edge function (updated) |
 
 ---
 
 ## Conclusion
 
-**The system is production-ready.** All integrations are properly connected with consistent configuration. The minor observations noted are code organization suggestions, not functional issues.
+**The system is production-ready and has been improved.** All integrations are properly connected with consistent configuration. The January 2026 improvements addressed:
+
+- **Data consistency**: Email and address resolution now uses stored practitioner data as fallback
+- **Retry reliability**: Full practitioner context sent to Bland.ai for retry calls
+- **Real-time visibility**: Three new hooks provide live updates for samples, enrichment, and retries
+- **Enrichment robustness**: Stale status cleanup, retry mechanism, and duplicate prevention
+
+The minor observations noted are code organization suggestions, not functional issues.

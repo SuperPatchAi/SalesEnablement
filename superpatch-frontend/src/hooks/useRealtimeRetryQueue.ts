@@ -1,0 +1,295 @@
+"use client";
+
+/**
+ * Hook for real-time retry queue updates via Supabase Realtime
+ * 
+ * Features:
+ * - Fetches practitioners with upcoming retries
+ * - Subscribes to retry queue changes (next_retry_at updates)
+ * - Provides callbacks for retry scheduled/completed
+ */
+
+import { useState, useEffect, useCallback, useRef } from "react";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
+
+interface RetryQueueItem {
+  id: string;
+  name: string;
+  phone: string | null;
+  practitioner_type: string | null;
+  next_retry_at: string | null;
+  retry_count: number;
+  retry_reason: string | null;
+  last_call_status: string | null;
+  city: string | null;
+  province: string | null;
+}
+
+interface UseRealtimeRetryQueueOptions {
+  /**
+   * How many hours ahead to show upcoming retries (default: 24)
+   */
+  hoursAhead?: number;
+  /**
+   * Max items to show
+   */
+  limit?: number;
+  /**
+   * Called when a practitioner is added to the retry queue
+   */
+  onRetryScheduled?: (item: RetryQueueItem) => void;
+  /**
+   * Called when a retry is processed (removed from queue)
+   */
+  onRetryProcessed?: (item: RetryQueueItem) => void;
+}
+
+interface UseRealtimeRetryQueueResult {
+  queue: RetryQueueItem[];
+  loading: boolean;
+  error: string | null;
+  isConnected: boolean;
+  refresh: () => Promise<void>;
+  stats: {
+    dueNow: number;
+    nextHour: number;
+    next24Hours: number;
+    total: number;
+  };
+}
+
+export function useRealtimeRetryQueue(
+  options: UseRealtimeRetryQueueOptions = {}
+): UseRealtimeRetryQueueResult {
+  const {
+    hoursAhead = 24,
+    limit = 50,
+    onRetryScheduled,
+    onRetryProcessed,
+  } = options;
+
+  const [queue, setQueue] = useState<RetryQueueItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const [stats, setStats] = useState({
+    dueNow: 0,
+    nextHour: 0,
+    next24Hours: 0,
+    total: 0,
+  });
+
+  const channelRef = useRef<ReturnType<NonNullable<typeof supabase>["channel"]> | null>(null);
+  const callbacksRef = useRef({ onRetryScheduled, onRetryProcessed });
+
+  // Keep callbacks ref updated
+  useEffect(() => {
+    callbacksRef.current = { onRetryScheduled, onRetryProcessed };
+  }, [onRetryScheduled, onRetryProcessed]);
+
+  // Fetch retry queue from database
+  const fetchQueue = useCallback(async () => {
+    if (!isSupabaseConfigured || !supabase) {
+      setError("Supabase not configured");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const now = new Date();
+      const futureLimit = new Date(now.getTime() + hoursAhead * 60 * 60 * 1000);
+
+      const { data, error: fetchError } = await supabase
+        .from("practitioners")
+        .select("id, name, phone, practitioner_type, next_retry_at, retry_count, retry_reason, last_call_status, city, province")
+        .not("next_retry_at", "is", null)
+        .lte("next_retry_at", futureLimit.toISOString())
+        .eq("do_not_call", false)
+        .order("next_retry_at", { ascending: true })
+        .limit(limit);
+
+      if (fetchError) {
+        setError(fetchError.message);
+      } else {
+        setQueue((data as RetryQueueItem[]) || []);
+        setError(null);
+
+        // Calculate stats
+        const nowTime = now.getTime();
+        const oneHourLater = nowTime + 60 * 60 * 1000;
+        const twentyFourHoursLater = nowTime + 24 * 60 * 60 * 1000;
+
+        let dueNow = 0;
+        let nextHour = 0;
+        let next24Hours = 0;
+
+        (data || []).forEach((item: RetryQueueItem) => {
+          if (item.next_retry_at) {
+            const retryTime = new Date(item.next_retry_at).getTime();
+            if (retryTime <= nowTime) {
+              dueNow++;
+            } else if (retryTime <= oneHourLater) {
+              nextHour++;
+            } else if (retryTime <= twentyFourHoursLater) {
+              next24Hours++;
+            }
+          }
+        });
+
+        setStats({
+          dueNow,
+          nextHour,
+          next24Hours,
+          total: (data || []).length,
+        });
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to fetch");
+    } finally {
+      setLoading(false);
+    }
+  }, [hoursAhead, limit]);
+
+  // Handle real-time changes
+  const handleChange = useCallback(
+    (payload: {
+      eventType: "INSERT" | "UPDATE" | "DELETE";
+      new: RetryQueueItem | null;
+      old: Partial<RetryQueueItem> | null;
+    }) => {
+      const { eventType, new: newRecord, old: oldRecord } = payload;
+
+      if (eventType === "UPDATE" && newRecord && oldRecord) {
+        const oldRetryAt = oldRecord.next_retry_at;
+        const newRetryAt = newRecord.next_retry_at;
+
+        // Retry scheduled (next_retry_at was null, now has value)
+        if (!oldRetryAt && newRetryAt) {
+          console.log(`📡 Retry scheduled for ${newRecord.name} at ${newRetryAt}`);
+          callbacksRef.current.onRetryScheduled?.(newRecord);
+
+          // Add to queue if within window
+          const now = new Date();
+          const futureLimit = new Date(now.getTime() + hoursAhead * 60 * 60 * 1000);
+          const retryTime = new Date(newRetryAt);
+
+          if (retryTime <= futureLimit) {
+            setQueue((prev) => {
+              // Insert in sorted order
+              const newQueue = [...prev];
+              const insertIndex = newQueue.findIndex(
+                (item) => item.next_retry_at && new Date(item.next_retry_at) > retryTime
+              );
+              if (insertIndex === -1) {
+                newQueue.push(newRecord);
+              } else {
+                newQueue.splice(insertIndex, 0, newRecord);
+              }
+              return newQueue.slice(0, limit);
+            });
+          }
+        }
+
+        // Retry cleared/processed (next_retry_at had value, now null)
+        if (oldRetryAt && !newRetryAt) {
+          console.log(`📡 Retry processed for ${newRecord.name}`);
+          callbacksRef.current.onRetryProcessed?.(newRecord);
+
+          setQueue((prev) => prev.filter((item) => item.id !== newRecord.id));
+        }
+
+        // Retry time updated
+        if (oldRetryAt && newRetryAt && oldRetryAt !== newRetryAt) {
+          console.log(`📡 Retry rescheduled for ${newRecord.name} from ${oldRetryAt} to ${newRetryAt}`);
+
+          setQueue((prev) => {
+            const filtered = prev.filter((item) => item.id !== newRecord.id);
+
+            // Check if new time is within window
+            const now = new Date();
+            const futureLimit = new Date(now.getTime() + hoursAhead * 60 * 60 * 1000);
+            const retryTime = new Date(newRetryAt);
+
+            if (retryTime <= futureLimit) {
+              const insertIndex = filtered.findIndex(
+                (item) => item.next_retry_at && new Date(item.next_retry_at) > retryTime
+              );
+              if (insertIndex === -1) {
+                filtered.push(newRecord);
+              } else {
+                filtered.splice(insertIndex, 0, newRecord);
+              }
+            }
+
+            return filtered.slice(0, limit);
+          });
+        }
+      }
+    },
+    [hoursAhead, limit]
+  );
+
+  // Set up real-time subscription
+  useEffect(() => {
+    if (!isSupabaseConfigured || !supabase) {
+      setError("Supabase not configured");
+      setLoading(false);
+      return;
+    }
+
+    // Initial fetch
+    fetchQueue();
+
+    // Subscribe to real-time changes on practitioners table
+    const channel = supabase
+      .channel("practitioners_retry_queue_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "practitioners",
+        },
+        (payload) => {
+          handleChange({
+            eventType: "UPDATE",
+            new: payload.new as RetryQueueItem | null,
+            old: payload.old as Partial<RetryQueueItem> | null,
+          });
+        }
+      )
+      .subscribe((status) => {
+        console.log("[Realtime RetryQueue] Subscription status:", status);
+        setIsConnected(status === "SUBSCRIBED");
+      });
+
+    channelRef.current = channel;
+
+    // Also set up an interval to refresh stats (for time-based calculations)
+    const refreshInterval = setInterval(() => {
+      fetchQueue();
+    }, 60000); // Refresh every minute to update time-based stats
+
+    // Cleanup
+    return () => {
+      console.log("[Realtime RetryQueue] Unsubscribing from channel");
+      if (channelRef.current && supabase) {
+        supabase.removeChannel(channelRef.current);
+        channelRef.current = null;
+      }
+      clearInterval(refreshInterval);
+      setIsConnected(false);
+    };
+  }, [fetchQueue, handleChange]);
+
+  return {
+    queue,
+    loading,
+    error,
+    isConnected,
+    refresh: fetchQueue,
+    stats,
+  };
+}
+
+export default useRealtimeRetryQueue;

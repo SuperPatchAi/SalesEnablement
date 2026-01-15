@@ -37,6 +37,7 @@ interface SearchResultPractitioner {
 interface ImportRequest {
   practitioners: SearchResultPractitioner[];
   enrichAfterImport?: boolean;
+  skipAutoEnrich?: boolean; // Skip auto-enrichment (caller will handle separately)
 }
 
 interface ImportResponse {
@@ -151,7 +152,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: ImportRequest = await request.json();
-    const { practitioners, enrichAfterImport } = body;
+    const { practitioners, enrichAfterImport, skipAutoEnrich } = body;
 
     if (!practitioners || practitioners.length === 0) {
       return NextResponse.json(
@@ -253,22 +254,27 @@ export async function POST(request: NextRequest) {
     console.log(`[Import API] Complete: ${result.imported} imported, ${result.duplicates} duplicates, ${result.errors.length} errors`);
 
     // Auto-enrich practitioners that have websites but no pre-enriched data
-    const needsEnrichment = practitioners.filter(
-      (p) => p.website && !p.enrichmentData && result.importedIds.includes(p.id)
-    );
+    // Skip if caller explicitly requests to handle enrichment separately
+    if (!skipAutoEnrich) {
+      const needsEnrichment = practitioners.filter(
+        (p) => p.website && !p.enrichmentData && result.importedIds.includes(p.id)
+      );
 
-    if (needsEnrichment.length > 0 && FIRECRAWL_API_KEY) {
-      console.log(`[Import API] Auto-enriching ${needsEnrichment.length} practitioners with websites`);
-      
-      // Fire async enrichment (non-blocking) - don't await
-      enrichPractitionersAsync(needsEnrichment).catch((err) => {
-        console.error("[Import API] Async enrichment error:", err);
-      });
-    }
+      if (needsEnrichment.length > 0 && FIRECRAWL_API_KEY) {
+        console.log(`[Import API] Auto-enriching ${needsEnrichment.length} practitioners with websites`);
+        
+        // Fire async enrichment (non-blocking) - don't await
+        enrichPractitionersAsync(needsEnrichment).catch((err) => {
+          console.error("[Import API] Async enrichment error:", err);
+        });
+      }
 
-    // Legacy support for explicit enrichAfterImport flag
-    if (enrichAfterImport && result.importedIds.length > 0) {
-      console.log(`[Import API] Enrichment flag was set (handled by auto-enrich)`);
+      // Legacy support for explicit enrichAfterImport flag
+      if (enrichAfterImport && result.importedIds.length > 0) {
+        console.log(`[Import API] Enrichment flag was set (handled by auto-enrich)`);
+      }
+    } else {
+      console.log(`[Import API] Skipping auto-enrichment (skipAutoEnrich=true)`);
     }
 
     return NextResponse.json(result);

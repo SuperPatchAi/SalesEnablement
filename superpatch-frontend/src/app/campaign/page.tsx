@@ -28,6 +28,9 @@ import {
 } from "@/lib/campaign-storage";
 import { CallStatus, SampleRequest, SampleStatus } from "@/lib/db/types";
 import { useSupabaseCallRecords } from "@/hooks/useSupabaseCallRecords";
+import { useRealtimeSampleRequests } from "@/hooks/useRealtimeSampleRequests";
+import { useRealtimePractitioners } from "@/hooks/useRealtimePractitioners";
+import { useRealtimeRetryQueue } from "@/hooks/useRealtimeRetryQueue";
 import { KPICards } from "@/components/campaign/kpi-cards";
 import { FilterPanel, FilterState, FilterSheet, FilterSheetTrigger } from "@/components/campaign/filter-panel";
 import { PipelineBoard, FunnelView } from "@/components/campaign/pipeline-board";
@@ -250,12 +253,50 @@ function CampaignPageContent() {
   const [quickCallProvince, setQuickCallProvince] = useState("");
   const [quickCallPostalCode, setQuickCallPostalCode] = useState("");
 
-  // Sample requests state
-  const [sampleRequests, setSampleRequests] = useState<SampleRequest[]>([]);
-  const [samplesLoading, setSamplesLoading] = useState(false);
+  // Sample requests state - using real-time hook
   const [sampleStatusFilter, setSampleStatusFilter] = useState<SampleStatus | "all">("all");
-  const [samplesPagination, setSamplesPagination] = useState({ page: 1, total: 0, totalPages: 1 });
   const [selectedSampleIds, setSelectedSampleIds] = useState<Set<string>>(new Set());
+  
+  // Real-time sample requests hook
+  const {
+    requests: sampleRequests,
+    loading: samplesLoading,
+    isConnected: samplesConnected,
+    refresh: refreshSamples,
+    pagination: { total: samplesTotal },
+  } = useRealtimeSampleRequests({
+    statusFilter: sampleStatusFilter,
+    onNewRequest: (request) => {
+      console.log("🔔 New sample request:", request.requester_name);
+      callNotifications.newSampleRequest(request);
+    },
+  });
+
+  // Real-time practitioners hook for enrichment status
+  const {
+    stats: enrichmentStats,
+    isConnected: practitionersConnected,
+    refresh: refreshEnrichmentStats,
+  } = useRealtimePractitioners({
+    onEnrichmentComplete: (practitioner) => {
+      console.log(`✅ Enrichment complete: ${practitioner.name}`);
+    },
+    onEnrichmentFailed: (practitioner) => {
+      console.log(`❌ Enrichment failed: ${practitioner.name}`);
+    },
+  });
+
+  // Real-time retry queue hook
+  const {
+    queue: retryQueue,
+    loading: retryQueueLoading,
+    stats: retryStats,
+    isConnected: retryQueueConnected,
+    refresh: refreshRetryQueue,
+  } = useRealtimeRetryQueue({
+    hoursAhead: 24,
+    limit: 50,
+  });
 
   // Map state - track if all practitioners are loaded
   const [allPractitionersLoaded, setAllPractitionersLoaded] = useState(false);
@@ -375,35 +416,6 @@ function CampaignPageContent() {
     refreshCallRecords();
   }
 
-  // Load sample requests
-  const loadSampleRequests = useCallback(async (page: number = 1) => {
-    setSamplesLoading(true);
-    try {
-      const params = new URLSearchParams();
-      params.set("page", page.toString());
-      params.set("limit", "50");
-      if (sampleStatusFilter !== "all") {
-        params.set("status", sampleStatusFilter);
-      }
-
-      const response = await fetch(`/api/samples?${params}`);
-      const data = await response.json();
-
-      if (data.samples) {
-        setSampleRequests(data.samples);
-        setSamplesPagination({
-          page: data.pagination.page,
-          total: data.pagination.total,
-          totalPages: data.pagination.totalPages,
-        });
-      }
-    } catch (error) {
-      console.error("Failed to load sample requests:", error);
-    } finally {
-      setSamplesLoading(false);
-    }
-  }, [sampleStatusFilter]);
-
   // Update sample status
   const updateSampleStatus = async (ids: string[], status: SampleStatus, trackingNumber?: string) => {
     try {
@@ -417,7 +429,8 @@ function CampaignPageContent() {
       });
 
       if (response.ok) {
-        loadSampleRequests(samplesPagination.page);
+        // Real-time hook will automatically update, but refresh to be sure
+        await refreshSamples();
         setSelectedSampleIds(new Set());
       }
     } catch (error) {
@@ -445,13 +458,6 @@ function CampaignPageContent() {
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
   };
-
-  // Load sample requests when samples tab is active
-  useEffect(() => {
-    if (activeTab === "samples") {
-      loadSampleRequests(1);
-    }
-  }, [activeTab, sampleStatusFilter, loadSampleRequests]);
 
   function loadMorePractitioners() {
     if (pagination.hasMore && !loadingMore) {
@@ -1657,6 +1663,15 @@ function CampaignPageContent() {
                   </Badge>
                 )}
               </TabsTrigger>
+              <TabsTrigger value="retries" className="gap-2">
+                <RotateCcw className="w-4 h-4" />
+                Retries
+                {retryStats.dueNow > 0 && (
+                  <Badge variant="destructive" className="ml-1 h-5 px-1.5">
+                    {retryStats.dueNow}
+                  </Badge>
+                )}
+              </TabsTrigger>
               <TabsTrigger value="search" className="gap-2">
                 <Globe2 className="w-4 h-4" />
                 Search New
@@ -2729,7 +2744,13 @@ function CampaignPageContent() {
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <h2 className="text-lg font-semibold">Sample Requests</h2>
-                <Badge variant="outline">{samplesPagination.total} total</Badge>
+                <Badge variant="outline">{samplesTotal} total</Badge>
+                {samplesConnected && (
+                  <Badge variant="secondary" className="gap-1">
+                    <Radio className="w-3 h-3 text-green-500" />
+                    Live
+                  </Badge>
+                )}
               </div>
               
               <div className="flex items-center gap-2">
@@ -2775,7 +2796,7 @@ function CampaignPageContent() {
                 </Button>
 
                 {/* Refresh */}
-                <Button size="sm" variant="ghost" onClick={() => loadSampleRequests(samplesPagination.page)}>
+                <Button size="sm" variant="ghost" onClick={() => refreshSamples()}>
                   <RefreshCw className={`w-4 h-4 ${samplesLoading ? 'animate-spin' : ''}`} />
                 </Button>
               </div>
@@ -2925,32 +2946,123 @@ function CampaignPageContent() {
             </div>
           </div>
 
-          {/* Pagination */}
-          {samplesPagination.totalPages > 1 && (
-            <div className="border-t px-6 py-3 flex items-center justify-between">
-              <p className="text-sm text-muted-foreground">
-                Page {samplesPagination.page} of {samplesPagination.totalPages}
-              </p>
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  disabled={samplesPagination.page <= 1}
-                  onClick={() => loadSampleRequests(samplesPagination.page - 1)}
-                >
-                  Previous
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  disabled={samplesPagination.page >= samplesPagination.totalPages}
-                  onClick={() => loadSampleRequests(samplesPagination.page + 1)}
-                >
-                  Next
-                </Button>
+        </TabsContent>
+
+        {/* Retry Queue Tab */}
+        <TabsContent value="retries" className="flex-1 flex flex-col overflow-hidden m-0 p-6">
+          <div className="flex-1 flex flex-col overflow-hidden bg-background rounded-lg border">
+            {/* Header */}
+            <div className="border-b px-6 py-4 shrink-0">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <h2 className="text-lg font-semibold">Retry Queue</h2>
+                  <Badge variant="outline">{retryStats.total} scheduled</Badge>
+                  {retryQueueConnected && (
+                    <Badge variant="secondary" className="gap-1">
+                      <Radio className="w-3 h-3 text-green-500" />
+                      Live
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button size="sm" variant="ghost" onClick={() => refreshRetryQueue()}>
+                    <RefreshCw className={`w-4 h-4 ${retryQueueLoading ? 'animate-spin' : ''}`} />
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Stats cards */}
+              <div className="grid grid-cols-3 gap-4 mt-4">
+                <Card>
+                  <CardContent className="pt-4">
+                    <div className="text-2xl font-bold text-red-600">{retryStats.dueNow}</div>
+                    <div className="text-sm text-muted-foreground">Due Now</div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="pt-4">
+                    <div className="text-2xl font-bold text-yellow-600">{retryStats.nextHour}</div>
+                    <div className="text-sm text-muted-foreground">Next Hour</div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="pt-4">
+                    <div className="text-2xl font-bold">{retryStats.next24Hours}</div>
+                    <div className="text-sm text-muted-foreground">Next 24 Hours</div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
-          )}
+
+            {/* Queue List */}
+            {retryQueueLoading ? (
+              <div className="flex-1 flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+              </div>
+            ) : retryQueue.length === 0 ? (
+              <div className="flex-1 flex items-center justify-center">
+                <div className="text-center py-12">
+                  <RotateCcw className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="font-semibold text-lg mb-1">No Pending Retries</h3>
+                  <p className="text-muted-foreground">All calls are up to date</p>
+                </div>
+              </div>
+            ) : (
+              <ScrollArea className="flex-1">
+                <div className="divide-y">
+                  {retryQueue.map((item) => {
+                    const retryTime = item.next_retry_at ? new Date(item.next_retry_at) : null;
+                    const now = new Date();
+                    const isDue = retryTime && retryTime <= now;
+                    const timeUntil = retryTime ? Math.max(0, retryTime.getTime() - now.getTime()) : 0;
+                    const minutesUntil = Math.floor(timeUntil / 60000);
+                    const hoursUntil = Math.floor(minutesUntil / 60);
+
+                    return (
+                      <div
+                        key={item.id}
+                        className={`px-6 py-4 hover:bg-muted/50 transition-colors ${isDue ? 'bg-red-50 dark:bg-red-900/10' : ''}`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className={`w-2 h-2 rounded-full ${isDue ? 'bg-red-500 animate-pulse' : 'bg-yellow-500'}`} />
+                            <div>
+                              <div className="font-medium">{item.name}</div>
+                              <div className="text-sm text-muted-foreground flex items-center gap-2">
+                                <span>{item.phone}</span>
+                                {item.city && <span className="text-muted-foreground/60">• {item.city}, {item.province}</span>}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-4">
+                            <div className="text-right">
+                              <div className="text-sm font-medium">
+                                {isDue ? (
+                                  <span className="text-red-600">Due Now</span>
+                                ) : hoursUntil > 0 ? (
+                                  <span>In {hoursUntil}h {minutesUntil % 60}m</span>
+                                ) : (
+                                  <span>In {minutesUntil}m</span>
+                                )}
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                Retry #{item.retry_count + 1}
+                              </div>
+                            </div>
+                            {item.retry_reason && (
+                              <Badge variant="outline" className="text-xs">
+                                {item.retry_reason}
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </ScrollArea>
+            )}
+          </div>
         </TabsContent>
 
         {/* Search New Practitioners Tab */}

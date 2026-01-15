@@ -17,6 +17,8 @@ const BATCH_SIZE = 10;
 const KB_ID = "b671527d-0c2d-4a21-9586-033dad3b0255";
 const VOICE_ID = "78c8543e-e5fe-448e-8292-20a7b8c45247";
 const WEBHOOK_URL = Deno.env.get("WEBHOOK_URL") || "https://sales-enablement-six.vercel.app/api/webhooks/bland";
+// Bland Memory Store ID for cross-call context retention
+const MEMORY_ID = Deno.env.get("BLAND_MEMORY_ID") || "";
 
 // Pathway IDs for different practitioner types (same as batch-caller.ts)
 // Each practitioner type has its own conversation pathway
@@ -59,6 +61,10 @@ interface RetryQueueEntry {
   retry_reason: string | null;
   city: string | null;
   province: string | null;
+  address: string | null;
+  rating: number | null;
+  review_count: number | null;
+  website: string | null;
 }
 
 interface CallResult {
@@ -72,7 +78,7 @@ interface CallResult {
 async function getRetryQueue(supabase: ReturnType<typeof createClient>, limit: number = 50): Promise<RetryQueueEntry[]> {
   const { data, error } = await supabase
     .from("practitioners")
-    .select("id, name, phone, practitioner_type, retry_count, next_retry_at, retry_reason, city, province")
+    .select("id, name, phone, practitioner_type, retry_count, next_retry_at, retry_reason, city, province, address, rating, review_count, website")
     .not("next_retry_at", "is", null)
     .lte("next_retry_at", new Date().toISOString())
     .eq("do_not_call", false)
@@ -104,7 +110,7 @@ async function initiateCall(practitioner: RetryQueueEntry): Promise<CallResult> 
   console.log(`[RetryQueue] Using pathway ${pathwayId} for ${practitioner.practitioner_type || 'unknown type'}`);
 
   // Build call payload (same structure as batch-caller.ts)
-  const callPayload = {
+  const callPayload: Record<string, unknown> = {
     phone_number: practitioner.phone,
     pathway_id: pathwayId,
     // Don't specify pathway_version - uses production version by default
@@ -116,14 +122,16 @@ async function initiateCall(practitioner: RetryQueueEntry): Promise<CallResult> 
     webhook: WEBHOOK_URL,
     request_data: {
       practice_name: practitioner.name || "your practice",
-      practice_address: "",  // Not stored in retry queue entry
+      practice_address: practitioner.address || "",
       practice_city: practitioner.city || "",
       practice_province: practitioner.province || "",
-      google_rating: "",
-      review_count: "",
-      website: "",
+      google_rating: practitioner.rating?.toString() || "",
+      review_count: practitioner.review_count?.toString() || "",
+      website: practitioner.website || "",
       practitioner_type: practitioner.practitioner_type || "",
-      has_address: "false",
+      has_address: practitioner.address ? "true" : "false",
+      // For greeting personalization in pathway
+      greeting_name: practitioner.name || "there",
     },
     metadata: {
       campaign: "canadian_practitioners",
@@ -131,12 +139,18 @@ async function initiateCall(practitioner: RetryQueueEntry): Promise<CallResult> 
       practitioner_id: practitioner.id,
       practice_name: practitioner.name,
       practitioner_type: practitioner.practitioner_type,
+      address: practitioner.address,
       city: practitioner.city,
       province: practitioner.province,
       retry_count: practitioner.retry_count,
       retry_reason: practitioner.retry_reason,
     },
   };
+
+  // Add memory_id for cross-call context retention (if configured)
+  if (MEMORY_ID) {
+    callPayload.memory_id = MEMORY_ID.trim();
+  }
 
   try {
     console.log(`[RetryQueue] Initiating call to ${practitioner.name} (${practitioner.phone})`);

@@ -44,6 +44,30 @@ interface PractitionerLookup {
   city?: string | null;
   province?: string | null;
   phone?: string | null;
+  contact_email?: string | null;
+  enrichment?: {
+    success?: boolean;
+    data?: {
+      emails?: string[];
+    };
+  } | null;
+}
+
+// Get best available email from practitioner data with fallback priority
+function getPractitionerEmail(
+  practitioner: PractitionerLookup | null,
+  varsEmail?: string,
+  metaEmail?: string
+): string | undefined {
+  // Priority: call-captured > metadata > stored contact_email > enrichment emails
+  if (varsEmail) return varsEmail;
+  if (metaEmail) return metaEmail;
+  if (practitioner?.contact_email) return practitioner.contact_email;
+  const enrichmentEmails = practitioner?.enrichment?.data?.emails;
+  if (enrichmentEmails && enrichmentEmails.length > 0) {
+    return enrichmentEmails[0];
+  }
+  return undefined;
 }
 
 // Look up practitioner by phone number in Supabase
@@ -58,7 +82,7 @@ async function findPractitionerByPhone(phone: string): Promise<PractitionerLooku
     // Try exact match first
     const { data: exactMatch, error: exactError } = await supabaseAdmin
       .from('practitioners')
-      .select('id, name, practitioner_type, address, city, province, phone')
+      .select('id, name, practitioner_type, address, city, province, phone, contact_email, enrichment')
       .eq('phone', phone)
       .limit(1)
       .single();
@@ -72,7 +96,7 @@ async function findPractitionerByPhone(phone: string): Promise<PractitionerLooku
     // Try partial match (last 10 digits)
     const { data: partialMatches } = await supabaseAdmin
       .from('practitioners')
-      .select('id, name, practitioner_type, address, city, province, phone')
+      .select('id, name, practitioner_type, address, city, province, phone, contact_email, enrichment')
       .not('phone', 'is', null)
       .limit(100);
     
@@ -588,8 +612,8 @@ function extractQualificationData(
   const decisionTimeline = vars.decision_timeline || vars.when_deciding || vars.timeline;
   if (decisionTimeline) qualification.decision_timeline = decisionTimeline;
 
-  // Sample/product interest
-  const productsInterested = vars.products_interested || vars.sample_products;
+  // Sample/product interest (use consistent fallback chain)
+  const productsInterested = vars.products_interested || vars.sample_products || vars.products_requested || vars.products;
   if (productsInterested) {
     qualification.products_interested = productsInterested;
   }
@@ -715,7 +739,7 @@ export async function POST(request: NextRequest) {
     const practiceName = vars.practice_name || meta.practice_name;
     const contactName = meta.contact_name || vars.contact_name;  // Specific contact person
     const practitionerType = vars.practitioner_type || meta.practitioner_type || meta.selected_pathway;
-    const productsInterested = vars.products_interested || vars.products;
+    const productsInterested = vars.products_interested || vars.sample_products || vars.products_requested || vars.products;
     const practitionerId = meta.practitioner_id || vars.practitioner_id;
     
     console.log("📋 Extracted variables:", {
@@ -738,6 +762,7 @@ export async function POST(request: NextRequest) {
     let resolvedAddress = practiceAddress;
     let resolvedCity = meta.city;
     let resolvedProvince = meta.province;
+    let resolvedEmail: string | undefined = undefined;
     
     if (!resolvedPractitionerId) {
       const foundPractitioner = await findPractitionerByPhone(payload.to);
@@ -748,6 +773,12 @@ export async function POST(request: NextRequest) {
         resolvedAddress = resolvedAddress || foundPractitioner.address || undefined;
         resolvedCity = resolvedCity || foundPractitioner.city || undefined;
         resolvedProvince = resolvedProvince || foundPractitioner.province || undefined;
+        // Use stored email with fallback priority: call vars > metadata > stored contact_email > enrichment emails
+        resolvedEmail = getPractitionerEmail(
+          foundPractitioner,
+          vars.email || vars.practitioner_email,
+          meta.clinic_email
+        );
         
         console.log(`✅ Linked call to practitioner: ${foundPractitioner.name} (${foundPractitioner.id})`);
       } else {
@@ -781,15 +812,23 @@ export async function POST(request: NextRequest) {
         
         resolvedCity = resolvedCity || meta.city || undefined;
         resolvedProvince = resolvedProvince || meta.province || undefined;
+        // For unknown callers, use email from call vars or metadata
+        resolvedEmail = vars.email || vars.practitioner_email || meta.clinic_email || undefined;
         
         console.log(`📝 Recording call from unknown number: ${payload.to}`);
         console.log(`   Name: ${resolvedPractitionerName}`);
         console.log(`   Type: ${resolvedPractitionerType}`);
         console.log(`   Address: ${resolvedAddress}`);
         console.log(`   Location: ${resolvedCity}, ${resolvedProvince}`);
-        console.log(`   Email: ${meta.clinic_email}`);
+        console.log(`   Email: ${resolvedEmail || 'none'}`);
         console.log(`   Source: ${meta.source}`);
       }
+    }
+    
+    // If we had a practitioner ID from metadata but didn't go through findPractitionerByPhone,
+    // still try to resolve email from call variables/metadata
+    if (!resolvedEmail) {
+      resolvedEmail = vars.email || vars.practitioner_email || meta.clinic_email || undefined;
     }
     
     // Determine call status
@@ -815,23 +854,23 @@ export async function POST(request: NextRequest) {
     // If they want a demo and we have enough info, book it
     let bookingResult: { id: string; uid: string } | null = null;
     
-    if (wantsDemo && appointmentTime && practitionerName && practitionerEmail && payload.completed) {
+    if (wantsDemo && appointmentTime && resolvedPractitionerName && resolvedEmail && payload.completed) {
       console.log("🗓️ Attempting to book Cal.com appointment...");
-      
+
       try {
         bookingResult = await bookCalComAppointment({
           startTime: appointmentTime,
-          name: practitionerName,
-          email: practitionerEmail,
+          name: resolvedPractitionerName,
+          email: resolvedEmail,
           phone: practitionerPhone,
-          address: practiceAddress,
-          practiceName: practiceName,
-          practitionerType: practitionerType,
+          address: resolvedAddress,
+          practiceName: resolvedPractitionerName,
+          practitionerType: resolvedPractitionerType,
           products: productsInterested,
           callId: payload.call_id,
           summary: payload.analysis?.summary,
         });
-        
+
         console.log("✅ Booking successful:", bookingResult);
         callStatus = "calendar_sent";
       } catch (bookingError) {
@@ -873,7 +912,7 @@ export async function POST(request: NextRequest) {
       appointment_booked: callStatus === "booked" || callStatus === "calendar_sent",
       appointment_time: appointmentTime ? new Date(appointmentTime).toISOString() : null,
       calendar_invite_sent: callStatus === "calendar_sent",
-      practitioner_email: practitionerEmail || meta.clinic_email,
+      practitioner_email: resolvedEmail || null,
       booking_id: bookingResult?.id,
       // New sentiment and scoring fields
       sentiment_label: sentimentLabel,
@@ -919,8 +958,8 @@ export async function POST(request: NextRequest) {
     if (wantsSample && isSupabaseConfigured && supabaseAdmin) {
       console.log("📦 Sample request detected - creating sample request record...");
       
-      // Parse products requested
-      const productsRaw = vars.sample_products || vars.products_requested || "";
+      // Parse products requested (use consistent fallback chain)
+      const productsRaw = vars.products_interested || vars.sample_products || vars.products_requested || vars.products || "";
       let productsRequested: string[] | null = null;
       
       if (productsRaw && productsRaw !== "all" && productsRaw !== "standard_kit") {
@@ -940,7 +979,7 @@ export async function POST(request: NextRequest) {
         practitioner_id: resolvedPractitionerId || null,
         requester_name: contactName || resolvedPractitionerName || "Unknown",
         practice_name: practiceName || resolvedPractitionerName,
-        email: practitionerEmail || meta.clinic_email || null,
+        email: resolvedEmail || null,
         phone: payload.to,
         shipping_address: shippingAddress || null,
         shipping_city: shippingCity || null,
