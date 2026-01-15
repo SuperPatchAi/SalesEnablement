@@ -21,6 +21,7 @@ import {
   PanelLeftClose, PanelLeft, Filter, Kanban, MapPin, History, Package,
   Smile, Meh, Frown, TrendingUp, Globe2, Sparkles, Radio, RotateCcw
 } from "lucide-react";
+import { toast } from "sonner";
 import {
   CampaignCallRecord,
   createCallRecord,
@@ -268,7 +269,8 @@ function CampaignPageContent() {
     statusFilter: sampleStatusFilter,
     onNewRequest: (request) => {
       console.log("🔔 New sample request:", request.requester_name);
-      callNotifications.newSampleRequest(request);
+      // Show a toast notification for new sample requests
+      toast.success(`New sample request from ${request.requester_name || "Unknown"}`);
     },
   });
 
