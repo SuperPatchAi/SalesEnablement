@@ -2,6 +2,22 @@
 
 This document describes the variables to configure in each Bland.ai pathway for comprehensive lead qualification and data capture.
 
+## IMPORTANT: extractVars Format
+
+Bland.ai requires `extractVars` in pathway nodes to use a specific **array-of-arrays** format:
+
+```json
+"extractVars": [
+  ["variable_name", "type", "description"],
+  ["contact_name", "string", "Name of the person we're speaking with"],
+  ["decision_maker", "string", "Whether they make purchasing decisions"]
+]
+```
+
+**DO NOT USE** these incorrect formats (will cause "Error Fetching Version"):
+- Plain strings: `["contact_name", "decision_maker"]`
+- Objects: `[{"name": "contact_name", "description": "..."}]`
+
 ## Input Variables (Request Data)
 
 These variables are sent TO the pathway when initiating a call:

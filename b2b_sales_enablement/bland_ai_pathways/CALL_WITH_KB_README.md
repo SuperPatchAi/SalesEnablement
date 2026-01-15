@@ -16,12 +16,12 @@ This KB contains:
 
 | Practitioner | Pathway ID |
 |-------------|------------|
-| Chiropractors | `cf2233ef-7fb2-49ff-af29-0eee47204e9f` |
-| Massage Therapists | `d202aad7-bcb6-478c-a211-b00877545e05` |
-| Naturopaths | `1d07d635-147e-4f69-a4cd-c124b33b073d` |
-| Integrative Medicine | `1c958dd7-e1ff-4f6d-b9a3-f80a369c26aa` |
-| Functional Medicine | `236dbd85-c74d-4774-a7af-4b5812015c68` |
-| Acupuncturists | `154f93f4-54a5-4900-92e8-0fa217508127` |
+| Chiropractors | `9aa760af-6f9a-430f-8d0c-25bf84afd8fb` |
+| Massage Therapists | `1fee31b1-8179-48c6-b6fa-12fcd434ed2b` |
+| Naturopaths | `db955b59-d278-410e-981e-5728dfa2dafd` |
+| Integrative Medicine | `b6240419-3b24-4415-9541-804994cce425` |
+| Functional Medicine | `70f3a50a-9055-4f41-bc0d-81964dfae19a` |
+| Acupuncturists | `084673ec-84d6-4c3a-bedb-ba9d72bd7e3b` |
 
 ## Making a Call
 
@@ -33,7 +33,7 @@ curl -X POST "https://api.bland.ai/v1/calls" \
   -H "Content-Type: application/json" \
   -d '{
     "phone_number": "+15551234567",
-    "pathway_id": "cf2233ef-7fb2-49ff-af29-0eee47204e9f",
+    "pathway_id": "9aa760af-6f9a-430f-8d0c-25bf84afd8fb",
     "knowledge_base": "b671527d-0c2d-4a21-9586-033dad3b0255",
     "voice": "78c8543e-e5fe-448e-8292-20a7b8c45247",
     "first_sentence": "Hi, this is Jennifer with SuperPatch.",
@@ -149,3 +149,71 @@ python3 publish_pathways_production.py
 ```
 
 to ensure changes are published to production.
+
+---
+
+## Variable Extraction (extractVars)
+
+### Correct Format
+
+Bland.ai requires `extractVars` to be an **array of arrays** with 3 elements each:
+
+```json
+"extractVars": [
+  ["variable_name", "type", "description"],
+  ["contact_name", "string", "Name of the person we're speaking with"],
+  ["decision_maker", "string", "Whether they make purchasing decisions"],
+  ["interest_level", "string", "Level of interest: high, medium, low"]
+]
+```
+
+### WRONG Formats (Will Cause Dashboard Errors)
+
+```json
+// WRONG - plain strings
+"extractVars": ["contact_name", "decision_maker"]
+
+// WRONG - object format  
+"extractVars": [
+  {"name": "contact_name", "description": "Name of contact"}
+]
+```
+
+### Available Types
+
+- `string` - Text values (most common)
+- `integer` - Whole numbers
+- `boolean` - True/false values
+
+### Variables Captured in All Pathways
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `contact_name` | string | Name of the person we're speaking with |
+| `contact_role` | string | Role: owner, office_manager, receptionist, practitioner |
+| `decision_maker` | string | Whether they make purchasing decisions |
+| `interest_level` | string | Interest level: high, medium, low, not_interested |
+| `pain_points` | string | Main challenges or pain points mentioned |
+| `objections` | string | Main objections or concerns raised |
+| `patient_volume` | string | Approximate patient volume |
+| `practice_name` | string | Name of the practice |
+| `practitioner_name` | string | Name of the practitioner |
+| `practitioner_email` | string | Email address |
+| `best_callback_time` | string | Best time to call back |
+| `follow_up_action` | string | Next action: send_info, callback, sample, demo, none |
+| `team_size` | string | Number of practitioners at the practice |
+| `products_interested` | string | Which SuperPatch products they showed interest in |
+| `wants_demo` | string | Whether they want a demo |
+
+### Adding/Modifying extractVars
+
+1. Edit the appropriate `*_contextual.json` file
+2. Use the correct array-of-arrays format
+3. Run `python3 publish_pathways_production.py` to publish changes
+
+### Troubleshooting
+
+If you see **"Error Fetching Version"** in the Bland.ai dashboard:
+1. Check that all `extractVars` use the correct format
+2. Run `fix_extractvars.py` to auto-convert to correct format
+3. Redeploy using `publish_pathways_production.py`
