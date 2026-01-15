@@ -107,7 +107,7 @@ async function initiateCall(practitioner: RetryQueueEntry): Promise<CallResult> 
   const callPayload = {
     phone_number: practitioner.phone,
     pathway_id: pathwayId,
-    pathway_version: 1,
+    // Don't specify pathway_version - uses production version by default
     knowledge_base: KB_ID,
     voice: VOICE_ID,
     wait_for_greeting: true,

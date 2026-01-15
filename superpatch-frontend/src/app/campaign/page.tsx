@@ -1020,7 +1020,7 @@ function CampaignPageContent() {
       const callPayload: Record<string, unknown> = {
         phone_number: formattedPhone,
         pathway_id: pathways[quickCallType] || pathways.chiropractor,
-        pathway_version: 1,
+        // Don't specify pathway_version - uses production version by default
         knowledge_base: "b671527d-0c2d-4a21-9586-033dad3b0255",
         voice: "78c8543e-e5fe-448e-8292-20a7b8c45247",
         wait_for_greeting: true,
@@ -1152,7 +1152,7 @@ function CampaignPageContent() {
       const callPayload: Record<string, unknown> = {
         phone_number: formattedPhone,
         pathway_id: pathways[quickCallType] || pathways.chiropractor,
-        pathway_version: 1,
+        // Don't specify pathway_version - uses production version by default
         knowledge_base: "b671527d-0c2d-4a21-9586-033dad3b0255",
         voice: "78c8543e-e5fe-448e-8292-20a7b8c45247",
         wait_for_greeting: true,

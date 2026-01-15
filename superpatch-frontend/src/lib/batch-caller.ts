@@ -201,7 +201,7 @@ export class BatchCaller {
     const callPayload: Record<string, unknown> = {
       phone_number: phone,
       pathway_id: pathwayId,
-      pathway_version: 1,
+      // Don't specify pathway_version - uses production version by default
       knowledge_base: KB_ID,
       voice: VOICE_ID,
       // Don't use first_sentence with pathways - let the pathway handle the intro
