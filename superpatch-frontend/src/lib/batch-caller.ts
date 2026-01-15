@@ -227,7 +227,7 @@ export class BatchCaller {
 
     // Add memory_id for cross-call context retention (if configured)
     if (MEMORY_ID) {
-      callPayload.memory_id = MEMORY_ID;
+      callPayload.memory_id = MEMORY_ID.trim();
     }
 
     try {

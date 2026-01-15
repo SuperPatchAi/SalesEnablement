@@ -1043,7 +1043,7 @@ function CampaignPageContent() {
 
       // Add memory_id for cross-call context (if configured)
       if (memoryId) {
-        callPayload.memory_id = memoryId;
+        callPayload.memory_id = memoryId.trim();
       }
       
       const response = await fetch('/api/bland/calls', {
@@ -1178,7 +1178,7 @@ function CampaignPageContent() {
 
       // Add memory_id for cross-call context (if configured)
       if (memoryId) {
-        callPayload.memory_id = memoryId;
+        callPayload.memory_id = memoryId.trim();
       }
       
       const response = await fetch('/api/bland/calls', {
