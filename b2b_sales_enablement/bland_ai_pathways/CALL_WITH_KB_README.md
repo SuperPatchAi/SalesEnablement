@@ -105,3 +105,47 @@ This ensures the agent retrieves correct:
 curl -X GET "https://api.bland.ai/v1/calls/CALL_ID" \
   -H "authorization: YOUR_API_KEY"
 ```
+
+---
+
+## Publishing Pathways to Production
+
+### "Error Fetching Version" Fix
+
+If you see "Error Fetching Version" in the Bland.ai dashboard, you need to **create and publish a version to production**.
+
+### The Correct Bland.ai API Workflow
+
+Per [docs.bland.ai](https://docs.bland.ai), the workflow is:
+
+1. **Create a new version**: `POST /v1/pathway/{pathway_id}/version`
+   - Body: `{ "name": "...", "nodes": [...], "edges": [...] }`
+   - Response: `{ "data": { "version_number": N } }`
+
+2. **Promote that version**: `POST /v1/pathway/{pathway_id}/publish`
+   - Body: `{ "version_id": N, "environment": "production" }`
+   - Response: `{ "message": "Pathway published successfully" }`
+
+**Important**: Use the actual `version_number` returned from step 1, not a hardcoded value!
+
+### Using the Publish Script
+
+```bash
+cd b2b_sales_enablement/bland_ai_pathways
+python3 publish_pathways_production.py
+```
+
+This script will:
+1. Load pathway data from local `*_contextual.json` files
+2. Create a new version for each pathway
+3. Promote each version to production
+
+### After Making Pathway Changes
+
+If you modify a pathway (e.g., add extractVars with `add_qualification_vars.py`), always run:
+
+```bash
+python3 publish_pathways_production.py
+```
+
+to ensure changes are published to production.

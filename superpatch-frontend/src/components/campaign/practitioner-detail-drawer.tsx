@@ -98,8 +98,41 @@ interface EnrichmentData {
   };
 }
 
+// Qualification data from call conversations
+interface QualificationData {
+  contact_name?: string | null;
+  contact_role?: string | null;
+  contact_email?: string | null;
+  decision_maker?: boolean | null;
+  best_callback_time?: string | null;
+  interest_level?: string | null;
+  pain_points?: string | null;
+  current_solutions?: string | null;
+  objections?: string | null;
+  practice_size?: number | null;
+  patient_volume?: string | null;
+  follow_up_action?: string | null;
+  follow_up_date?: string | null;
+  decision_timeline?: string | null;
+}
+
 interface PractitionerWithEnrichment extends Practitioner {
   enrichment?: EnrichmentData;
+  // Qualification fields from calls
+  contact_name?: string | null;
+  contact_role?: string | null;
+  contact_email?: string | null;
+  decision_maker?: boolean | null;
+  best_callback_time?: string | null;
+  interest_level?: string | null;
+  pain_points?: string | null;
+  current_solutions?: string | null;
+  objections?: string | null;
+  practice_size?: number | null;
+  patient_volume?: string | null;
+  follow_up_action?: string | null;
+  follow_up_date?: string | null;
+  decision_timeline?: string | null;
 }
 
 interface PractitionerDetailDrawerProps {
@@ -548,12 +581,24 @@ export function PractitionerDetailDrawer({
                 </Badge>
               )}
             </TabsTrigger>
-            <TabsTrigger 
-              value="notes" 
+<TabsTrigger
+              value="notes"
               className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-3"
             >
               <FileText className="w-4 h-4 mr-2" />
               Notes
+            </TabsTrigger>
+            <TabsTrigger
+              value="qualification"
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-3"
+            >
+              <UserPlus className="w-4 h-4 mr-2" />
+              Qualification
+              {(practitioner?.contact_name || practitioner?.interest_level || practitioner?.decision_maker) && (
+                <Badge variant="secondary" className="ml-1.5 text-[10px] px-1.5 py-0">
+                  <Sparkles className="w-2.5 h-2.5" />
+                </Badge>
+              )}
             </TabsTrigger>
           </TabsList>
 
@@ -765,6 +810,179 @@ export function PractitionerDetailDrawer({
                   Notes are saved automatically
                 </p>
               </div>
+            </TabsContent>
+
+            {/* Qualification Tab - Data from AI Calls */}
+            <TabsContent value="qualification" className="m-0 p-6 space-y-4">
+              {/* Check if we have any qualification data */}
+              {!practitioner?.contact_name && !practitioner?.interest_level && !practitioner?.decision_maker && !practitioner?.pain_points && !practitioner?.practice_size ? (
+                <Card className="border-dashed">
+                  <CardContent className="flex flex-col items-center justify-center py-8 text-center">
+                    <UserPlus className="w-10 h-10 text-muted-foreground/50 mb-3" />
+                    <p className="text-sm font-medium">No qualification data yet</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Qualification data is captured during AI phone calls
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <>
+                  {/* Contact Information */}
+                  {(practitioner?.contact_name || practitioner?.contact_role || practitioner?.contact_email) && (
+                    <Card className="border-green-200 bg-green-50/50 dark:bg-green-950/20 dark:border-green-800">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium flex items-center gap-2 text-green-700 dark:text-green-300">
+                          <Users className="w-4 h-4" />
+                          Contact Captured
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-2">
+                        {practitioner?.contact_name && (
+                          <div className="flex items-center justify-between py-1.5 px-2 bg-white/60 dark:bg-white/10 rounded-md">
+                            <span className="text-xs text-muted-foreground">Name</span>
+                            <span className="text-sm font-medium">{practitioner.contact_name}</span>
+                          </div>
+                        )}
+                        {practitioner?.contact_role && (
+                          <div className="flex items-center justify-between py-1.5 px-2 bg-white/60 dark:bg-white/10 rounded-md">
+                            <span className="text-xs text-muted-foreground">Role</span>
+                            <Badge variant="outline" className="capitalize">{practitioner.contact_role.replace(/_/g, ' ')}</Badge>
+                          </div>
+                        )}
+                        {practitioner?.contact_email && (
+                          <div className="flex items-center justify-between py-1.5 px-2 bg-white/60 dark:bg-white/10 rounded-md">
+                            <span className="text-xs text-muted-foreground">Email</span>
+                            <a href={`mailto:${practitioner.contact_email}`} className="text-sm text-blue-600 hover:underline">
+                              {practitioner.contact_email}
+                            </a>
+                          </div>
+                        )}
+                        {practitioner?.decision_maker !== null && practitioner?.decision_maker !== undefined && (
+                          <div className="flex items-center justify-between py-1.5 px-2 bg-white/60 dark:bg-white/10 rounded-md">
+                            <span className="text-xs text-muted-foreground">Decision Maker</span>
+                            <Badge variant={practitioner.decision_maker ? "default" : "secondary"}>
+                              {practitioner.decision_maker ? "Yes" : "No"}
+                            </Badge>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* Interest & Qualification */}
+                  {(practitioner?.interest_level || practitioner?.pain_points || practitioner?.objections) && (
+                    <Card className="border-blue-200 bg-blue-50/50 dark:bg-blue-950/20 dark:border-blue-800">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium flex items-center gap-2 text-blue-700 dark:text-blue-300">
+                          <Sparkles className="w-4 h-4" />
+                          Interest & Qualification
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-2">
+                        {practitioner?.interest_level && (
+                          <div className="flex items-center justify-between py-1.5 px-2 bg-white/60 dark:bg-white/10 rounded-md">
+                            <span className="text-xs text-muted-foreground">Interest Level</span>
+                            <Badge 
+                              variant={practitioner.interest_level === 'high' ? 'default' : practitioner.interest_level === 'medium' ? 'secondary' : 'outline'}
+                              className={
+                                practitioner.interest_level === 'high' ? 'bg-green-500' :
+                                practitioner.interest_level === 'medium' ? 'bg-yellow-500' :
+                                practitioner.interest_level === 'low' ? 'bg-orange-500' : 'bg-red-500'
+                              }
+                            >
+                              {practitioner.interest_level.charAt(0).toUpperCase() + practitioner.interest_level.slice(1)}
+                            </Badge>
+                          </div>
+                        )}
+                        {practitioner?.pain_points && (
+                          <div className="py-1.5 px-2 bg-white/60 dark:bg-white/10 rounded-md">
+                            <span className="text-xs text-muted-foreground block mb-1">Pain Points</span>
+                            <p className="text-sm">{practitioner.pain_points}</p>
+                          </div>
+                        )}
+                        {practitioner?.current_solutions && (
+                          <div className="py-1.5 px-2 bg-white/60 dark:bg-white/10 rounded-md">
+                            <span className="text-xs text-muted-foreground block mb-1">Current Solutions</span>
+                            <p className="text-sm">{practitioner.current_solutions}</p>
+                          </div>
+                        )}
+                        {practitioner?.objections && (
+                          <div className="py-1.5 px-2 bg-white/60 dark:bg-white/10 rounded-md">
+                            <span className="text-xs text-muted-foreground block mb-1">Objections Raised</span>
+                            <p className="text-sm">{practitioner.objections}</p>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* Practice Details */}
+                  {(practitioner?.practice_size || practitioner?.patient_volume) && (
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium flex items-center gap-2">
+                          <Building2 className="w-4 h-4" />
+                          Practice Details
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-2">
+                        {practitioner?.practice_size && (
+                          <div className="flex items-center justify-between py-1.5 px-2 bg-muted/50 rounded-md">
+                            <span className="text-xs text-muted-foreground">Practice Size</span>
+                            <span className="text-sm font-medium">{practitioner.practice_size} practitioners</span>
+                          </div>
+                        )}
+                        {practitioner?.patient_volume && (
+                          <div className="flex items-center justify-between py-1.5 px-2 bg-muted/50 rounded-md">
+                            <span className="text-xs text-muted-foreground">Patient Volume</span>
+                            <span className="text-sm font-medium capitalize">{practitioner.patient_volume}</span>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* Follow-up Actions */}
+                  {(practitioner?.follow_up_action || practitioner?.follow_up_date || practitioner?.best_callback_time || practitioner?.decision_timeline) && (
+                    <Card className="border-purple-200 bg-purple-50/50 dark:bg-purple-950/20 dark:border-purple-800">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium flex items-center gap-2 text-purple-700 dark:text-purple-300">
+                          <Calendar className="w-4 h-4" />
+                          Next Steps
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-2">
+                        {practitioner?.follow_up_action && (
+                          <div className="flex items-center justify-between py-1.5 px-2 bg-white/60 dark:bg-white/10 rounded-md">
+                            <span className="text-xs text-muted-foreground">Action</span>
+                            <Badge variant="outline" className="capitalize">{practitioner.follow_up_action.replace(/_/g, ' ')}</Badge>
+                          </div>
+                        )}
+                        {practitioner?.follow_up_date && (
+                          <div className="flex items-center justify-between py-1.5 px-2 bg-white/60 dark:bg-white/10 rounded-md">
+                            <span className="text-xs text-muted-foreground">Follow-up Date</span>
+                            <span className="text-sm font-medium">
+                              {new Date(practitioner.follow_up_date).toLocaleDateString()}
+                            </span>
+                          </div>
+                        )}
+                        {practitioner?.best_callback_time && (
+                          <div className="flex items-center justify-between py-1.5 px-2 bg-white/60 dark:bg-white/10 rounded-md">
+                            <span className="text-xs text-muted-foreground">Best Time to Call</span>
+                            <span className="text-sm font-medium">{practitioner.best_callback_time}</span>
+                          </div>
+                        )}
+                        {practitioner?.decision_timeline && (
+                          <div className="flex items-center justify-between py-1.5 px-2 bg-white/60 dark:bg-white/10 rounded-md">
+                            <span className="text-xs text-muted-foreground">Decision Timeline</span>
+                            <span className="text-sm font-medium">{practitioner.decision_timeline}</span>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )}
+                </>
+              )}
             </TabsContent>
           </ScrollArea>
         </Tabs>
