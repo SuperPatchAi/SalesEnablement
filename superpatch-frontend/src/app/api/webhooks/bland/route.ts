@@ -572,7 +572,7 @@ function extractQualificationData(
       (validActions.includes(followUpAction as FollowUpAction) ? (followUpAction as FollowUpAction) : undefined);
   }
 
-  const followUpDate = vars.follow_up_date || vars.callback_date || vars.next_call_date;
+  const followUpDate = vars.follow_up_date || vars.callback_date || vars.next_call_date || vars.appointment_time;
   if (followUpDate) {
     try {
       const date = new Date(followUpDate);
@@ -587,6 +587,22 @@ function extractQualificationData(
 
   const decisionTimeline = vars.decision_timeline || vars.when_deciding || vars.timeline;
   if (decisionTimeline) qualification.decision_timeline = decisionTimeline;
+
+  // Sample/product interest
+  const productsInterested = vars.products_interested || vars.sample_products;
+  if (productsInterested) {
+    qualification.products_interested = productsInterested;
+  }
+
+  const wantsSample = vars.wants_sample || (productsInterested ? 'true' : undefined);
+  if (wantsSample) {
+    qualification.wants_sample = wantsSample.toLowerCase() === 'true' || wantsSample.toLowerCase() === 'yes';
+  }
+
+  const wantsDemo = vars.wants_demo;
+  if (wantsDemo) {
+    qualification.wants_demo = wantsDemo.toLowerCase() === 'true' || wantsDemo.toLowerCase() === 'yes';
+  }
 
   return qualification;
 }

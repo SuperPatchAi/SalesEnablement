@@ -265,7 +265,10 @@ Cross-call context retention using Bland.ai Memory:
 BLAND_API_KEY=sk_...
 NEXT_PUBLIC_BLAND_MEMORY_ID=mem_...
 BLAND_MEMORY_ID=mem_...
+NEXT_PUBLIC_BLAND_WEBHOOK_URL=https://your-domain.vercel.app/api/webhooks/bland
 ```
+
+Note: `NEXT_PUBLIC_BLAND_WEBHOOK_URL` defaults to the production URL if not set. Set this when testing on a different deployment.
 
 ---
 

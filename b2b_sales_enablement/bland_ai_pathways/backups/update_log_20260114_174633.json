@@ -1,0 +1,177 @@
+[
+  {
+    "status": "success",
+    "pathway": "Acupuncturists",
+    "changes": [
+      {
+        "node_id": "1",
+        "node_name": "Introduction",
+        "vars_added": [
+          "contact_name",
+          "contact_role"
+        ]
+      },
+      {
+        "node_id": "2",
+        "node_name": "Company Introduction",
+        "vars_added": [
+          "contact_name",
+          "contact_role"
+        ]
+      },
+      {
+        "node_id": "3",
+        "node_name": "Discovery: Practice Overview",
+        "vars_added": [
+          "decision_maker",
+          "practice_size",
+          "patient_volume",
+          "pain_points",
+          "current_solutions"
+        ]
+      },
+      {
+        "node_id": "4",
+        "node_name": "Discovery: Patient Types",
+        "vars_added": [
+          "decision_maker",
+          "practice_size",
+          "patient_volume",
+          "pain_points",
+          "current_solutions"
+        ]
+      },
+      {
+        "node_id": "5",
+        "node_name": "Discovery: Patient Challenges",
+        "vars_added": [
+          "decision_maker",
+          "practice_size",
+          "patient_volume",
+          "pain_points",
+          "current_solutions"
+        ]
+      },
+      {
+        "node_id": "6",
+        "node_name": "Discovery: Current Products",
+        "vars_added": [
+          "decision_maker",
+          "practice_size",
+          "patient_volume",
+          "pain_points",
+          "current_solutions"
+        ]
+      },
+      {
+        "node_id": "7",
+        "node_name": "Discovery: Ideal Solution",
+        "vars_added": [
+          "decision_maker",
+          "practice_size",
+          "patient_volume",
+          "pain_points",
+          "current_solutions"
+        ]
+      },
+      {
+        "node_id": "38",
+        "node_name": "Multi-Practitioner Discovery",
+        "vars_added": [
+          "decision_maker",
+          "practice_size",
+          "patient_volume",
+          "pain_points",
+          "current_solutions"
+        ]
+      },
+      {
+        "node_id": "13",
+        "node_name": "Objection: Need Research",
+        "vars_added": [
+          "objections"
+        ]
+      },
+      {
+        "node_id": "14",
+        "node_name": "Objection: Price Concern",
+        "vars_added": [
+          "objections"
+        ]
+      },
+      {
+        "node_id": "15",
+        "node_name": "Objection: Already Have Products",
+        "vars_added": [
+          "objections"
+        ]
+      },
+      {
+        "node_id": "16",
+        "node_name": "Objection: Need to Think",
+        "vars_added": [
+          "objections"
+        ]
+      },
+      {
+        "node_id": "17",
+        "node_name": "Objection: Don't Want to Retail",
+        "vars_added": [
+          "objections"
+        ]
+      },
+      {
+        "node_id": "18",
+        "node_name": "Objection: Patients Won't Believe",
+        "vars_added": [
+          "objections"
+        ]
+      },
+      {
+        "node_id": "19",
+        "node_name": "Objection: Not Interested",
+        "vars_added": [
+          "objections"
+        ]
+      },
+      {
+        "node_id": "35",
+        "node_name": "Objection: TCM Terms",
+        "vars_added": [
+          "objections"
+        ]
+      },
+      {
+        "node_id": "36",
+        "node_name": "Objection: Not Real Acupuncture",
+        "vars_added": [
+          "objections"
+        ]
+      },
+      {
+        "node_id": "24",
+        "node_name": "Close: Place Order",
+        "vars_added": [
+          "follow_up_action",
+          "decision_timeline"
+        ]
+      },
+      {
+        "node_id": "25",
+        "node_name": "Close: Set Up Affiliate",
+        "vars_added": [
+          "follow_up_action",
+          "decision_timeline"
+        ]
+      },
+      {
+        "node_id": "29",
+        "node_name": "Schedule Callback",
+        "vars_added": [
+          "best_callback_time"
+        ]
+      }
+    ],
+    "nodes_modified": 20
+  }
+]

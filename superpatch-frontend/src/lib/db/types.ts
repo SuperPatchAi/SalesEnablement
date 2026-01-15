@@ -77,6 +77,11 @@ export interface PractitionerQualification {
   follow_up_action: FollowUpAction | null;
   follow_up_date: string | null;
   decision_timeline: string | null;
+  
+  // Product interest
+  products_interested: string | null;
+  wants_sample: boolean | null;
+  wants_demo: boolean | null;
 }
 
 export interface Database {

@@ -328,11 +328,6 @@
             "objections",
             "string",
             "Main objections or concerns they raised"
-          ],
-          [
-            "interest_level",
-            "string",
-            "Interest level: high, medium, low, or not_interested"
           ]
         ]
       },
@@ -348,11 +343,6 @@
             "objections",
             "string",
             "Main objections or concerns they raised"
-          ],
-          [
-            "interest_level",
-            "string",
-            "Interest level: high, medium, low, or not_interested"
           ]
         ]
       },
@@ -368,11 +358,6 @@
             "objections",
             "string",
             "Main objections or concerns they raised"
-          ],
-          [
-            "interest_level",
-            "string",
-            "Interest level: high, medium, low, or not_interested"
           ]
         ]
       },
@@ -388,11 +373,6 @@
             "objections",
             "string",
             "Main objections or concerns they raised"
-          ],
-          [
-            "interest_level",
-            "string",
-            "Interest level: high, medium, low, or not_interested"
           ]
         ]
       },
@@ -408,11 +388,6 @@
             "objections",
             "string",
             "Main objections or concerns they raised"
-          ],
-          [
-            "interest_level",
-            "string",
-            "Interest level: high, medium, low, or not_interested"
           ]
         ]
       },
@@ -428,11 +403,6 @@
             "objections",
             "string",
             "Main objections or concerns they raised"
-          ],
-          [
-            "interest_level",
-            "string",
-            "Interest level: high, medium, low, or not_interested"
           ]
         ]
       },
@@ -448,11 +418,6 @@
             "objections",
             "string",
             "Main objections or concerns they raised"
-          ],
-          [
-            "interest_level",
-            "string",
-            "Interest level: high, medium, low, or not_interested"
           ]
         ]
       },
@@ -505,16 +470,6 @@
             "decision_timeline",
             "string",
             "When they plan to make a decision"
-          ],
-          [
-            "interest_level",
-            "string",
-            "Interest level: high, medium, low, or not_interested"
-          ],
-          [
-            "wants_sample",
-            "string",
-            "Whether they want product samples - true or false"
           ]
         ]
       },
@@ -535,16 +490,6 @@
             "decision_timeline",
             "string",
             "When they plan to make a decision"
-          ],
-          [
-            "interest_level",
-            "string",
-            "Interest level: high, medium, low, or not_interested"
-          ],
-          [
-            "wants_sample",
-            "string",
-            "Whether they want product samples - true or false"
           ]
         ]
       },
@@ -589,11 +534,6 @@
             "products_interested",
             "string",
             "Products they showed interest in"
-          ],
-          [
-            "wants_sample",
-            "string",
-            "Whether they want product samples - true or false"
           ]
         ]
       },
@@ -639,11 +579,6 @@
             "wants_demo",
             "string",
             "Whether they want a demo"
-          ],
-          [
-            "wants_sample",
-            "string",
-            "Whether they want product samples - true or false"
           ]
         ]
       },
@@ -734,11 +669,6 @@
             "products_interested",
             "string",
             "Products they showed interest in"
-          ],
-          [
-            "wants_sample",
-            "string",
-            "Whether they want product samples - true or false"
           ]
         ]
       },
@@ -787,11 +717,6 @@
             "objections",
             "string",
             "Main objections or concerns they raised"
-          ],
-          [
-            "interest_level",
-            "string",
-            "Interest level: high, medium, low, or not_interested"
           ]
         ]
       },
@@ -807,11 +732,6 @@
             "objections",
             "string",
             "Main objections or concerns they raised"
-          ],
-          [
-            "interest_level",
-            "string",
-            "Interest level: high, medium, low, or not_interested"
           ]
         ]
       },
@@ -1432,2825 +1352,2119 @@
     },
     {
       "id": "e58",
-      "data": {
-        "label": "no time to learn"
-      },
+      "data": {},
       "source": "2",
       "target": "35"
     },
     {
       "id": "e59",
-      "data": {
-        "label": "too busy"
-      },
+      "data": {},
       "source": "8",
       "target": "35"
     },
     {
       "id": "e60",
-      "data": {
-        "label": "reassured"
-      },
+      "data": {},
       "source": "35",
       "target": "20"
     },
     {
       "id": "e61",
-      "data": {
-        "label": "wants to try first"
-      },
+      "data": {},
       "source": "35",
       "target": "26"
     },
     {
       "id": "e62",
-      "data": {
-        "label": "asks about other patches"
-      },
+      "data": {},
       "source": "2",
       "target": "36"
     },
     {
       "id": "e63",
-      "data": {
-        "label": "Salonpas question"
-      },
+      "data": {},
       "source": "8",
       "target": "36"
     },
     {
       "id": "e64",
-      "data": {
-        "label": "understands difference"
-      },
+      "data": {},
       "source": "36",
       "target": "3"
     },
     {
       "id": "e65",
-      "data": {
-        "label": "still skeptical"
-      },
+      "data": {},
       "source": "36",
       "target": "26"
     },
     {
       "id": "e66",
-      "data": {
-        "label": "wants research"
-      },
+      "data": {},
       "source": "1",
       "target": "13"
     },
     {
       "id": "e67",
-      "data": {
-        "label": "price objection"
-      },
+      "data": {},
       "source": "1",
       "target": "14"
     },
     {
       "id": "e68",
-      "data": {
-        "label": "has products"
-      },
+      "data": {},
       "source": "1",
       "target": "15"
     },
     {
       "id": "e69",
-      "data": {
-        "label": "needs to think"
-      },
+      "data": {},
       "source": "1",
       "target": "16"
     },
     {
       "id": "e70",
-      "data": {
-        "label": "no retail"
-      },
+      "data": {},
       "source": "1",
       "target": "17"
     },
     {
       "id": "e71",
-      "data": {
-        "label": "skeptical patients"
-      },
+      "data": {},
       "source": "1",
       "target": "18"
     },
     {
       "id": "e72",
-      "data": {
-        "label": "no time"
-      },
+      "data": {},
       "source": "1",
       "target": "35"
     },
     {
       "id": "e73",
-      "data": {
-        "label": "patch comparison"
-      },
+      "data": {},
       "source": "1",
       "target": "36"
     },
     {
       "id": "e74",
-      "data": {
-        "label": "price objection"
-      },
+      "data": {},
       "source": "2",
       "target": "14"
     },
     {
       "id": "e75",
-      "data": {
-        "label": "has products"
-      },
+      "data": {},
       "source": "2",
       "target": "15"
     },
     {
       "id": "e76",
-      "data": {
-        "label": "needs to think"
-      },
+      "data": {},
       "source": "2",
       "target": "16"
     },
     {
       "id": "e77",
-      "data": {
-        "label": "no retail"
-      },
+      "data": {},
       "source": "2",
       "target": "17"
     },
     {
       "id": "e78",
-      "data": {
-        "label": "skeptical patients"
-      },
+      "data": {},
       "source": "2",
       "target": "18"
     },
     {
       "id": "e79",
-      "data": {
-        "label": "wants research"
-      },
+      "data": {},
       "source": "3",
       "target": "13"
     },
     {
       "id": "e80",
-      "data": {
-        "label": "price objection"
-      },
+      "data": {},
       "source": "3",
       "target": "14"
     },
     {
       "id": "e81",
-      "data": {
-        "label": "has products"
-      },
+      "data": {},
       "source": "3",
       "target": "15"
     },
     {
       "id": "e82",
-      "data": {
-        "label": "needs to think"
-      },
+      "data": {},
       "source": "3",
       "target": "16"
     },
     {
       "id": "e83",
-      "data": {
-        "label": "no retail"
-      },
+      "data": {},
       "source": "3",
       "target": "17"
     },
     {
       "id": "e84",
-      "data": {
-        "label": "skeptical patients"
-      },
+      "data": {},
       "source": "3",
       "target": "18"
     },
     {
       "id": "e85",
-      "data": {
-        "label": "not interested"
-      },
+      "data": {},
       "source": "3",
       "target": "19"
     },
     {
       "id": "e86",
-      "data": {
-        "label": "no time"
-      },
+      "data": {},
       "source": "3",
       "target": "35"
     },
     {
       "id": "e87",
-      "data": {
-        "label": "patch comparison"
-      },
+      "data": {},
       "source": "3",
       "target": "36"
     },
     {
       "id": "e88",
-      "data": {
-        "label": "wants research"
-      },
+      "data": {},
       "source": "4",
       "target": "13"
     },
     {
       "id": "e89",
-      "data": {
-        "label": "price objection"
-      },
+      "data": {},
       "source": "4",
       "target": "14"
     },
     {
       "id": "e90",
-      "data": {
-        "label": "has products"
-      },
+      "data": {},
       "source": "4",
       "target": "15"
     },
     {
       "id": "e91",
-      "data": {
-        "label": "needs to think"
-      },
+      "data": {},
       "source": "4",
       "target": "16"
     },
     {
       "id": "e92",
-      "data": {
-        "label": "no retail"
-      },
+      "data": {},
       "source": "4",
       "target": "17"
     },
     {
       "id": "e93",
-      "data": {
-        "label": "skeptical patients"
-      },
+      "data": {},
       "source": "4",
       "target": "18"
     },
     {
       "id": "e94",
-      "data": {
-        "label": "not interested"
-      },
+      "data": {},
       "source": "4",
       "target": "19"
     },
     {
       "id": "e95",
-      "data": {
-        "label": "no time"
-      },
+      "data": {},
       "source": "4",
       "target": "35"
     },
     {
       "id": "e96",
-      "data": {
-        "label": "patch comparison"
-      },
+      "data": {},
       "source": "4",
       "target": "36"
     },
     {
       "id": "e97",
-      "data": {
-        "label": "wants research"
-      },
+      "data": {},
       "source": "5",
       "target": "13"
     },
     {
       "id": "e98",
-      "data": {
-        "label": "price objection"
-      },
+      "data": {},
       "source": "5",
       "target": "14"
     },
     {
       "id": "e99",
-      "data": {
-        "label": "has products"
-      },
+      "data": {},
       "source": "5",
       "target": "15"
     },
     {
       "id": "e100",
-      "data": {
-        "label": "needs to think"
-      },
+      "data": {},
       "source": "5",
       "target": "16"
     },
     {
       "id": "e101",
-      "data": {
-        "label": "no retail"
-      },
+      "data": {},
       "source": "5",
       "target": "17"
     },
     {
       "id": "e102",
-      "data": {
-        "label": "skeptical patients"
-      },
+      "data": {},
       "source": "5",
       "target": "18"
     },
     {
       "id": "e103",
-      "data": {
-        "label": "not interested"
-      },
+      "data": {},
       "source": "5",
       "target": "19"
     },
     {
       "id": "e104",
-      "data": {
-        "label": "no time"
-      },
+      "data": {},
       "source": "5",
       "target": "35"
     },
     {
       "id": "e105",
-      "data": {
-        "label": "patch comparison"
-      },
+      "data": {},
       "source": "5",
       "target": "36"
     },
     {
       "id": "e106",
-      "data": {
-        "label": "wants research"
-      },
+      "data": {},
       "source": "6",
       "target": "13"
     },
     {
       "id": "e107",
-      "data": {
-        "label": "price objection"
-      },
+      "data": {},
       "source": "6",
       "target": "14"
     },
     {
       "id": "e108",
-      "data": {
-        "label": "has products"
-      },
+      "data": {},
       "source": "6",
       "target": "15"
     },
     {
       "id": "e109",
-      "data": {
-        "label": "needs to think"
-      },
+      "data": {},
       "source": "6",
       "target": "16"
     },
     {
       "id": "e110",
-      "data": {
-        "label": "no retail"
-      },
+      "data": {},
       "source": "6",
       "target": "17"
     },
     {
       "id": "e111",
-      "data": {
-        "label": "skeptical patients"
-      },
+      "data": {},
       "source": "6",
       "target": "18"
     },
     {
       "id": "e112",
-      "data": {
-        "label": "not interested"
-      },
+      "data": {},
       "source": "6",
       "target": "19"
     },
     {
       "id": "e113",
-      "data": {
-        "label": "no time"
-      },
+      "data": {},
       "source": "6",
       "target": "35"
     },
     {
       "id": "e114",
-      "data": {
-        "label": "patch comparison"
-      },
+      "data": {},
       "source": "6",
       "target": "36"
     },
     {
       "id": "e115",
-      "data": {
-        "label": "wants research"
-      },
+      "data": {},
       "source": "7",
       "target": "13"
     },
     {
       "id": "e116",
-      "data": {
-        "label": "price objection"
-      },
+      "data": {},
       "source": "7",
       "target": "14"
     },
     {
       "id": "e117",
-      "data": {
-        "label": "has products"
-      },
+      "data": {},
       "source": "7",
       "target": "15"
     },
     {
       "id": "e118",
-      "data": {
-        "label": "needs to think"
-      },
+      "data": {},
       "source": "7",
       "target": "16"
     },
     {
       "id": "e119",
-      "data": {
-        "label": "no retail"
-      },
+      "data": {},
       "source": "7",
       "target": "17"
     },
     {
       "id": "e120",
-      "data": {
-        "label": "skeptical patients"
-      },
+      "data": {},
       "source": "7",
       "target": "18"
     },
     {
       "id": "e121",
-      "data": {
-        "label": "not interested"
-      },
+      "data": {},
       "source": "7",
       "target": "19"
     },
     {
       "id": "e122",
-      "data": {
-        "label": "no time"
-      },
+      "data": {},
       "source": "7",
       "target": "35"
     },
     {
       "id": "e123",
-      "data": {
-        "label": "patch comparison"
-      },
+      "data": {},
       "source": "7",
       "target": "36"
     },
     {
       "id": "e124",
-      "data": {
-        "label": "price objection"
-      },
+      "data": {},
       "source": "8",
       "target": "14"
     },
     {
       "id": "e125",
-      "data": {
-        "label": "has products"
-      },
+      "data": {},
       "source": "8",
       "target": "15"
     },
     {
       "id": "e126",
-      "data": {
-        "label": "needs to think"
-      },
+      "data": {},
       "source": "8",
       "target": "16"
     },
     {
       "id": "e127",
-      "data": {
-        "label": "no retail"
-      },
+      "data": {},
       "source": "8",
       "target": "17"
     },
     {
       "id": "e128",
-      "data": {
-        "label": "skeptical patients"
-      },
+      "data": {},
       "source": "8",
       "target": "18"
     },
     {
       "id": "e129",
-      "data": {
-        "label": "not interested"
-      },
+      "data": {},
       "source": "8",
       "target": "19"
     },
     {
       "id": "e130",
-      "data": {
-        "label": "wants research"
-      },
+      "data": {},
       "source": "9",
       "target": "13"
     },
     {
       "id": "e131",
-      "data": {
-        "label": "price objection"
-      },
+      "data": {},
       "source": "9",
       "target": "14"
     },
     {
       "id": "e132",
-      "data": {
-        "label": "has products"
-      },
+      "data": {},
       "source": "9",
       "target": "15"
     },
     {
       "id": "e133",
-      "data": {
-        "label": "needs to think"
-      },
+      "data": {},
       "source": "9",
       "target": "16"
     },
     {
       "id": "e134",
-      "data": {
-        "label": "no retail"
-      },
+      "data": {},
       "source": "9",
       "target": "17"
     },
     {
       "id": "e135",
-      "data": {
-        "label": "skeptical patients"
-      },
+      "data": {},
       "source": "9",
       "target": "18"
     },
     {
       "id": "e136",
-      "data": {
-        "label": "not interested"
-      },
+      "data": {},
       "source": "9",
       "target": "19"
     },
     {
       "id": "e137",
-      "data": {
-        "label": "no time"
-      },
+      "data": {},
       "source": "9",
       "target": "35"
     },
     {
       "id": "e138",
-      "data": {
-        "label": "patch comparison"
-      },
+      "data": {},
       "source": "9",
       "target": "36"
     },
     {
       "id": "e139",
-      "data": {
-        "label": "wants research"
-      },
+      "data": {},
       "source": "10",
       "target": "13"
     },
     {
       "id": "e140",
-      "data": {
-        "label": "price objection"
-      },
+      "data": {},
       "source": "10",
       "target": "14"
     },
     {
       "id": "e141",
-      "data": {
-        "label": "has products"
-      },
+      "data": {},
       "source": "10",
       "target": "15"
     },
     {
       "id": "e142",
-      "data": {
-        "label": "needs to think"
-      },
+      "data": {},
       "source": "10",
       "target": "16"
     },
     {
       "id": "e143",
-      "data": {
-        "label": "no retail"
-      },
+      "data": {},
       "source": "10",
       "target": "17"
     },
     {
       "id": "e144",
-      "data": {
-        "label": "skeptical patients"
-      },
+      "data": {},
       "source": "10",
       "target": "18"
     },
     {
       "id": "e145",
-      "data": {
-        "label": "not interested"
-      },
+      "data": {},
       "source": "10",
       "target": "19"
     },
     {
       "id": "e146",
-      "data": {
-        "label": "no time"
-      },
+      "data": {},
       "source": "10",
       "target": "35"
     },
     {
       "id": "e147",
-      "data": {
-        "label": "patch comparison"
-      },
+      "data": {},
       "source": "10",
       "target": "36"
     },
     {
       "id": "e148",
-      "data": {
-        "label": "wants research"
-      },
+      "data": {},
       "source": "11",
       "target": "13"
     },
     {
       "id": "e149",
-      "data": {
-        "label": "price objection"
-      },
+      "data": {},
       "source": "11",
       "target": "14"
     },
     {
       "id": "e150",
-      "data": {
-        "label": "has products"
-      },
+      "data": {},
       "source": "11",
       "target": "15"
     },
     {
       "id": "e151",
-      "data": {
-        "label": "needs to think"
-      },
+      "data": {},
       "source": "11",
       "target": "16"
     },
     {
       "id": "e152",
-      "data": {
-        "label": "no retail"
-      },
+      "data": {},
       "source": "11",
       "target": "17"
     },
     {
       "id": "e153",
-      "data": {
-        "label": "skeptical patients"
-      },
+      "data": {},
       "source": "11",
       "target": "18"
     },
     {
       "id": "e154",
-      "data": {
-        "label": "not interested"
-      },
+      "data": {},
       "source": "11",
       "target": "19"
     },
     {
       "id": "e155",
-      "data": {
-        "label": "no time"
-      },
+      "data": {},
       "source": "11",
       "target": "35"
     },
     {
       "id": "e156",
-      "data": {
-        "label": "patch comparison"
-      },
+      "data": {},
       "source": "11",
       "target": "36"
     },
     {
       "id": "e157",
-      "data": {
-        "label": "wants research"
-      },
+      "data": {},
       "source": "12",
       "target": "13"
     },
     {
       "id": "e158",
-      "data": {
-        "label": "price objection"
-      },
+      "data": {},
       "source": "12",
       "target": "14"
     },
     {
       "id": "e159",
-      "data": {
-        "label": "has products"
-      },
+      "data": {},
       "source": "12",
       "target": "15"
     },
     {
       "id": "e160",
-      "data": {
-        "label": "needs to think"
-      },
+      "data": {},
       "source": "12",
       "target": "16"
     },
     {
       "id": "e161",
-      "data": {
-        "label": "no retail"
-      },
+      "data": {},
       "source": "12",
       "target": "17"
     },
     {
       "id": "e162",
-      "data": {
-        "label": "skeptical patients"
-      },
+      "data": {},
       "source": "12",
       "target": "18"
     },
     {
       "id": "e163",
-      "data": {
-        "label": "not interested"
-      },
+      "data": {},
       "source": "12",
       "target": "19"
     },
     {
       "id": "e164",
-      "data": {
-        "label": "no time"
-      },
+      "data": {},
       "source": "12",
       "target": "35"
     },
     {
       "id": "e165",
-      "data": {
-        "label": "patch comparison"
-      },
+      "data": {},
       "source": "12",
       "target": "36"
     },
     {
       "id": "e166",
-      "data": {
-        "label": "wants research"
-      },
+      "data": {},
       "source": "20",
       "target": "13"
     },
     {
       "id": "e167",
-      "data": {
-        "label": "price objection"
-      },
+      "data": {},
       "source": "20",
       "target": "14"
     },
     {
       "id": "e168",
-      "data": {
-        "label": "has products"
-      },
+      "data": {},
       "source": "20",
       "target": "15"
     },
     {
       "id": "e169",
-      "data": {
-        "label": "needs to think"
-      },
+      "data": {},
       "source": "20",
       "target": "16"
     },
     {
       "id": "e170",
-      "data": {
-        "label": "no retail"
-      },
+      "data": {},
       "source": "20",
       "target": "17"
     },
     {
       "id": "e171",
-      "data": {
-        "label": "skeptical patients"
-      },
+      "data": {},
       "source": "20",
       "target": "18"
     },
     {
       "id": "e172",
-      "data": {
-        "label": "not interested"
-      },
+      "data": {},
       "source": "20",
       "target": "19"
     },
     {
       "id": "e173",
-      "data": {
-        "label": "no time"
-      },
+      "data": {},
       "source": "20",
       "target": "35"
     },
     {
       "id": "e174",
-      "data": {
-        "label": "patch comparison"
-      },
+      "data": {},
       "source": "20",
       "target": "36"
     },
     {
       "id": "e175",
-      "data": {
-        "label": "wants research"
-      },
+      "data": {},
       "source": "21",
       "target": "13"
     },
     {
       "id": "e176",
-      "data": {
-        "label": "price objection"
-      },
+      "data": {},
       "source": "21",
       "target": "14"
     },
     {
       "id": "e177",
-      "data": {
-        "label": "has products"
-      },
+      "data": {},
       "source": "21",
       "target": "15"
     },
     {
       "id": "e178",
-      "data": {
-        "label": "needs to think"
-      },
+      "data": {},
       "source": "21",
       "target": "16"
     },
     {
       "id": "e179",
-      "data": {
-        "label": "no retail"
-      },
+      "data": {},
       "source": "21",
       "target": "17"
     },
     {
       "id": "e180",
-      "data": {
-        "label": "skeptical patients"
-      },
+      "data": {},
       "source": "21",
       "target": "18"
     },
     {
       "id": "e181",
-      "data": {
-        "label": "not interested"
-      },
+      "data": {},
       "source": "21",
       "target": "19"
     },
     {
       "id": "e182",
-      "data": {
-        "label": "no time"
-      },
+      "data": {},
       "source": "21",
       "target": "35"
     },
     {
       "id": "e183",
-      "data": {
-        "label": "patch comparison"
-      },
+      "data": {},
       "source": "21",
       "target": "36"
     },
     {
       "id": "e184",
-      "data": {
-        "label": "wants research"
-      },
+      "data": {},
       "source": "22",
       "target": "13"
     },
     {
       "id": "e185",
-      "data": {
-        "label": "price objection"
-      },
+      "data": {},
       "source": "22",
       "target": "14"
     },
     {
       "id": "e186",
-      "data": {
-        "label": "has products"
-      },
+      "data": {},
       "source": "22",
       "target": "15"
     },
     {
       "id": "e187",
-      "data": {
-        "label": "needs to think"
-      },
+      "data": {},
       "source": "22",
       "target": "16"
     },
     {
       "id": "e188",
-      "data": {
-        "label": "no retail"
-      },
+      "data": {},
       "source": "22",
       "target": "17"
     },
     {
       "id": "e189",
-      "data": {
-        "label": "skeptical patients"
-      },
+      "data": {},
       "source": "22",
       "target": "18"
     },
     {
       "id": "e190",
-      "data": {
-        "label": "not interested"
-      },
+      "data": {},
       "source": "22",
       "target": "19"
     },
     {
       "id": "e191",
-      "data": {
-        "label": "no time"
-      },
+      "data": {},
       "source": "22",
       "target": "35"
     },
     {
       "id": "e192",
-      "data": {
-        "label": "patch comparison"
-      },
+      "data": {},
       "source": "22",
       "target": "36"
     },
     {
       "id": "e193",
-      "data": {
-        "label": "wants research"
-      },
+      "data": {},
       "source": "23",
       "target": "13"
     },
     {
       "id": "e194",
-      "data": {
-        "label": "price objection"
-      },
+      "data": {},
       "source": "23",
       "target": "14"
     },
     {
       "id": "e195",
-      "data": {
-        "label": "has products"
-      },
+      "data": {},
       "source": "23",
       "target": "15"
     },
     {
       "id": "e196",
-      "data": {
-        "label": "needs to think"
-      },
+      "data": {},
       "source": "23",
       "target": "16"
     },
     {
       "id": "e197",
-      "data": {
-        "label": "no retail"
-      },
+      "data": {},
       "source": "23",
       "target": "17"
     },
     {
       "id": "e198",
-      "data": {
-        "label": "skeptical patients"
-      },
+      "data": {},
       "source": "23",
       "target": "18"
     },
     {
       "id": "e199",
-      "data": {
-        "label": "not interested"
-      },
+      "data": {},
       "source": "23",
       "target": "19"
     },
     {
       "id": "e200",
-      "data": {
-        "label": "no time"
-      },
+      "data": {},
       "source": "23",
       "target": "35"
     },
     {
       "id": "e201",
-      "data": {
-        "label": "patch comparison"
-      },
+      "data": {},
       "source": "23",
       "target": "36"
     },
     {
       "id": "e202",
-      "data": {
-        "label": "wants research"
-      },
+      "data": {},
       "source": "24",
       "target": "13"
     },
     {
       "id": "e203",
-      "data": {
-        "label": "price objection"
-      },
+      "data": {},
       "source": "24",
       "target": "14"
     },
     {
       "id": "e204",
-      "data": {
-        "label": "has products"
-      },
+      "data": {},
       "source": "24",
       "target": "15"
     },
     {
       "id": "e205",
-      "data": {
-        "label": "needs to think"
-      },
+      "data": {},
       "source": "24",
       "target": "16"
     },
     {
       "id": "e206",
-      "data": {
-        "label": "no retail"
-      },
+      "data": {},
       "source": "24",
       "target": "17"
     },
     {
       "id": "e207",
-      "data": {
-        "label": "skeptical patients"
-      },
+      "data": {},
       "source": "24",
       "target": "18"
     },
     {
       "id": "e208",
-      "data": {
-        "label": "not interested"
-      },
+      "data": {},
       "source": "24",
       "target": "19"
     },
     {
       "id": "e209",
-      "data": {
-        "label": "no time"
-      },
+      "data": {},
       "source": "24",
       "target": "35"
     },
     {
       "id": "e210",
-      "data": {
-        "label": "patch comparison"
-      },
+      "data": {},
       "source": "24",
       "target": "36"
     },
     {
       "id": "e211",
-      "data": {
-        "label": "wants research"
-      },
+      "data": {},
       "source": "25",
       "target": "13"
     },
     {
       "id": "e212",
-      "data": {
-        "label": "price objection"
-      },
+      "data": {},
       "source": "25",
       "target": "14"
     },
     {
       "id": "e213",
-      "data": {
-        "label": "has products"
-      },
+      "data": {},
       "source": "25",
       "target": "15"
     },
     {
       "id": "e214",
-      "data": {
-        "label": "needs to think"
-      },
+      "data": {},
       "source": "25",
       "target": "16"
     },
     {
       "id": "e215",
-      "data": {
-        "label": "no retail"
-      },
+      "data": {},
       "source": "25",
       "target": "17"
     },
     {
       "id": "e216",
-      "data": {
-        "label": "skeptical patients"
-      },
+      "data": {},
       "source": "25",
       "target": "18"
     },
     {
       "id": "e217",
-      "data": {
-        "label": "not interested"
-      },
+      "data": {},
       "source": "25",
       "target": "19"
     },
     {
       "id": "e218",
-      "data": {
-        "label": "no time"
-      },
+      "data": {},
       "source": "25",
       "target": "35"
     },
     {
       "id": "e219",
-      "data": {
-        "label": "patch comparison"
-      },
+      "data": {},
       "source": "25",
       "target": "36"
     },
     {
       "id": "e220",
-      "data": {
-        "label": "wants research"
-      },
+      "data": {},
       "source": "26",
       "target": "13"
     },
     {
       "id": "e221",
-      "data": {
-        "label": "price objection"
-      },
+      "data": {},
       "source": "26",
       "target": "14"
     },
     {
       "id": "e222",
-      "data": {
-        "label": "has products"
-      },
+      "data": {},
       "source": "26",
       "target": "15"
     },
     {
       "id": "e223",
-      "data": {
-        "label": "needs to think"
-      },
+      "data": {},
       "source": "26",
       "target": "16"
     },
     {
       "id": "e224",
-      "data": {
-        "label": "no retail"
-      },
+      "data": {},
       "source": "26",
       "target": "17"
     },
     {
       "id": "e225",
-      "data": {
-        "label": "skeptical patients"
-      },
+      "data": {},
       "source": "26",
       "target": "18"
     },
     {
       "id": "e226",
-      "data": {
-        "label": "not interested"
-      },
+      "data": {},
       "source": "26",
       "target": "19"
     },
     {
       "id": "e227",
-      "data": {
-        "label": "no time"
-      },
+      "data": {},
       "source": "26",
       "target": "35"
     },
     {
       "id": "e228",
-      "data": {
-        "label": "patch comparison"
-      },
+      "data": {},
       "source": "26",
       "target": "36"
     },
     {
       "id": "e229",
-      "data": {
-        "label": "wants to schedule"
-      },
+      "data": {},
       "source": "1",
       "target": "27"
     },
     {
       "id": "e230",
-      "data": {
-        "label": "wants to schedule"
-      },
+      "data": {},
       "source": "2",
       "target": "27"
     },
     {
       "id": "e231",
-      "data": {
-        "label": "wants to schedule"
-      },
+      "data": {},
       "source": "3",
       "target": "27"
     },
     {
       "id": "e232",
-      "data": {
-        "label": "wants to schedule"
-      },
+      "data": {},
       "source": "4",
       "target": "27"
     },
     {
       "id": "e233",
-      "data": {
-        "label": "wants to schedule"
-      },
+      "data": {},
       "source": "5",
       "target": "27"
     },
     {
       "id": "e234",
-      "data": {
-        "label": "wants to schedule"
-      },
+      "data": {},
       "source": "6",
       "target": "27"
     },
     {
       "id": "e235",
-      "data": {
-        "label": "wants to schedule"
-      },
+      "data": {},
       "source": "7",
       "target": "27"
     },
     {
       "id": "e236",
-      "data": {
-        "label": "wants to schedule"
-      },
+      "data": {},
       "source": "8",
       "target": "27"
     },
     {
       "id": "e237",
-      "data": {
-        "label": "wants to schedule"
-      },
+      "data": {},
       "source": "9",
       "target": "27"
     },
     {
       "id": "e238",
-      "data": {
-        "label": "wants to schedule"
-      },
+      "data": {},
       "source": "10",
       "target": "27"
     },
     {
       "id": "e239",
-      "data": {
-        "label": "wants to schedule"
-      },
+      "data": {},
       "source": "11",
       "target": "27"
     },
     {
       "id": "e240",
-      "data": {
-        "label": "wants to schedule"
-      },
+      "data": {},
       "source": "12",
       "target": "27"
     },
     {
       "id": "e241",
-      "data": {
-        "label": "wants to schedule"
-      },
+      "data": {},
       "source": "20",
       "target": "27"
     },
     {
       "id": "e242",
-      "data": {
-        "label": "wants to schedule"
-      },
+      "data": {},
       "source": "24",
       "target": "27"
     },
     {
       "id": "e243",
-      "data": {
-        "label": "wants to schedule"
-      },
+      "data": {},
       "source": "25",
       "target": "27"
     },
     {
       "id": "e244",
-      "data": {
-        "label": "continue presentation"
-      },
+      "data": {},
       "source": "13",
       "target": "12"
     },
     {
       "id": "e245",
-      "data": {
-        "label": "schedule follow-up"
-      },
+      "data": {},
       "source": "13",
       "target": "27"
     },
     {
       "id": "e246",
-      "data": {
-        "label": "continue presentation"
-      },
+      "data": {},
       "source": "14",
       "target": "12"
     },
     {
       "id": "e247",
-      "data": {
-        "label": "schedule follow-up"
-      },
+      "data": {},
       "source": "14",
       "target": "27"
     },
     {
       "id": "e248",
-      "data": {
-        "label": "continue presentation"
-      },
+      "data": {},
       "source": "15",
       "target": "12"
     },
     {
       "id": "e249",
-      "data": {
-        "label": "schedule follow-up"
-      },
+      "data": {},
       "source": "15",
       "target": "27"
     },
     {
       "id": "e250",
-      "data": {
-        "label": "objection resolved"
-      },
+      "data": {},
       "source": "16",
       "target": "20"
     },
     {
       "id": "e251",
-      "data": {
-        "label": "continue presentation"
-      },
+      "data": {},
       "source": "16",
       "target": "12"
     },
     {
       "id": "e252",
-      "data": {
-        "label": "objection resolved"
-      },
+      "data": {},
       "source": "17",
       "target": "20"
     },
     {
       "id": "e253",
-      "data": {
-        "label": "wants sample"
-      },
+      "data": {},
       "source": "17",
       "target": "26"
     },
     {
       "id": "e254",
-      "data": {
-        "label": "continue presentation"
-      },
+      "data": {},
       "source": "17",
       "target": "12"
     },
     {
       "id": "e255",
-      "data": {
-        "label": "schedule follow-up"
-      },
+      "data": {},
       "source": "17",
       "target": "27"
     },
     {
       "id": "e256",
-      "data": {
-        "label": "continue presentation"
-      },
+      "data": {},
       "source": "18",
       "target": "12"
     },
     {
       "id": "e257",
-      "data": {
-        "label": "schedule follow-up"
-      },
+      "data": {},
       "source": "18",
       "target": "27"
     },
     {
       "id": "e258",
-      "data": {
-        "label": "objection resolved"
-      },
+      "data": {},
       "source": "19",
       "target": "20"
     },
     {
       "id": "e259",
-      "data": {
-        "label": "continue presentation"
-      },
+      "data": {},
       "source": "19",
       "target": "12"
     },
     {
       "id": "e260",
-      "data": {
-        "label": "continue presentation"
-      },
+      "data": {},
       "source": "35",
       "target": "12"
     },
     {
       "id": "e261",
-      "data": {
-        "label": "schedule follow-up"
-      },
+      "data": {},
       "source": "35",
       "target": "27"
     },
     {
       "id": "e262",
-      "data": {
-        "label": "objection resolved"
-      },
+      "data": {},
       "source": "36",
       "target": "20"
     },
     {
       "id": "e263",
-      "data": {
-        "label": "continue presentation"
-      },
+      "data": {},
       "source": "36",
       "target": "12"
     },
     {
       "id": "e264",
-      "data": {
-        "label": "schedule follow-up"
-      },
+      "data": {},
       "source": "36",
       "target": "27"
     },
     {
       "id": "e265",
-      "data": {
-        "label": "asks about pain/Freedom"
-      },
+      "data": {},
       "source": "1",
       "target": "8"
     },
     {
       "id": "e266",
-      "data": {
-        "label": "asks about sleep/REM"
-      },
+      "data": {},
       "source": "1",
       "target": "9"
     },
     {
       "id": "e267",
-      "data": {
-        "label": "asks about stress/Peace"
-      },
+      "data": {},
       "source": "1",
       "target": "10"
     },
     {
       "id": "e268",
-      "data": {
-        "label": "asks about balance/Liberty"
-      },
+      "data": {},
       "source": "1",
       "target": "11"
     },
     {
       "id": "e269",
-      "data": {
-        "label": "wants product overview"
-      },
+      "data": {},
       "source": "1",
       "target": "12"
     },
     {
       "id": "e270",
-      "data": {
-        "label": "asks about pain/Freedom"
-      },
+      "data": {},
       "source": "2",
       "target": "8"
     },
     {
       "id": "e271",
-      "data": {
-        "label": "asks about sleep/REM"
-      },
+      "data": {},
       "source": "2",
       "target": "9"
     },
     {
       "id": "e272",
-      "data": {
-        "label": "asks about stress/Peace"
-      },
+      "data": {},
       "source": "2",
       "target": "10"
     },
     {
       "id": "e273",
-      "data": {
-        "label": "asks about balance/Liberty"
-      },
+      "data": {},
       "source": "2",
       "target": "11"
     },
     {
       "id": "e274",
-      "data": {
-        "label": "wants product overview"
-      },
+      "data": {},
       "source": "2",
       "target": "12"
     },
     {
       "id": "e275",
-      "data": {
-        "label": "asks about pain/Freedom"
-      },
+      "data": {},
       "source": "3",
       "target": "8"
     },
     {
       "id": "e276",
-      "data": {
-        "label": "asks about sleep/REM"
-      },
+      "data": {},
       "source": "3",
       "target": "9"
     },
     {
       "id": "e277",
-      "data": {
-        "label": "asks about stress/Peace"
-      },
+      "data": {},
       "source": "3",
       "target": "10"
     },
     {
       "id": "e278",
-      "data": {
-        "label": "asks about balance/Liberty"
-      },
+      "data": {},
       "source": "3",
       "target": "11"
     },
     {
       "id": "e279",
-      "data": {
-        "label": "wants product overview"
-      },
+      "data": {},
       "source": "3",
       "target": "12"
     },
     {
       "id": "e280",
-      "data": {
-        "label": "asks about pain/Freedom"
-      },
+      "data": {},
       "source": "4",
       "target": "8"
     },
     {
       "id": "e281",
-      "data": {
-        "label": "asks about sleep/REM"
-      },
+      "data": {},
       "source": "4",
       "target": "9"
     },
     {
       "id": "e282",
-      "data": {
-        "label": "asks about stress/Peace"
-      },
+      "data": {},
       "source": "4",
       "target": "10"
     },
     {
       "id": "e283",
-      "data": {
-        "label": "asks about balance/Liberty"
-      },
+      "data": {},
       "source": "4",
       "target": "11"
     },
     {
       "id": "e284",
-      "data": {
-        "label": "wants product overview"
-      },
+      "data": {},
       "source": "4",
       "target": "12"
     },
     {
       "id": "e285",
-      "data": {
-        "label": "asks about pain/Freedom"
-      },
+      "data": {},
       "source": "5",
       "target": "8"
     },
     {
       "id": "e286",
-      "data": {
-        "label": "asks about sleep/REM"
-      },
+      "data": {},
       "source": "5",
       "target": "9"
     },
     {
       "id": "e287",
-      "data": {
-        "label": "asks about stress/Peace"
-      },
+      "data": {},
       "source": "5",
       "target": "10"
     },
     {
       "id": "e288",
-      "data": {
-        "label": "asks about balance/Liberty"
-      },
+      "data": {},
       "source": "5",
       "target": "11"
     },
     {
       "id": "e289",
-      "data": {
-        "label": "wants product overview"
-      },
+      "data": {},
       "source": "5",
       "target": "12"
     },
     {
       "id": "e290",
-      "data": {
-        "label": "asks about pain/Freedom"
-      },
+      "data": {},
       "source": "6",
       "target": "8"
     },
     {
       "id": "e291",
-      "data": {
-        "label": "asks about sleep/REM"
-      },
+      "data": {},
       "source": "6",
       "target": "9"
     },
     {
       "id": "e292",
-      "data": {
-        "label": "asks about stress/Peace"
-      },
+      "data": {},
       "source": "6",
       "target": "10"
     },
     {
       "id": "e293",
-      "data": {
-        "label": "asks about balance/Liberty"
-      },
+      "data": {},
       "source": "6",
       "target": "11"
     },
     {
       "id": "e294",
-      "data": {
-        "label": "wants product overview"
-      },
+      "data": {},
       "source": "6",
       "target": "12"
     },
     {
       "id": "e295",
-      "data": {
-        "label": "asks about pain/Freedom"
-      },
+      "data": {},
       "source": "13",
       "target": "8"
     },
     {
       "id": "e296",
-      "data": {
-        "label": "asks about sleep/REM"
-      },
+      "data": {},
       "source": "13",
       "target": "9"
     },
     {
       "id": "e297",
-      "data": {
-        "label": "asks about stress/Peace"
-      },
+      "data": {},
       "source": "13",
       "target": "10"
     },
     {
       "id": "e298",
-      "data": {
-        "label": "asks about balance/Liberty"
-      },
+      "data": {},
       "source": "13",
       "target": "11"
     },
     {
       "id": "e299",
-      "data": {
-        "label": "asks about pain/Freedom"
-      },
+      "data": {},
       "source": "14",
       "target": "8"
     },
     {
       "id": "e300",
-      "data": {
-        "label": "asks about sleep/REM"
-      },
+      "data": {},
       "source": "14",
       "target": "9"
     },
     {
       "id": "e301",
-      "data": {
-        "label": "asks about stress/Peace"
-      },
+      "data": {},
       "source": "14",
       "target": "10"
     },
     {
       "id": "e302",
-      "data": {
-        "label": "asks about balance/Liberty"
-      },
+      "data": {},
       "source": "14",
       "target": "11"
     },
     {
       "id": "e303",
-      "data": {
-        "label": "asks about pain/Freedom"
-      },
+      "data": {},
       "source": "15",
       "target": "8"
     },
     {
       "id": "e304",
-      "data": {
-        "label": "asks about sleep/REM"
-      },
+      "data": {},
       "source": "15",
       "target": "9"
     },
     {
       "id": "e305",
-      "data": {
-        "label": "asks about stress/Peace"
-      },
+      "data": {},
       "source": "15",
       "target": "10"
     },
     {
       "id": "e306",
-      "data": {
-        "label": "asks about balance/Liberty"
-      },
+      "data": {},
       "source": "15",
       "target": "11"
     },
     {
       "id": "e307",
-      "data": {
-        "label": "asks about pain/Freedom"
-      },
+      "data": {},
       "source": "16",
       "target": "8"
     },
     {
       "id": "e308",
-      "data": {
-        "label": "asks about sleep/REM"
-      },
+      "data": {},
       "source": "16",
       "target": "9"
     },
     {
       "id": "e309",
-      "data": {
-        "label": "asks about stress/Peace"
-      },
+      "data": {},
       "source": "16",
       "target": "10"
     },
     {
       "id": "e310",
-      "data": {
-        "label": "asks about balance/Liberty"
-      },
+      "data": {},
       "source": "16",
       "target": "11"
     },
     {
       "id": "e311",
-      "data": {
-        "label": "asks about pain/Freedom"
-      },
+      "data": {},
       "source": "17",
       "target": "8"
     },
     {
       "id": "e312",
-      "data": {
-        "label": "asks about sleep/REM"
-      },
+      "data": {},
       "source": "17",
       "target": "9"
     },
     {
       "id": "e313",
-      "data": {
-        "label": "asks about stress/Peace"
-      },
+      "data": {},
       "source": "17",
       "target": "10"
     },
     {
       "id": "e314",
-      "data": {
-        "label": "asks about balance/Liberty"
-      },
+      "data": {},
       "source": "17",
       "target": "11"
     },
     {
       "id": "e315",
-      "data": {
-        "label": "asks about pain/Freedom"
-      },
+      "data": {},
       "source": "18",
       "target": "8"
     },
     {
       "id": "e316",
-      "data": {
-        "label": "asks about sleep/REM"
-      },
+      "data": {},
       "source": "18",
       "target": "9"
     },
     {
       "id": "e317",
-      "data": {
-        "label": "asks about stress/Peace"
-      },
+      "data": {},
       "source": "18",
       "target": "10"
     },
     {
       "id": "e318",
-      "data": {
-        "label": "asks about balance/Liberty"
-      },
+      "data": {},
       "source": "18",
       "target": "11"
     },
     {
       "id": "e319",
-      "data": {
-        "label": "asks about pain/Freedom"
-      },
+      "data": {},
       "source": "19",
       "target": "8"
     },
     {
       "id": "e320",
-      "data": {
-        "label": "asks about sleep/REM"
-      },
+      "data": {},
       "source": "19",
       "target": "9"
     },
     {
       "id": "e321",
-      "data": {
-        "label": "asks about stress/Peace"
-      },
+      "data": {},
       "source": "19",
       "target": "10"
     },
     {
       "id": "e322",
-      "data": {
-        "label": "asks about balance/Liberty"
-      },
+      "data": {},
       "source": "19",
       "target": "11"
     },
     {
       "id": "e323",
-      "data": {
-        "label": "asks about pain/Freedom"
-      },
+      "data": {},
       "source": "20",
       "target": "8"
     },
     {
       "id": "e324",
-      "data": {
-        "label": "asks about sleep/REM"
-      },
+      "data": {},
       "source": "20",
       "target": "9"
     },
     {
       "id": "e325",
-      "data": {
-        "label": "asks about stress/Peace"
-      },
+      "data": {},
       "source": "20",
       "target": "10"
     },
     {
       "id": "e326",
-      "data": {
-        "label": "asks about balance/Liberty"
-      },
+      "data": {},
       "source": "20",
       "target": "11"
     },
     {
       "id": "e327",
-      "data": {
-        "label": "wants product overview"
-      },
+      "data": {},
       "source": "20",
       "target": "12"
     },
     {
       "id": "e328",
-      "data": {
-        "label": "asks about pain/Freedom"
-      },
+      "data": {},
       "source": "21",
       "target": "8"
     },
     {
       "id": "e329",
-      "data": {
-        "label": "asks about sleep/REM"
-      },
+      "data": {},
       "source": "21",
       "target": "9"
     },
     {
       "id": "e330",
-      "data": {
-        "label": "asks about stress/Peace"
-      },
+      "data": {},
       "source": "21",
       "target": "10"
     },
     {
       "id": "e331",
-      "data": {
-        "label": "asks about balance/Liberty"
-      },
+      "data": {},
       "source": "21",
       "target": "11"
     },
     {
       "id": "e332",
-      "data": {
-        "label": "wants product overview"
-      },
+      "data": {},
       "source": "21",
       "target": "12"
     },
     {
       "id": "e333",
-      "data": {
-        "label": "asks about pain/Freedom"
-      },
+      "data": {},
       "source": "22",
       "target": "8"
     },
     {
       "id": "e334",
-      "data": {
-        "label": "asks about sleep/REM"
-      },
+      "data": {},
       "source": "22",
       "target": "9"
     },
     {
       "id": "e335",
-      "data": {
-        "label": "asks about stress/Peace"
-      },
+      "data": {},
       "source": "22",
       "target": "10"
     },
     {
       "id": "e336",
-      "data": {
-        "label": "asks about balance/Liberty"
-      },
+      "data": {},
       "source": "22",
       "target": "11"
     },
     {
       "id": "e337",
-      "data": {
-        "label": "wants product overview"
-      },
+      "data": {},
       "source": "22",
       "target": "12"
     },
     {
       "id": "e338",
-      "data": {
-        "label": "asks about pain/Freedom"
-      },
+      "data": {},
       "source": "23",
       "target": "8"
     },
     {
       "id": "e339",
-      "data": {
-        "label": "asks about sleep/REM"
-      },
+      "data": {},
       "source": "23",
       "target": "9"
     },
     {
       "id": "e340",
-      "data": {
-        "label": "asks about stress/Peace"
-      },
+      "data": {},
       "source": "23",
       "target": "10"
     },
     {
       "id": "e341",
-      "data": {
-        "label": "asks about balance/Liberty"
-      },
+      "data": {},
       "source": "23",
       "target": "11"
     },
     {
       "id": "e342",
-      "data": {
-        "label": "wants product overview"
-      },
+      "data": {},
       "source": "23",
       "target": "12"
     },
     {
       "id": "e343",
-      "data": {
-        "label": "asks about pain/Freedom"
-      },
+      "data": {},
       "source": "35",
       "target": "8"
     },
     {
       "id": "e344",
-      "data": {
-        "label": "asks about sleep/REM"
-      },
+      "data": {},
       "source": "35",
       "target": "9"
     },
     {
       "id": "e345",
-      "data": {
-        "label": "asks about stress/Peace"
-      },
+      "data": {},
       "source": "35",
       "target": "10"
     },
     {
       "id": "e346",
-      "data": {
-        "label": "asks about balance/Liberty"
-      },
+      "data": {},
       "source": "35",
       "target": "11"
     },
     {
       "id": "e347",
-      "data": {
-        "label": "asks about pain/Freedom"
-      },
+      "data": {},
       "source": "36",
       "target": "8"
     },
     {
       "id": "e348",
-      "data": {
-        "label": "asks about sleep/REM"
-      },
+      "data": {},
       "source": "36",
       "target": "9"
     },
     {
       "id": "e349",
-      "data": {
-        "label": "asks about stress/Peace"
-      },
+      "data": {},
       "source": "36",
       "target": "10"
     },
     {
       "id": "e350",
-      "data": {
-        "label": "asks about balance/Liberty"
-      },
+      "data": {},
       "source": "36",
       "target": "11"
     },
     {
       "id": "e351",
-      "data": {
-        "label": "asks about another product"
-      },
+      "data": {},
       "source": "8",
       "target": "9"
     },
     {
       "id": "e352",
-      "data": {
-        "label": "asks about another product"
-      },
+      "data": {},
       "source": "8",
       "target": "10"
     },
     {
       "id": "e353",
-      "data": {
-        "label": "asks about another product"
-      },
+      "data": {},
       "source": "8",
       "target": "11"
     },
     {
       "id": "e354",
-      "data": {
-        "label": "asks about another product"
-      },
+      "data": {},
       "source": "8",
       "target": "12"
     },
     {
       "id": "e355",
-      "data": {
-        "label": "asks about another product"
-      },
+      "data": {},
       "source": "9",
       "target": "8"
     },
     {
       "id": "e356",
-      "data": {
-        "label": "asks about another product"
-      },
+      "data": {},
       "source": "9",
       "target": "10"
     },
     {
       "id": "e357",
-      "data": {
-        "label": "asks about another product"
-      },
+      "data": {},
       "source": "9",
       "target": "11"
     },
     {
       "id": "e358",
-      "data": {
-        "label": "asks about another product"
-      },
+      "data": {},
       "source": "10",
       "target": "8"
     },
     {
       "id": "e359",
-      "data": {
-        "label": "asks about another product"
-      },
+      "data": {},
       "source": "10",
       "target": "9"
     },
     {
       "id": "e360",
-      "data": {
-        "label": "asks about another product"
-      },
+      "data": {},
       "source": "10",
       "target": "11"
     },
     {
       "id": "e361",
-      "data": {
-        "label": "asks about another product"
-      },
+      "data": {},
       "source": "10",
       "target": "12"
     },
     {
       "id": "e362",
-      "data": {
-        "label": "asks about another product"
-      },
+      "data": {},
       "source": "11",
       "target": "8"
     },
     {
       "id": "e363",
-      "data": {
-        "label": "asks about another product"
-      },
+      "data": {},
       "source": "11",
       "target": "9"
     },
     {
       "id": "e364",
-      "data": {
-        "label": "asks about another product"
-      },
+      "data": {},
       "source": "11",
       "target": "10"
     },
     {
       "id": "e365",
-      "data": {
-        "label": "asks about another product"
-      },
+      "data": {},
       "source": "11",
       "target": "12"
     },
     {
       "id": "e366",
-      "data": {
-        "label": "asks about another product"
-      },
+      "data": {},
       "source": "12",
       "target": "8"
     },
     {
       "id": "e367",
-      "data": {
-        "label": "asks about another product"
-      },
+      "data": {},
       "source": "12",
       "target": "9"
     },
     {
       "id": "e368",
-      "data": {
-        "label": "asks about another product"
-      },
+      "data": {},
       "source": "12",
       "target": "10"
     },
     {
       "id": "e369",
-      "data": {
-        "label": "asks about another product"
-      },
+      "data": {},
       "source": "12",
       "target": "11"
     },
     {
       "id": "e370",
-      "data": {
-        "label": "just wants email"
-      },
+      "data": {},
       "source": "29",
       "target": "37"
     },
     {
       "id": "e371",
-      "data": {
-        "label": "info sent"
-      },
+      "data": {},
       "source": "37",
       "target": "34"
     },
     {
       "id": "e372",
-      "data": {
-        "label": "ready to discuss business"
-      },
+      "data": {},
       "source": "26",
       "target": "20"
     },
     {
       "id": "e373",
-      "data": {
-        "label": "just wants email"
-      },
+      "data": {},
       "source": "3",
       "target": "37"
     },
     {
       "id": "e374",
-      "data": {
-        "label": "just wants email"
-      },
+      "data": {},
       "source": "4",
       "target": "37"
     },
     {
       "id": "e375",
-      "data": {
-        "label": "just wants email"
-      },
+      "data": {},
       "source": "5",
       "target": "37"
     },
     {
       "id": "e376",
-      "data": {
-        "label": "just wants email"
-      },
+      "data": {},
       "source": "6",
       "target": "37"
     },
     {
       "id": "e377",
-      "data": {
-        "label": "just wants email"
-      },
+      "data": {},
       "source": "7",
       "target": "37"
     },
     {
       "id": "e378",
-      "data": {
-        "label": "just wants email"
-      },
+      "data": {},
       "source": "8",
       "target": "37"
     },
     {
       "id": "e379",
-      "data": {
-        "label": "just wants email"
-      },
+      "data": {},
       "source": "9",
       "target": "37"
     },
     {
       "id": "e380",
-      "data": {
-        "label": "just wants email"
-      },
+      "data": {},
       "source": "10",
       "target": "37"
     },
     {
       "id": "e381",
-      "data": {
-        "label": "just wants email"
-      },
+      "data": {},
       "source": "11",
       "target": "37"
     },
     {
       "id": "e382",
-      "data": {
-        "label": "just wants email"
-      },
+      "data": {},
       "source": "12",
       "target": "37"
     },
     {
       "id": "e383",
-      "data": {
-        "label": "just wants email"
-      },
+      "data": {},
       "source": "13",
       "target": "37"
     },
     {
       "id": "e384",
-      "data": {
-        "label": "just wants email"
-      },
+      "data": {},
       "source": "14",
       "target": "37"
     },
     {
       "id": "e385",
-      "data": {
-        "label": "just wants email"
-      },
+      "data": {},
       "source": "15",
       "target": "37"
     },
     {
       "id": "e386",
-      "data": {
-        "label": "just wants email"
-      },
+      "data": {},
       "source": "16",
       "target": "37"
     },
     {
       "id": "e387",
-      "data": {
-        "label": "just wants email"
-      },
+      "data": {},
       "source": "17",
       "target": "37"
     },
     {
       "id": "e388",
-      "data": {
-        "label": "just wants email"
-      },
+      "data": {},
       "source": "18",
       "target": "37"
     },
     {
       "id": "e389",
-      "data": {
-        "label": "just wants email"
-      },
+      "data": {},
       "source": "19",
       "target": "37"
     },
     {
       "id": "e390",
-      "data": {
-        "label": "just wants email"
-      },
+      "data": {},
       "source": "20",
       "target": "37"
     },
     {
       "id": "e391",
-      "data": {
-        "label": "just wants email"
-      },
+      "data": {},
       "source": "26",
       "target": "37"
     },
     {
       "id": "e392",
-      "data": {
-        "label": "just wants email"
-      },
+      "data": {},
       "source": "35",
       "target": "37"
     },
     {
       "id": "e393",
-      "data": {
-        "label": "just wants email"
-      },
+      "data": {},
       "source": "36",
       "target": "37"
     },
     {
       "id": "e_mp1",
-      "data": {
-        "label": "receptionist answered, checking practice size"
-      },
+      "data": {},
       "source": "1",
       "target": "38"
     },
     {
       "id": "e_mp2",
-      "data": {
-        "label": "multiple practitioners, interested in group demo"
-      },
+      "data": {},
       "source": "38",
       "target": "39"
     },
     {
       "id": "e_mp3",
-      "data": {
-        "label": "mentions manager or admin who handles decisions"
-      },
+      "data": {},
       "source": "38",
       "target": "40"
     },
     {
       "id": "e_mp4",
-      "data": {
-        "label": "single practitioner, available to talk"
-      },
+      "data": {},
       "source": "38",
       "target": "3"
     },
     {
       "id": "e_mp5",
-      "data": {
-        "label": "single practitioner, busy, schedule callback"
-      },
+      "data": {},
       "source": "38",
       "target": "29"
     },
     {
       "id": "e_ll1",
-      "data": {
-        "label": "interested in Lunch and Learn, scheduling"
-      },
+      "data": {},
       "source": "39",
       "target": "27"
     },
     {
       "id": "e_ll2",
-      "data": {
-        "label": "need to check with team, schedule callback"
-      },
+      "data": {},
       "source": "39",
       "target": "29"
     },
     {
       "id": "e_ll3",
-      "data": {
-        "label": "prefers individual calls, route to discovery"
-      },
+      "data": {},
       "source": "39",
       "target": "3"
     },
     {
       "id": "e_dm1",
-      "data": {
-        "label": "transferred to decision maker, introduce SuperPatch"
-      },
+      "data": {},
       "source": "40",
       "target": "2"
     },
     {
       "id": "e_dm2",
-      "data": {
-        "label": "manager available, scheduling meeting"
-      },
+      "data": {},
       "source": "40",
       "target": "27"
     },
     {
       "id": "e_dm3",
-      "data": {
-        "label": "manager not available, schedule callback"
-      },
+      "data": {},
       "source": "40",
       "target": "29"
     },
     {
       "id": "e_dm4",
-      "data": {
-        "label": "no manager, doctor handles decisions, start discovery"
-      },
+      "data": {},
       "source": "40",
       "target": "3"
     },
     {
       "id": "e_ivr1",
-      "data": {
-        "label": "automated system detected, IVR menu playing"
-      },
+      "data": {},
       "source": "1",
       "target": "41"
     },
     {
       "id": "e_ivr2",
-      "data": {
-        "label": "human answered after IVR, introduce SuperPatch"
-      },
+      "data": {},
       "source": "41",
       "target": "2"
     },
     {
       "id": "e_ivr3",
-      "data": {
-        "label": "receptionist answered after IVR, check practice size"
-      },
+      "data": {},
       "source": "41",
       "target": "38"
     },
     {
       "id": "e_ivr4",
-      "data": {
-        "label": "could not reach human through IVR, graceful exit"
-      },
+      "data": {},
       "source": "41",
       "target": "34"
     },
     {
       "id": "e_dm0",
-      "data": {
-        "label": "large practice (team_count > 2), receptionist answered, ask for decision maker"
-      },
+      "data": {},
       "source": "1",
       "target": "40"
     }

@@ -34,7 +34,7 @@ const PATHWAYS: Record<string, string> = {
 const DEFAULT_PATHWAY = "9aa760af-6f9a-430f-8d0c-25bf84afd8fb"; // Chiropractors
 const KB_ID = "b671527d-0c2d-4a21-9586-033dad3b0255";
 const VOICE_ID = "78c8543e-e5fe-448e-8292-20a7b8c45247";
-const WEBHOOK_URL = "https://sales-enablement-six.vercel.app/api/webhooks/bland";
+const WEBHOOK_URL = process.env.NEXT_PUBLIC_BLAND_WEBHOOK_URL || "https://sales-enablement-six.vercel.app/api/webhooks/bland";
 // Bland Memory Store ID for cross-call context retention
 const MEMORY_ID = process.env.NEXT_PUBLIC_BLAND_MEMORY_ID || "";
 
@@ -191,6 +191,8 @@ export class BatchCaller {
       website: practitioner.website || '',
       practitioner_type: practitioner.practitioner_type || '',
       has_address: practitioner.address ? 'true' : 'false',
+      // For greeting personalization in pathway
+      greeting_name: practitioner.name || 'there',
     };
 
     const pathwayId = getPathwayId(practitioner.practitioner_type);

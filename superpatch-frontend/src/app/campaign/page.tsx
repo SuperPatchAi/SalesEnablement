@@ -1013,6 +1013,8 @@ function CampaignPageContent() {
         review_count: quickCallResult.review_count?.toString() || '',
         website: quickCallResult.website || '',
         practitioner_type: quickCallResult.practitioner_type || '',
+        // For greeting personalization in pathway
+        greeting_name: quickCallResult.name || 'there',
       };
 
       // Build call payload with memory_id for context retention
@@ -1026,7 +1028,7 @@ function CampaignPageContent() {
         wait_for_greeting: true,
         record: true,
         max_duration: 15,
-        webhook: "https://sales-enablement-six.vercel.app/api/webhooks/bland",
+        webhook: process.env.NEXT_PUBLIC_BLAND_WEBHOOK_URL || "https://sales-enablement-six.vercel.app/api/webhooks/bland",
         request_data: requestData,
         metadata: {
           campaign: 'quick_call',
@@ -1158,7 +1160,7 @@ function CampaignPageContent() {
         wait_for_greeting: true,
         record: true,
         max_duration: 15,
-        webhook: "https://sales-enablement-six.vercel.app/api/webhooks/bland",
+        webhook: process.env.NEXT_PUBLIC_BLAND_WEBHOOK_URL || "https://sales-enablement-six.vercel.app/api/webhooks/bland",
         request_data: requestData,
         metadata: {
           campaign: 'quick_call',
@@ -1191,6 +1193,19 @@ function CampaignPageContent() {
       
       if (result.status === 'success') {
         const callTarget = quickCallPracticeName || formattedPhone;
+        
+        // Create initial call record for tracking (mirrors handleQuickCallWithPathway behavior)
+        // Use call_id from Bland.ai response as the ID for unknown callers
+        const callRecordId = result.call_id || `manual-${Date.now()}`;
+        createCallRecord({
+          id: callRecordId,
+          name: quickCallPracticeName || `Unknown (${formattedPhone})`,
+          practitioner_type: pathwayLabels[quickCallType] || 'Unknown',
+          phone: formattedPhone,
+          address: quickCallAddress || '',
+          city: quickCallCity || '',
+          province: quickCallProvince || '',
+        });
         
         // Save the practitioner to database as "user added"
         try {
