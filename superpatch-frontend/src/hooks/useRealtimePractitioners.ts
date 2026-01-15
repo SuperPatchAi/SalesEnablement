@@ -116,19 +116,29 @@ export function useRealtimePractitioners(
         setError(null);
       }
 
-      // Fetch stats separately
-      const { data: statsData } = await supabase.rpc("get_enrichment_stats").single();
+      // Try to fetch stats via RPC function (more efficient single query)
+      interface EnrichmentStats {
+        total: number;
+        pending: number;
+        in_progress: number;
+        completed: number;
+        failed: number;
+      }
       
-      if (statsData) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: statsData, error: statsError } = await (supabase.rpc as any)("get_enrichment_stats");
+      
+      if (!statsError && statsData && statsData.length > 0) {
+        const rpcStats = statsData[0] as EnrichmentStats;
         setStats({
-          total: statsData.total || 0,
-          pending: statsData.pending || 0,
-          inProgress: statsData.in_progress || 0,
-          completed: statsData.completed || 0,
-          failed: statsData.failed || 0,
+          total: rpcStats.total || 0,
+          pending: rpcStats.pending || 0,
+          inProgress: rpcStats.in_progress || 0,
+          completed: rpcStats.completed || 0,
+          failed: rpcStats.failed || 0,
         });
       } else {
-        // Fallback: count manually
+        // Fallback: count each status separately (if RPC not available)
         const { count: totalCount } = await supabase
           .from("practitioners")
           .select("*", { count: "exact", head: true });
