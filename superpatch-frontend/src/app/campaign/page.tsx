@@ -470,7 +470,10 @@ function CampaignPageContent() {
 
   // Load all practitioners for map view
   async function loadAllPractitioners() {
-    if (allPractitionersLoaded || loadingAllPractitioners) return;
+    if (allPractitionersLoaded || loadingAllPractitioners) {
+      console.log('[Map] Skipping load - already loaded:', allPractitionersLoaded);
+      return;
+    }
     
     setLoadingAllPractitioners(true);
     
@@ -486,8 +489,15 @@ function CampaignPageContent() {
       if (minRating) params.set('minRating', minRating);
       if (hasPhoneOnly) params.set('hasPhone', 'true');
       
+      console.log('[Map] Loading all practitioners with params:', params.toString());
+      
       const response = await fetch(`/api/practitioners?${params}`);
       const data: PaginatedResponse = await response.json();
+      
+      // Count US vs CA practitioners
+      const usCount = data.practitioners.filter((p: any) => p.country === 'US').length;
+      const caCount = data.practitioners.filter((p: any) => p.country === 'CA').length;
+      console.log('[Map] Loaded practitioners - Total:', data.pagination.total, 'US:', usCount, 'CA:', caCount);
       
       setPractitioners(data.practitioners);
       setPagination({
