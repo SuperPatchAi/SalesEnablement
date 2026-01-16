@@ -71,10 +71,10 @@ function extractLocationInfo(
   let region: string | null = null;
 
   for (const component of addressComponents) {
-    if (component.types.includes("locality")) {
+    if (component.types?.includes("locality")) {
       city = component.longText;
     }
-    if (component.types.includes("administrative_area_level_1")) {
+    if (component.types?.includes("administrative_area_level_1")) {
       region = component.longText;
     }
   }
