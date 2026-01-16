@@ -948,6 +948,45 @@ export async function POST(request: NextRequest) {
         status: savedRecord.status,
         practitioner_id: savedRecord.practitioner_id,
       });
+      
+      // Auto-create call note with AI summary
+      if (payload.analysis?.summary && isSupabaseConfigured && supabaseAdmin) {
+        console.log("📝 Creating auto call note with AI summary...");
+        
+        // Build note content with summary and key details
+        const noteLines = [
+          `📞 **AI Call Summary**`,
+          ``,
+          payload.analysis.summary,
+          ``,
+          `---`,
+          `*Call Duration:* ${Math.round(payload.call_length / 60)} min ${payload.call_length % 60} sec`,
+          payload.answered_by ? `*Answered By:* ${payload.answered_by}` : null,
+          sentimentLabel ? `*Sentiment:* ${sentimentLabel}${sentimentScore ? ` (${Math.round(sentimentScore * 100)}%)` : ''}` : null,
+          leadScore ? `*Lead Score:* ${leadScore}/100` : null,
+        ].filter(Boolean).join('\n');
+        
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const { data: noteData, error: noteError } = await (supabaseAdmin as any)
+            .from("call_notes")
+            .insert({
+              call_record_id: savedRecord.id,
+              content: noteLines,
+              created_by: "AI Assistant",
+            })
+            .select()
+            .single();
+          
+          if (noteError) {
+            console.error("❌ Failed to create call note:", noteError.message);
+          } else {
+            console.log("✅ Call note created:", noteData.id);
+          }
+        } catch (err) {
+          console.error("❌ Error creating call note:", err);
+        }
+      }
     } else {
       console.error("❌ Failed to save call record to database - check Supabase connection");
     }

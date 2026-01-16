@@ -183,6 +183,13 @@ export function PractitionerDetailDrawer({
     lead_score?: number;
     recording_url?: string;
   } | null>(null);
+  const [callNotes, setCallNotes] = useState<Array<{
+    id: string;
+    content: string;
+    created_by: string | null;
+    created_at: string;
+  }>>([]);
+  const [showTranscript, setShowTranscript] = useState(false);
 
   // DNC dialog state
   const [dncDialogOpen, setDncDialogOpen] = useState(false);
@@ -219,6 +226,8 @@ export function PractitionerDetailDrawer({
       setNotes("");
       setBlandCalls([]);
       setCallIntelligence(null);
+      setCallNotes([]);
+      setShowTranscript(false);
       return;
     }
 
@@ -260,6 +269,19 @@ export function PractitionerDetailDrawer({
           lead_score: data.record.lead_score,
           recording_url: data.record.recording_url,
         });
+        
+        // Fetch call notes if we have a call record ID
+        if (data.record.id) {
+          try {
+            const notesResponse = await fetch(`/api/campaign/notes?call_record_id=${data.record.id}`);
+            const notesData = await notesResponse.json();
+            if (notesData.notes) {
+              setCallNotes(notesData.notes);
+            }
+          } catch (err) {
+            console.warn('Failed to fetch call notes:', err);
+          }
+        }
       } else {
         const localRecord = getCallRecord(practitioner.id);
         setCallRecord(localRecord);
@@ -786,7 +808,7 @@ export function PractitionerDetailDrawer({
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium flex items-center gap-2">
                       <Brain className="w-4 h-4" />
-                      Call Summary
+                      AI Call Summary
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -797,6 +819,57 @@ export function PractitionerDetailDrawer({
                 </Card>
               )}
 
+              {/* AI-Generated Call Notes */}
+              {callNotes.length > 0 && (
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium flex items-center gap-2">
+                      <Sparkles className="w-4 h-4" />
+                      Call Notes
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {callNotes.map((note) => (
+                      <div key={note.id} className="border-l-2 border-primary/30 pl-3 py-1">
+                        <p className="text-sm whitespace-pre-wrap">{note.content}</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {note.created_by || "System"} • {new Date(note.created_at).toLocaleString()}
+                        </p>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Transcript (collapsible) */}
+              {callRecord?.transcript && (
+                <Card>
+                  <CardHeader className="pb-2">
+                    <button
+                      onClick={() => setShowTranscript(!showTranscript)}
+                      className="w-full flex items-center justify-between"
+                    >
+                      <CardTitle className="text-sm font-medium flex items-center gap-2">
+                        <FileText className="w-4 h-4" />
+                        Call Transcript
+                      </CardTitle>
+                      <span className="text-xs text-muted-foreground">
+                        {showTranscript ? "Hide" : "Show"}
+                      </span>
+                    </button>
+                  </CardHeader>
+                  {showTranscript && (
+                    <CardContent>
+                      <ScrollArea className="h-[300px] rounded-md border p-4">
+                        <pre className="text-xs text-muted-foreground whitespace-pre-wrap font-sans">
+                          {callRecord.transcript}
+                        </pre>
+                      </ScrollArea>
+                    </CardContent>
+                  )}
+                </Card>
+              )}
+
               {/* Your Notes (editable) */}
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Your Notes</Label>
@@ -804,7 +877,7 @@ export function PractitionerDetailDrawer({
                   placeholder="Add notes about this practitioner..."
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="min-h-[200px] resize-none"
+                  className="min-h-[150px] resize-none"
                 />
                 <p className="text-xs text-muted-foreground">
                   Notes are saved automatically
