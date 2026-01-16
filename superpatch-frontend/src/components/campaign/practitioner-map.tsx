@@ -41,18 +41,6 @@ const Popup = dynamic(
   { ssr: false }
 );
 
-// Component to update map view when center/zoom changes
-// MapContainer doesn't update on prop changes, so we need this
-function MapViewUpdater({ center, zoom }: { center: { lat: number; lng: number }; zoom: number }) {
-  const { useMap } = require("react-leaflet");
-  const map = useMap();
-  
-  useEffect(() => {
-    map.setView([center.lat, center.lng], zoom, { animate: true });
-  }, [map, center.lat, center.lng, zoom]);
-  
-  return null;
-}
 
 // Status colors for markers
 const STATUS_MARKER_COLORS: Record<CallStatus | "default", string> = {
@@ -479,12 +467,12 @@ export function PractitionerMap({
           style={{ height: isFullscreen ? "calc(100vh - 150px)" : height }}
         >
           <MapContainer
+            key={`map-${practitionersWithCoords.length}-${mapZoom}`}
             center={[mapCenter.lat, mapCenter.lng]}
             zoom={mapZoom}
             style={{ height: "100%", width: "100%" }}
             scrollWheelZoom={true}
           >
-            <MapViewUpdater center={mapCenter} zoom={mapZoom} />
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
