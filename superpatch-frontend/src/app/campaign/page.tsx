@@ -478,10 +478,9 @@ function CampaignPageContent() {
       const params = new URLSearchParams();
       params.set('limit', '50000'); // Load all at once
       
-      // Apply same filters (note: don't apply country filter for map - show all)
-      if (country) params.set('country', country);
-      if (province) params.set('province', province);
-      if (city) params.set('city', city);
+      // For map view, DON'T apply location filters (country/province/city)
+      // This ensures we see ALL practitioners across US and Canada
+      // Only apply non-location filters
       if (practitionerType) params.set('type', practitionerType);
       if (search) params.set('search', search);
       if (minRating) params.set('minRating', minRating);
