@@ -1079,6 +1079,12 @@ function CampaignPageContent() {
         });
         loadCallRecords();
         
+        // Schedule refreshes to catch webhook data after call completes
+        // Calls typically last 30s-3min, so refresh at key intervals
+        setTimeout(() => loadCallRecords(), 30000);  // 30 seconds
+        setTimeout(() => loadCallRecords(), 60000);  // 1 minute
+        setTimeout(() => loadCallRecords(), 120000); // 2 minutes
+        
         callNotifications.started(quickCallResult.name);
         setQuickCallPhone('');
         setQuickCallResult(null);
@@ -1262,6 +1268,11 @@ function CampaignPageContent() {
         // Refresh call records and practitioners to show the new data
         loadCallRecords();
         loadPractitioners(1);
+        
+        // Schedule refreshes to catch webhook data after call completes
+        setTimeout(() => loadCallRecords(), 30000);  // 30 seconds
+        setTimeout(() => loadCallRecords(), 60000);  // 1 minute
+        setTimeout(() => loadCallRecords(), 120000); // 2 minutes
       } else {
         callNotifications.failed(quickCallPracticeName || 'Unknown', result.message);
       }
@@ -1276,6 +1287,11 @@ function CampaignPageContent() {
   // Handle call started from detail drawer
   const handleCallStarted = (callId: string) => {
     loadCallRecords();
+    
+    // Schedule refreshes to catch webhook data after call completes
+    setTimeout(() => loadCallRecords(), 30000);  // 30 seconds
+    setTimeout(() => loadCallRecords(), 60000);  // 1 minute
+    setTimeout(() => loadCallRecords(), 120000); // 2 minutes
     setQueueDrawerOpen(true);
     if (selectedPractitioner) {
       callNotifications.started(selectedPractitioner.name);
@@ -1591,6 +1607,25 @@ function CampaignPageContent() {
 
       {/* KPI Cards Dashboard */}
       <div className="border-b px-6 py-4 bg-muted/20">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <h3 className="text-sm font-medium text-muted-foreground">Campaign Overview</h3>
+            {isRealtimeConnected && (
+              <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                Live
+              </Badge>
+            )}
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => loadCallRecords()}
+            className="h-7 text-xs gap-1"
+          >
+            <RefreshCw className="w-3 h-3" />
+            Refresh
+          </Button>
+        </div>
         <KPICards 
           stats={stats}
           callsToday={Object.values(callRecords).filter(r => {
