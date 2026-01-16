@@ -468,7 +468,7 @@ function CampaignPageContent() {
     }
   }
 
-  // Load all practitioners for map view
+  // Load all practitioners for map view (with pagination to bypass Supabase 1000 row limit)
   async function loadAllPractitioners() {
     if (allPractitionersLoaded || loadingAllPractitioners) {
       console.log('[Map] Skipping load - already loaded:', allPractitionersLoaded);
@@ -478,31 +478,55 @@ function CampaignPageContent() {
     setLoadingAllPractitioners(true);
     
     try {
-      const params = new URLSearchParams();
-      params.set('limit', '50000'); // Load all at once
-      
+      const baseParams = new URLSearchParams();
       // For map view, DON'T apply location filters (country/province/city)
       // This ensures we see ALL practitioners across US and Canada
-      // Only apply non-location filters
-      if (practitionerType) params.set('type', practitionerType);
-      if (search) params.set('search', search);
-      if (minRating) params.set('minRating', minRating);
-      if (hasPhoneOnly) params.set('hasPhone', 'true');
+      if (practitionerType) baseParams.set('type', practitionerType);
+      if (search) baseParams.set('search', search);
+      if (minRating) baseParams.set('minRating', minRating);
+      if (hasPhoneOnly) baseParams.set('hasPhone', 'true');
       
-      console.log('[Map] Loading all practitioners with params:', params.toString());
+      console.log('[Map] Loading all practitioners with pagination...');
       
-      const response = await fetch(`/api/practitioners?${params}`);
-      const data: PaginatedResponse = await response.json();
+      // Fetch in batches of 1000 (Supabase default limit)
+      const batchSize = 1000;
+      let allPractitioners: PractitionerData[] = [];
+      let page = 1;
+      let hasMore = true;
+      let totalCount = 0;
+      
+      while (hasMore) {
+        const params = new URLSearchParams(baseParams);
+        params.set('page', page.toString());
+        params.set('limit', batchSize.toString());
+        
+        const response = await fetch(`/api/practitioners?${params}`);
+        const data: PaginatedResponse = await response.json();
+        
+        allPractitioners = [...allPractitioners, ...data.practitioners];
+        totalCount = data.pagination.total;
+        hasMore = data.pagination.hasMore;
+        
+        console.log(`[Map] Batch ${page}: fetched ${data.practitioners.length}, total so far: ${allPractitioners.length}/${totalCount}`);
+        
+        page++;
+        
+        // Safety limit to prevent infinite loops
+        if (page > 50) {
+          console.warn('[Map] Hit safety limit of 50 batches');
+          break;
+        }
+      }
       
       // Count US vs CA practitioners
-      const usCount = data.practitioners.filter((p: any) => p.country === 'US').length;
-      const caCount = data.practitioners.filter((p: any) => p.country === 'CA').length;
-      console.log('[Map] Loaded practitioners - Total:', data.pagination.total, 'US:', usCount, 'CA:', caCount);
+      const usCount = allPractitioners.filter((p: any) => p.country === 'US').length;
+      const caCount = allPractitioners.filter((p: any) => p.country === 'CA').length;
+      console.log('[Map] Loaded all practitioners - Total:', allPractitioners.length, 'US:', usCount, 'CA:', caCount);
       
-      setPractitioners(data.practitioners);
+      setPractitioners(allPractitioners);
       setPagination({
         page: 1,
-        total: data.pagination.total,
+        total: totalCount,
         hasMore: false,
       });
       setAllPractitionersLoaded(true);
