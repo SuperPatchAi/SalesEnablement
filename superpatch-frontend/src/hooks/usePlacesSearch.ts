@@ -60,6 +60,12 @@ export interface ImportResult {
   duplicates: number;
   errors: string[];
   importedIds: string[];
+  // Enrichment stats (only set when using importAndEnrichSelected)
+  enrichmentStats?: {
+    attempted: number;
+    enriched: number;
+    failed: number;
+  };
 }
 
 interface UsePlacesSearchState {
@@ -419,6 +425,13 @@ export function usePlacesSearch(): UsePlacesSearchReturn {
       return place?.website; // Only enrich those with websites
     });
 
+    // Track enrichment stats
+    let enrichmentStats = {
+      attempted: practitionerIdsToEnrich.length,
+      enriched: 0,
+      failed: practitionerIdsToEnrich.length, // Assume all fail unless we get success response
+    };
+
     if (practitionerIdsToEnrich.length > 0) {
       console.log(`[usePlacesSearch] Triggering Edge Function enrichment for ${practitionerIdsToEnrich.length} practitioners`);
       
@@ -439,6 +452,11 @@ export function usePlacesSearch(): UsePlacesSearchReturn {
           if (enrichResponse.ok) {
             const enrichResult = await enrichResponse.json();
             console.log(`[usePlacesSearch] Edge Function enrichment complete: ${enrichResult.enriched} success, ${enrichResult.failed} failed`);
+            enrichmentStats = {
+              attempted: practitionerIdsToEnrich.length,
+              enriched: enrichResult.enriched || 0,
+              failed: enrichResult.failed || 0,
+            };
           } else {
             console.warn("[usePlacesSearch] Edge Function enrichment failed:", await enrichResponse.text());
           }
@@ -456,7 +474,10 @@ export function usePlacesSearch(): UsePlacesSearchReturn {
       markAsImported(importResult.importedIds);
     }
 
-    return importResult;
+    return {
+      ...importResult,
+      enrichmentStats: practitionerIdsToEnrich.length > 0 ? enrichmentStats : undefined,
+    };
   }, [state.places, markAsImported]);
 
   // Count selected places with websites (for UI)

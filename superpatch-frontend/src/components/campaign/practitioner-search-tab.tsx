@@ -156,14 +156,27 @@ export function PractitionerSearchTab({ onPractitionerImported }: PractitionerSe
 
   // Handle import and enrich in one action
   const handleImportAndEnrich = useCallback(async () => {
-    toast.info(`Enriching ${selectedWithWebsites} practitioners with websites...`);
+    toast.info(`Importing & enriching ${selectedWithWebsites} practitioners...`);
     
     const result = await importAndEnrichSelected();
     
     if (result.imported > 0) {
-      toast.success(`Successfully imported & enriched ${result.imported} practitioners`);
+      // Show import success
+      toast.success(`Imported ${result.imported} practitioners`);
       if (onPractitionerImported) {
         onPractitionerImported();
+      }
+      
+      // Show enrichment results if available
+      if (result.enrichmentStats) {
+        const { enriched, failed, attempted } = result.enrichmentStats;
+        if (enriched > 0 && failed === 0) {
+          toast.success(`Enriched ${enriched} practitioners`);
+        } else if (enriched > 0 && failed > 0) {
+          toast.info(`Enriched ${enriched}/${attempted} (${failed} failed to scrape)`);
+        } else if (failed > 0 && enriched === 0) {
+          toast.warning(`Enrichment failed for all ${failed} practitioners (websites couldn't be scraped)`);
+        }
       }
     }
     
