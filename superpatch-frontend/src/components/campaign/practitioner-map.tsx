@@ -72,6 +72,7 @@ interface PractitionerMapProps {
   practitioners: Practitioner[];
   callRecords: Record<string, CampaignCallRecord>;
   onPractitionerClick?: (practitioner: Practitioner) => void;
+  selectedCountry?: string;
   selectedProvince?: string;
   selectedCity?: string;
   className?: string;
@@ -311,6 +312,7 @@ export function PractitionerMap({
   practitioners,
   callRecords,
   onPractitionerClick,
+  selectedCountry,
   selectedProvince,
   selectedCity,
   className,
@@ -344,31 +346,66 @@ export function PractitionerMap({
     [practitionersWithCoords, callRecords]
   );
 
-  // Calculate map center and bounds
-  const mapCenter = useMemo(() => {
+  // Calculate map center and zoom based on data spread
+  const { mapCenter, mapZoom } = useMemo(() => {
     if (practitionersWithCoords.length === 0) {
-      // Default to Canada center
-      return { lat: 56.1304, lng: -106.3468 };
+      // Default to North America center
+      return { 
+        mapCenter: { lat: 45.0, lng: -100.0 }, 
+        mapZoom: 4 
+      };
     }
 
-    // If city is selected, center on that city
+    // If city is selected, center on that city with high zoom
     if (selectedCity) {
       const cityPractitioner = practitionersWithCoords.find(
         (p) => p.city === selectedCity
       );
       if (cityPractitioner) {
-        return { lat: cityPractitioner.latitude!, lng: cityPractitioner.longitude! };
+        return { 
+          mapCenter: { lat: cityPractitioner.latitude!, lng: cityPractitioner.longitude! },
+          mapZoom: 12
+        };
       }
     }
 
-    // Calculate average center
-    const totalLat = practitionersWithCoords.reduce((sum, p) => sum + p.latitude!, 0);
-    const totalLng = practitionersWithCoords.reduce((sum, p) => sum + p.longitude!, 0);
+    // Calculate bounds
+    const lats = practitionersWithCoords.map(p => p.latitude!);
+    const lngs = practitionersWithCoords.map(p => p.longitude!);
+    const minLat = Math.min(...lats);
+    const maxLat = Math.max(...lats);
+    const minLng = Math.min(...lngs);
+    const maxLng = Math.max(...lngs);
+    
+    // Calculate center
+    const centerLat = (minLat + maxLat) / 2;
+    const centerLng = (minLng + maxLng) / 2;
+    
+    // Calculate appropriate zoom based on bounds spread
+    const latSpread = maxLat - minLat;
+    const lngSpread = maxLng - minLng;
+    const maxSpread = Math.max(latSpread, lngSpread);
+    
+    // Determine zoom level based on geographic spread
+    let zoom = 5;
+    if (maxSpread > 40) zoom = 3;       // North America scale (US + Canada)
+    else if (maxSpread > 20) zoom = 4;  // Large region
+    else if (maxSpread > 10) zoom = 5;  // Country/state scale
+    else if (maxSpread > 5) zoom = 6;   // Multi-state
+    else if (maxSpread > 2) zoom = 7;   // State scale
+    else if (maxSpread > 1) zoom = 8;   // Regional
+    else zoom = 10;                      // City scale
+    
+    // If province is selected but not city, use moderate zoom
+    if (selectedProvince && !selectedCity) {
+      zoom = Math.max(zoom, 6);
+    }
+    
     return {
-      lat: totalLat / practitionersWithCoords.length,
-      lng: totalLng / practitionersWithCoords.length,
+      mapCenter: { lat: centerLat, lng: centerLng },
+      mapZoom: zoom
     };
-  }, [practitionersWithCoords, selectedCity]);
+  }, [practitionersWithCoords, selectedCity, selectedProvince]);
 
   if (!isClient) {
     return <MapSkeleton height={height} />;
@@ -430,7 +467,7 @@ export function PractitionerMap({
         >
           <MapContainer
             center={[mapCenter.lat, mapCenter.lng]}
-            zoom={selectedCity ? 12 : 5}
+            zoom={mapZoom}
             style={{ height: "100%", width: "100%" }}
             scrollWheelZoom={true}
           >

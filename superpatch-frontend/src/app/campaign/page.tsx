@@ -2707,6 +2707,7 @@ function CampaignPageContent() {
                   review_count: p.review_count ? Number(p.review_count) : undefined,
                 }))}
                 callRecords={callRecords}
+                selectedCountry={country}
                 selectedProvince={province}
                 selectedCity={city}
                 onPractitionerClick={(practitioner) => {
