@@ -124,17 +124,36 @@ export async function upsertCallRecord(record: CallRecordInsert): Promise<CallRe
     return convertLocalStorageRecord(localRecord);
   }
 
+  // call_id has a unique constraint, practitioner_id does NOT
+  // Use call_id for upsert when available, otherwise just insert
+  if (record.call_id) {
+    const { data, error } = await supabase
+      .from('call_records')
+      .upsert(record as any, { 
+        onConflict: 'call_id',
+        ignoreDuplicates: false 
+      })
+      .select()
+      .single();
+
+    if (!error && data) {
+      return data as CallRecord;
+    }
+    
+    if (error) {
+      console.error('Failed to upsert call record by call_id:', error);
+    }
+  }
+  
+  // No call_id or upsert failed - just insert a new record
   const { data, error } = await supabase
     .from('call_records')
-    .upsert(record as any, { 
-      onConflict: 'practitioner_id',
-      ignoreDuplicates: false 
-    })
+    .insert(record as any)
     .select()
     .single();
 
   if (error) {
-    console.error('Failed to upsert call record:', error);
+    console.error('Failed to insert call record:', error);
     return null;
   }
 
@@ -398,28 +417,8 @@ export async function serverUpsertCallRecord(record: CallRecordInsert): Promise<
     }
   }
 
-  // If no call_id or upsert failed, try by practitioner_id
-  if (record.practitioner_id) {
-    console.log('📝 Upserting by practitioner_id:', record.practitioner_id);
-    const { data, error } = await client
-      .from('call_records')
-      .upsert(record as any, { 
-        onConflict: 'practitioner_id',
-        ignoreDuplicates: false 
-      })
-      .select()
-      .single();
-
-    if (!error && data) {
-      return data as CallRecord;
-    }
-    
-    if (error) {
-      console.warn('practitioner_id upsert failed, trying insert:', error.message);
-    }
-  }
-
-  // Last resort: just insert (for unknown callers or new records)
+  // Note: practitioner_id does NOT have a unique constraint, so we can't upsert by it
+  // Just insert a new record instead
   console.log('📝 Inserting new record (no unique key match)');
   const { data, error } = await client
     .from('call_records')
