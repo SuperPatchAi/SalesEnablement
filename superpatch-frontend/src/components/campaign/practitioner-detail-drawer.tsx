@@ -500,7 +500,7 @@ export function PractitionerDetailDrawer({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-[800px] sm:w-[950px] lg:w-[1000px] p-0 flex flex-col z-[1100]">
+      <SheetContent className="w-[800px] sm:w-[950px] lg:w-[1000px] p-0 flex flex-col z-[1100]" style={{ fontFamily: 'var(--font-inter), system-ui, -apple-system, sans-serif' }}>
         {/* Sticky Header */}
         <div className="sticky top-0 z-10 bg-background border-b px-6 py-4">
           <div className="flex items-start gap-4">
