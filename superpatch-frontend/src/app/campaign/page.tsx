@@ -325,6 +325,7 @@ function CampaignPageContent() {
       params.set('page', page.toString());
       params.set('limit', '100');
       
+      if (country) params.set('country', country);
       if (province) params.set('province', province);
       if (city) params.set('city', city);
       if (practitionerType) params.set('type', practitionerType);
@@ -352,7 +353,7 @@ function CampaignPageContent() {
       setLoading(false);
       setLoadingMore(false);
     }
-  }, [province, city, practitionerType, search, minRating, hasPhoneOnly]);
+  }, [country, province, city, practitionerType, search, minRating, hasPhoneOnly]);
 
   // Load metadata on mount (call records are loaded by useSupabaseCallRecords hook)
   useEffect(() => {
@@ -477,7 +478,8 @@ function CampaignPageContent() {
       const params = new URLSearchParams();
       params.set('limit', '50000'); // Load all at once
       
-      // Apply same filters
+      // Apply same filters (note: don't apply country filter for map - show all)
+      if (country) params.set('country', country);
       if (province) params.set('province', province);
       if (city) params.set('city', city);
       if (practitionerType) params.set('type', practitionerType);
@@ -872,7 +874,7 @@ function CampaignPageContent() {
         currentName: `Processing ${toEnrich.length} practitioners in parallel...` 
       });
 
-      const response = await fetch(`${supabaseUrl}/functions/v1/enrich-practitioners`, {
+      const response = await fetch(`${supabaseUrl}/functions/v1/enrich-practitioners-v2`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

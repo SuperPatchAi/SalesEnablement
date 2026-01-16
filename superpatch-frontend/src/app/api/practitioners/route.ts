@@ -377,6 +377,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Parse parameters
+  const country = searchParams.get("country");
   const province = searchParams.get("province");
   const city = searchParams.get("city");
   const type = searchParams.get("type");
@@ -400,6 +401,9 @@ export async function GET(request: NextRequest) {
         .select('*', { count: 'exact' });
 
       // Apply filters
+      if (country) {
+        query = query.eq('country', country);
+      }
       if (province) {
         query = query.eq('province', province);
       }
@@ -457,6 +461,7 @@ export async function GET(request: NextRequest) {
           hasMore: offset + limit < (count || 0),
         },
         filters: {
+          country,
           province,
           city,
           type,
@@ -479,6 +484,7 @@ export async function GET(request: NextRequest) {
   // Apply filters (client-side)
   let filtered = practitioners;
 
+  // Note: JSON fallback is legacy Canadian data, country filter won't apply
   if (province) {
     filtered = filtered.filter(p => p.province === province);
   }
@@ -531,6 +537,7 @@ export async function GET(request: NextRequest) {
       hasMore: offset + limit < total,
     },
     filters: {
+      country,
       province,
       city,
       type,
