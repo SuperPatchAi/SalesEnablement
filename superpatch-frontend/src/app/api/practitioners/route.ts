@@ -407,10 +407,13 @@ export async function GET(request: NextRequest) {
         query = query.eq('city', city);
       }
       if (type) {
-        query = query.eq('practitioner_type', type);
+        // Case-insensitive match for practitioner type
+        query = query.ilike('practitioner_type', type);
       }
       if (types && types.length > 0) {
-        query = query.in('practitioner_type', types);
+        // For multiple types, use OR with ilike for case-insensitive matching
+        const typeFilters = types.map(t => `practitioner_type.ilike.${t}`).join(',');
+        query = query.or(typeFilters);
       }
       if (search) {
         // Use ilike for case-insensitive search
@@ -483,10 +486,13 @@ export async function GET(request: NextRequest) {
     filtered = filtered.filter(p => p.city === city);
   }
   if (type) {
-    filtered = filtered.filter(p => p.practitioner_type === type);
+    // Case-insensitive match
+    filtered = filtered.filter(p => p.practitioner_type?.toLowerCase() === type.toLowerCase());
   }
   if (types && types.length > 0) {
-    filtered = filtered.filter(p => types.includes(p.practitioner_type));
+    // Case-insensitive match for multiple types
+    const lowerTypes = types.map(t => t.toLowerCase());
+    filtered = filtered.filter(p => lowerTypes.includes(p.practitioner_type?.toLowerCase()));
   }
   if (search) {
     filtered = filtered.filter(p => 
